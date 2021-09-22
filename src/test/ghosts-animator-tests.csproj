@@ -15,6 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\ghosts-animator\ghosts-animator.csproj" />
+      <ProjectReference Include="..\ghosts-animator\ghosts-animator.csproj" />
     </ItemGroup>
 </Project>

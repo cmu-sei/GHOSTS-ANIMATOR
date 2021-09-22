@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ghosts-animator", "ghosts-a
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ghosts-animator-api", "ghosts-animator-api\ghosts-animator-api.csproj", "{EBEDFF27-FC2E-42B7-BE0E-626B1EC95E6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ghosts-animator-tests", "..\test\ghosts-animator-tests.csproj", "{1486406A-987E-4E6C-A782-2FECE4AAB22A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ghosts-animator-tests", "test\ghosts-animator-tests.csproj", "{1486406A-987E-4E6C-A782-2FECE4AAB22A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

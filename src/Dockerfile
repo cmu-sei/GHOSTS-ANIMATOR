@@ -19,6 +19,6 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
 ENV ASPNETCORE_URLS http://+:5000
 COPY --from=build-env /app/out .
-COPY ./src/config ./config
+COPY ./ghosts-animator-api/config ./config
 
 ENTRYPOINT ["dotnet", "ghosts.animator.api.dll"]

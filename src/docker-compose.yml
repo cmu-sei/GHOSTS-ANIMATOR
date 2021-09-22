@@ -6,22 +6,21 @@
 # Carnegie Mellon® and CERT® are registered in the U.S. Patent and Trademark Office by Carnegie Mellon University.
 # DM20-0930
 
-
 version: '3.2'
 networks:
   ghosts-network:
     driver: bridge
 services:
-#  mongo:
-#    image: mongo
-#    container_name: ghosts-mongo
-#    ports:
-#      - '32770:27017'
-#    networks:
-#      - ghosts-network
-#    restart: always
-#    volumes:
-#      - ./_data:/data/db
+  #  mongo:
+  #    image: mongo
+  #    container_name: ghosts-mongo
+  #    ports:
+  #      - '32770:27017'
+  #    networks:
+  #      - ghosts-network
+  #    restart: always
+  #    volumes:
+  #      - ./_data:/data/db
   ghosts-animator:
     image: ghosts/animator
     container_name: ghosts-animator-01
@@ -30,79 +29,3 @@ services:
     networks:
       - ghosts-network
     restart: always
-  ghosts-animator2:
-    image: ghosts/animator
-    container_name: ghosts-animator-02
-    ports:
-      - '6002:5000'
-    networks:
-      - ghosts-network
-    restart: always
-  ghosts-animator3:
-    image: ghosts/animator
-    container_name: ghosts-animator-03
-    ports:
-      - '6003:5000'
-    networks:
-      - ghosts-network
-    restart: always
-  ghosts-animator4:
-    image: ghosts/animator
-    container_name: ghosts-animator-04
-    ports:
-      - '6004:5000'
-    networks:
-      - ghosts-network
-    restart: always
-  ghosts-animator5:
-    image: ghosts/animator
-    container_name: ghosts-animator-05
-    ports:
-      - '6005:5000'
-    networks:
-      - ghosts-network
-    restart: always
-  ghosts-animator6:
-    image: ghosts/animator
-    container_name: ghosts-animator-06
-    ports:
-      - '6006:5000'
-    networks:
-      - ghosts-network
-    restart: always
-  ghosts-animator7:
-    image: ghosts/animator
-    container_name: ghosts-animator-07
-    ports:
-      - '6007:5000'
-    networks:
-      - ghosts-network
-    restart: always
-  ghosts-animator8:
-    image: ghosts/animator
-    container_name: ghosts-animator-08
-    ports:
-      - '6008:5000'
-    networks:
-      - ghosts-network
-    restart: always
-  ghosts-animator9:
-    image: ghosts/animator
-    container_name: ghosts-animator-09
-    ports:
-      - '6009:5000'
-    networks:
-      - ghosts-network
-    restart: always
-  ghosts-animator10:
-    image: ghosts/animator
-    container_name: ghosts-animator-10
-    ports:
-      - '6010:5000'
-    networks:
-      - ghosts-network
-    restart: always
-#    depends_on:
-#      - mongo
-    # volumes:
-    #   - ./_data:/app/config

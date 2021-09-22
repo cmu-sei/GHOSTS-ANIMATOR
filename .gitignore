@@ -301,3 +301,5 @@ ghosts-animator-api/config/*
 /src/config/data-gathering/
 /src/config/photos
 _data/*
+*_data/*
+_data/

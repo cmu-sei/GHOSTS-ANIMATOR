@@ -2,11 +2,11 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "files", "files", "{F9B692D0-DA9A-4D07-BB41-6DF675E6FB4E}"
 ProjectSection(SolutionItems) = preProject
-	README.md = README.md
-	.gitignore = .gitignore
-	docker-compose.yml = src/docker-compose.yml
-	Dockerfile = src/Dockerfile
-	LICENSE.MD = LICENSE.MD
+	README.md = ../README.md
+	.gitignore = ../.gitignore
+	docker-compose.yml = docker-compose.yml
+	Dockerfile = Dockerfile
+	LICENSE.MD = ../LICENSE.MD
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ghosts-animator", "ghosts-animator\ghosts-animator.csproj", "{5C4E2334-E16C-42B6-92C1-F9290127911F}"

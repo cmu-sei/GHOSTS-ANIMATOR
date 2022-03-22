@@ -11,16 +11,16 @@ networks:
   ghosts-network:
     driver: bridge
 services:
-  #  mongo:
-  #    image: mongo
-  #    container_name: ghosts-mongo
-  #    ports:
-  #      - '32770:27017'
-  #    networks:
-  #      - ghosts-network
-  #    restart: always
-  #    volumes:
-  #      - ./_data:/data/db
+  mongo:
+    image: mongo
+    container_name: ghosts-mongo
+    ports:
+      - '32770:27017'
+    networks:
+      - ghosts-network
+    restart: always
+    volumes:
+      - ./_data:/data/db
   ghosts-animator:
     image: ghosts/animator
     container_name: ghosts-animator-01

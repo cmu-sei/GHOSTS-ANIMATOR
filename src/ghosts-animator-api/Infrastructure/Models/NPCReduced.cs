@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +8,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
     public class NPCReduced
     {
         public Dictionary<string, string> PropertySelection { get; set; }
-        private object NpcObject { get; set; }
 
-        private Type ObjectType { get; set; }
-        
         public NPCReduced()
         {
             this.PropertySelection = new Dictionary<string, string>();
@@ -20,13 +16,10 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
 
         public NPCReduced(string[] fieldsToReturn, NPC npc)
         {
-            NpcObject = npc;
-            
             //what we'll return
             this.PropertySelection = new Dictionary<string, string>();
 
             //get an npc to "rip apart"
-            ObjectType = typeof(NPC);
 
             //for each field we want to return
             foreach (var fieldToReturn in fieldsToReturn)

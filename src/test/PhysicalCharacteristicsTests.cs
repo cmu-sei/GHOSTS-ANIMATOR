@@ -10,7 +10,6 @@ DM20-0930
 
 using System;
 using Ghosts.Animator.Enums;
-using Ghosts.Animator.Models;
 using NUnit.Framework;
 
 namespace Ghosts.Animator.Tests
@@ -33,7 +32,7 @@ namespace Ghosts.Animator.Tests
         public void Birthdate_Is_A_Valid_Date()
         {
             var birthday = PhysicalCharacteristics.GetBirthdate();
-            Assert.IsInstanceOf<System.DateTime>(birthday);
+            Assert.IsInstanceOf<DateTime>(birthday);
             Assert.True((DateTime.Now.Year - birthday.Year) > 17);
         }
         

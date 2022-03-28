@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using Ghosts.Animator.Enums;
 using Ghosts.Animator.Extensions;
 using Ghosts.Animator.Models;
@@ -66,18 +65,18 @@ namespace Ghosts.Animator
                         rank.MOSID.Substring(0, 2) == "26" || rank.MOSID == "51R"
                         || rank.MOSID == "51S")
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Bachelors");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Engineering");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Bachelors");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Engineering");
                         if (i.Level == DegreeLevel.Bachelors)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Bachelors,
-                                t2.Majors.RandomElement<string>() + ",B.S.", GetSchool()));
+                                major: t2.Majors.RandomElement() + ",B.S.", GetSchool()));
                             break;
                         }
                     }
@@ -89,54 +88,54 @@ namespace Ghosts.Animator
                         rank.MOSID.Substring(0, 2) == "71" || rank.MOSID.Substring(0, 2) == "72" ||
                         rank.MOSID.Substring(0, 2) == "73")
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Professional");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Health Professions And Related Programs");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Professional");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Health Professions And Related Programs");
                         if (i.Level == DegreeLevel.Professional)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Professional,
-                                t2.Majors.RandomElement<string>() + ",M.D.", GetSchool()));
+                                t2.Majors.RandomElement() + ",M.D.", GetSchool()));
                             break;
                         }
                     }
                     //Law
                     if (rank.MOSID == "27A" || rank.MOSID == "27B")
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Professional");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Legal Professions And Studies");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Professional");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Legal Professions And Studies");
                         if (i.Level == DegreeLevel.Professional)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Professional,
-                                t2.Majors.RandomElement<string>() + ",J.D.", GetSchool()));
+                                t2.Majors.RandomElement() + ",J.D.", GetSchool()));
                             break;
                         }
                     }
                     //Chaplain
                     if (rank.MOSID.Substring(0, 2) == "56")
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Professional");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Theology And Religious Vocations");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Professional");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Theology And Religious Vocations");
                         if (i.Level == DegreeLevel.Professional)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Professional,
-                                t2.Majors.RandomElement<string>() + ",Th.D.", GetSchool()));
+                                t2.Majors.RandomElement() + ",Th.D.", GetSchool()));
                             break;
                         }
                     }
@@ -145,31 +144,31 @@ namespace Ghosts.Animator
                     //Law: 47E
                     if (rank.MOSID.Substring(0, 2) == "47")
                     {
-                        MajorDegreeLevel t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Doctorate");
+                        MajorDegreeLevel t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Doctorate");
                         Field t2;
                         if (rank.MOSID == "47E") //Law
                         {
-                            t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Legal Professions And Studies");
+                            t2 = t1.Fields.FirstOrDefault(x => x.Name == "Legal Professions And Studies");
                         }
                         else if (rank.MOSID == "47D" || rank.MOSID == "47P" || rank.MOSID == "47R" ||
                             rank.MOSID == "47F")//Engineering
                         {
-                            t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Engineering");
+                            t2 = t1.Fields.FirstOrDefault(x => x.Name == "Engineering");
                         }
                         else //TODO: Replace the random selection with selection by MOS
                         {
-                            t2 = t1.Fields.RandomElement<Field>();
+                            t2 = t1.Fields.RandomElement();
                         }
                         if (i.Level == DegreeLevel.Professional)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Professional,
-                                t2.Majors.RandomElement<string>() + ",Ph.D.", GetSchool()));
+                                t2.Majors.RandomElement() + ",Ph.D.", GetSchool()));
                             break;
                         }
                     }
@@ -189,36 +188,36 @@ namespace Ghosts.Animator
                         rank.MOSID == "6004" || rank.MOSID == "8820" || rank.MOSID == "8824" ||
                         rank.MOSID == "8826" || rank.MOSID == "8831" || rank.MOSID == "8832")
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Bachelors");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Engineering");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Bachelors");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Engineering");
                         if (i.Level == DegreeLevel.Bachelors)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Bachelors,
-                                t2.Majors.RandomElement<string>() + ",B.S.", GetSchool()));
+                                t2.Majors.RandomElement() + ",B.S.", GetSchool()));
                             break;
                         }
                     }
                     //Law
                     if (rank.MOSID.Substring(0, 2) == "44")
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Professional");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Legal Professions And Studies");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Professional");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Legal Professions And Studies");
                         if (i.Level == DegreeLevel.Professional)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Professional,
-                                t2.Majors.RandomElement<string>() + ",J.D.", GetSchool()));
+                                t2.Majors.RandomElement() + ",J.D.", GetSchool()));
                             break;
                         }
                     }
@@ -264,7 +263,7 @@ namespace Ghosts.Animator
                             }
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             if (num < 1)
                             {
@@ -297,18 +296,18 @@ namespace Ghosts.Animator
                         rank.MOSID == "146X" || rank.MOSID == "613X" || rank.MOSID == "623X" ||
                         rank.MOSID == "653X")
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Bachelors");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Engineering");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Bachelors");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Engineering");
                         if (i.Level == DegreeLevel.Bachelors)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Bachelors,
-                                t2.Majors.RandomElement<string>() + ",B.S.", GetSchool()));
+                                t2.Majors.RandomElement() + ",B.S.", GetSchool()));
                             break;
                         }
                     }
@@ -316,72 +315,72 @@ namespace Ghosts.Animator
                     if (rank.MOSID == "210X" || rank.MOSID == "220X" || rank.MOSID == "230X" ||
                         rank.MOSID == "270X" || rank.MOSID == "290X" || rank.MOSID == "510X")
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Professional");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Health Professions And Related Programs");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Professional");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Health Professions And Related Programs");
                         if (i.Level == DegreeLevel.Professional)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Professional,
-                                t2.Majors.RandomElement<string>() + ",M.D.", GetSchool()));
+                                t2.Majors.RandomElement() + ",M.D.", GetSchool()));
                             break;
                         }
                     }
                     //Law
                     if (rank.MOSID == "250X" || rank.MOSID == "655X")
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Professional");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Legal Professions And Studies");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Professional");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Legal Professions And Studies");
                         if (i.Level == DegreeLevel.Professional)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Professional,
-                                t2.Majors.RandomElement<string>() + ",J.D.", GetSchool()));
+                                t2.Majors.RandomElement() + ",J.D.", GetSchool()));
                             break;
                         }
                     }
                     //Chaplain
                     if (rank.MOSID == "410X")
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Professional");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Theology And Religious Vocations");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Professional");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Theology And Religious Vocations");
                         if (i.Level == DegreeLevel.Professional)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Professional,
-                                t2.Majors.RandomElement<string>() + ",Th.D.", GetSchool()));
+                                t2.Majors.RandomElement() + ",Th.D.", GetSchool()));
                             break;
                         }
                     }
                     //Education
                     if (rank.MOSID == "1230")
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Doctorate");
-                        var t2 = t1.Fields.RandomElement<Field>();
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Doctorate");
+                        var t2 = t1.Fields.RandomElement();
                         if (i.Level == DegreeLevel.Doctorate)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Doctorate,
-                                t2.Majors.RandomElement<string>() + ",Ph.D.", GetSchool()));
+                                t2.Majors.RandomElement() + ",Ph.D.", GetSchool()));
                             break;
                         }
                     }
@@ -399,18 +398,18 @@ namespace Ghosts.Animator
                     if (rank.MOSID == "32EX" || rank.MOSID == "61DX" || rank.MOSID == "62EX"
                         || rank.MOSID.Contains("62EX")) //Engineering
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Bachelors");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Engineering");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Bachelors");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Engineering");
                         if (i.Level == DegreeLevel.Bachelors)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Bachelors,
-                                t2.Majors.RandomElement<string>() + ",B.S.", GetSchool()));
+                                t2.Majors.RandomElement() + ",B.S.", GetSchool()));
                             break;
                         }
                     }
@@ -421,47 +420,47 @@ namespace Ghosts.Animator
                         if (i.Level == DegreeLevel.Professional)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Professional,
-                                t2.Majors.RandomElement<string>() + ",M.D.", GetSchool()));
+                                t2.Majors.RandomElement() + ",M.D.", GetSchool()));
                             break;
                         }
                     }
                     if (rank.MOSID == "51JX") //Law
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Professional");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Legal Professions And Studies");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Professional");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Legal Professions And Studies");
                         if (i.Level == DegreeLevel.Professional)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Professional,
-                                t2.Majors.RandomElement<string>() + ",J.D.", GetSchool()));
+                                t2.Majors.RandomElement() + ",J.D.", GetSchool()));
                             break;
                         }
                     }
                     if (rank.MOSID == "52RX" || rank.MOSID == "92RO") //Chaplain
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Professional");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Theology And Religious Vocations");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Professional");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Theology And Religious Vocations");
                         if (i.Level == DegreeLevel.Professional)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Professional,
-                                t2.Majors.RandomElement<string>() + ",Th.D.", GetSchool()));
+                                t2.Majors.RandomElement() + ",Th.D.", GetSchool()));
                             break;
                         }
                     }
@@ -476,35 +475,35 @@ namespace Ghosts.Animator
                 {
                     if (rank.MOSID == "ENG")
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Bachelors");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Engineering");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Bachelors");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Engineering");
                         if (i.Level == DegreeLevel.Bachelors)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Bachelors,
-                                t2.Majors.RandomElement<string>() + ",B.S.", GetSchool()));
+                                t2.Majors.RandomElement() + ",B.S.", GetSchool()));
                             break;
                         }
                     }
                     if (rank.MOSID == "Medical")
                     {
-                        var t1 = t.MajorDegreeLevels.FirstOrDefault<MajorDegreeLevel>(x => x.Level == "Professional");
-                        var t2 = t1.Fields.FirstOrDefault<Field>(x => x.Name == "Health Professions And Related Programs");
+                        var t1 = t.MajorDegreeLevels.FirstOrDefault(x => x.Level == "Professional");
+                        var t2 = t1.Fields.FirstOrDefault(x => x.Name == "Health Professions And Related Programs");
                         if (i.Level == DegreeLevel.Professional)
                         {
                             i.DegreeType = t2.DegreeType;
-                            i.Major = t2.Majors.RandomElement<string>();
+                            i.Major = t2.Majors.RandomElement();
                             break;
                         }
-                        if (i == o.Degrees.Last<EducationProfile.Degree>()) //correct degreelevel didn't exist and must be added
+                        if (i == o.Degrees.Last()) //correct degreelevel didn't exist and must be added
                         {
                             o.Degrees.Add(new EducationProfile.Degree(DegreeLevel.Professional,
-                                t2.Majors.RandomElement<string>() + ",M.D.", GetSchool()));
+                                t2.Majors.RandomElement() + ",M.D.", GetSchool()));
                             break;
                         }
                     }

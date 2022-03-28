@@ -14,7 +14,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading;
 using FileHelpers;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Ghosts.Animator.Extensions;

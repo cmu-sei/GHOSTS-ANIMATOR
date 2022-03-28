@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Ghosts.Animator.Extensions;
 using Ghosts.Animator.Models;
 using Newtonsoft.Json;

@@ -11,9 +11,7 @@ DM20-0930
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
 using Ghosts.Animator.Extensions;
-using Ghosts.Animator.Models;
 using Ghosts.Animator.Models.InsiderThreat;
 using Newtonsoft.Json;
 
@@ -97,7 +95,7 @@ namespace Ghosts.Animator
                 insiderThreatProfile.Access.SecurityClearance = new[] {"C", "S", "TS", "TS SCI"}.RandomElement();
                 insiderThreatProfile.Access.SystemsAccess = AnimatorRandom.Rand.Next(0, 100) > 15 ? new[] {"SIPR", "MIPR", "JWICS"}.RandomElement() : "N/A";
                 insiderThreatProfile.Access.CBRNAccess = AnimatorRandom.Rand.Next(0, 100) > 5 ? "Yes" : "N/A";
-                insiderThreatProfile.Access.IsDoDSystemsPrivilegedUser = AnimatorRandom.Rand.Next(0, 100) > 5 ? true : false;
+                insiderThreatProfile.Access.IsDoDSystemsPrivilegedUser = AnimatorRandom.Rand.Next(0, 100) > 5;
                 insiderThreatProfile.Access.ExplosivesAccess = AnimatorRandom.Rand.Next(0, 100) > 95 ? $"ATF Form {AnimatorRandom.Rand.Next(0, 6)}" : "N/A";
                 insiderThreatProfile.Access.PhysicalAccess = AnimatorRandom.Rand.Next(0, 100) > 15 ? new[] {"Secret-cleared spaces", "SCIF", "SAP"}.RandomElement() : "N/A";
             }

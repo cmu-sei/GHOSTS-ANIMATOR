@@ -72,7 +72,6 @@ namespace Ghosts.Animator
                     default:
                         name = new[] {Name.GetFirstName(), Name.GetLastName()}.Select(n => new Regex(@"\W").Replace(n, ""))
                             .Join(new[] {".", "_"}.RandomElement()).ToLower();
-                        ;
                         break;
                 }
             }

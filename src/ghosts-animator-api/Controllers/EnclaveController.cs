@@ -13,12 +13,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading;
-using System.Text.RegularExpressions;
 using FileHelpers;
 using Ghosts.Animator.Api.Infrastructure.Models;
-using Ghosts.Animator.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Swashbuckle.AspNetCore.Annotations;
@@ -106,13 +102,11 @@ namespace Ghosts.Animator.Api.Controllers
         [HttpDelete("{campaign}/{enclave}")]
         public void DeleteEnclave(string campaign, string enclave)
         {
-            var list = GetEnclave(campaign, enclave).ToList();
             var npcFilter = this.BuildEnclaveFilter(campaign, enclave);
             _mongo.DeleteMany(npcFilter);
             
             var ipFilter = Builders<NPCIpAddress>.Filter.Eq("Enclave", enclave);
             _mongoIps.DeleteMany(ipFilter);
-            
         }
         
         /// <summary>

@@ -10,7 +10,6 @@ DM20-0930
 
 using Ghosts.Animator.Models;
 using NUnit.Framework;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 namespace Ghosts.Animator.Tests

@@ -9,7 +9,6 @@ DM20-0930
 */
 
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Ghosts.Animator.Models.InsiderThreat
 {

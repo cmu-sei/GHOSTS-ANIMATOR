@@ -10,11 +10,11 @@ DM20-0930
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
 using FileHelpers;
 using Ghosts.Animator.Extensions;
+using Ghosts.Animator.Models.InsiderThreat;
 
 namespace Ghosts.Animator.Api.Infrastructure.Models
 {
@@ -189,60 +189,61 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
                 o.State = n.Address.FirstOrDefault()?.State;
                 o.Zip = n.Address.FirstOrDefault()?.PostalCode;
                 o.Country = "US";
-                o.Demoted = events.Any(x => x.Description.Contains("Demoted", StringComparison.CurrentCultureIgnoreCase));
-                o.Disgruntled = events.Count() > 3;
-                o.MissedRaises = events.Any(x => x.Description.Contains("Missed raise", StringComparison.CurrentCultureIgnoreCase));
-                o.TeamLayoffs = events.Any(x => x.Description.Contains("Team layoffs", StringComparison.CurrentCultureIgnoreCase));
-                o.NotifiedOfTermination = events.Any(x => x.Description.Contains("Notified of termination", StringComparison.CurrentCultureIgnoreCase));
-                o.AnnouncesTermination = events.Any(x => x.Description.Contains("Announces Termination", StringComparison.CurrentCultureIgnoreCase));
-                o.AnnouncesResignation = events.Any(x => x.Description.Contains("Announces Resignation", StringComparison.CurrentCultureIgnoreCase));
-                o.Threats = events.Any(x => x.Description.Contains("Threatening", StringComparison.CurrentCultureIgnoreCase)) ||
-                            events.Any(x => x.Description.Contains("threatened", StringComparison.CurrentCultureIgnoreCase));
-                o.MissedPromotion = events.Any(x => x.Description.Contains("Missed Promotion", StringComparison.CurrentCultureIgnoreCase));
-                o.Insubordination = events.Any(x => x.Description.Contains("insubordinate", StringComparison.CurrentCultureIgnoreCase));
-                o.Absenteeism = events.Any(x => x.Description.Contains("missed work", StringComparison.CurrentCultureIgnoreCase));
-                o.HRComplaints = events.Any(x => x.Description.Contains("Human Resource Complaint", StringComparison.CurrentCultureIgnoreCase));
-                o.ITPolicyViolations = events.Any(x => x.Description.Contains("Employee violated company IT policy", StringComparison.CurrentCultureIgnoreCase));
-                o.IPPolicyViolations = events.Any(x => x.Description.Contains("Compliance Violation", StringComparison.CurrentCultureIgnoreCase));
+                var relatedEvents = events as RelatedEvent[] ?? events.ToArray();
+                o.Demoted = relatedEvents.Any(x => x.Description.Contains("Demoted", StringComparison.CurrentCultureIgnoreCase));
+                o.Disgruntled = relatedEvents.Count() > 3;
+                o.MissedRaises = relatedEvents.Any(x => x.Description.Contains("Missed raise", StringComparison.CurrentCultureIgnoreCase));
+                o.TeamLayoffs = relatedEvents.Any(x => x.Description.Contains("Team layoffs", StringComparison.CurrentCultureIgnoreCase));
+                o.NotifiedOfTermination = relatedEvents.Any(x => x.Description.Contains("Notified of termination", StringComparison.CurrentCultureIgnoreCase));
+                o.AnnouncesTermination = relatedEvents.Any(x => x.Description.Contains("Announces Termination", StringComparison.CurrentCultureIgnoreCase));
+                o.AnnouncesResignation = relatedEvents.Any(x => x.Description.Contains("Announces Resignation", StringComparison.CurrentCultureIgnoreCase));
+                o.Threats = relatedEvents.Any(x => x.Description.Contains("Threatening", StringComparison.CurrentCultureIgnoreCase)) ||
+                            relatedEvents.Any(x => x.Description.Contains("threatened", StringComparison.CurrentCultureIgnoreCase));
+                o.MissedPromotion = relatedEvents.Any(x => x.Description.Contains("Missed Promotion", StringComparison.CurrentCultureIgnoreCase));
+                o.Insubordination = relatedEvents.Any(x => x.Description.Contains("insubordinate", StringComparison.CurrentCultureIgnoreCase));
+                o.Absenteeism = relatedEvents.Any(x => x.Description.Contains("missed work", StringComparison.CurrentCultureIgnoreCase));
+                o.HRComplaints = relatedEvents.Any(x => x.Description.Contains("Human Resource Complaint", StringComparison.CurrentCultureIgnoreCase));
+                o.ITPolicyViolations = relatedEvents.Any(x => x.Description.Contains("Employee violated company IT policy", StringComparison.CurrentCultureIgnoreCase));
+                o.IPPolicyViolations = relatedEvents.Any(x => x.Description.Contains("Compliance Violation", StringComparison.CurrentCultureIgnoreCase));
                 o.DrugAlcoholAbuse = n.InsiderThreat.SubstanceAbuseAndAddictiveBehaviors.RelatedEvents.Any();
-                o.CoworkerConflict = events.Any(x => x.Description.Contains("coworker", StringComparison.CurrentCultureIgnoreCase));
-                o.EAPReferral = events.Any(x => x.Description.Contains("EAP Referral", StringComparison.CurrentCultureIgnoreCase));
-                o.AccessRevoked = events.Any(x => x.Description.Contains("Access Revoked", StringComparison.CurrentCultureIgnoreCase));
-                o.UnauthorizedCodingChange = events.Any(x => x.Description.Contains("unauthorized changes to a code base", StringComparison.CurrentCultureIgnoreCase));
-                o.UnauthorizedAccessChange = events.Any(x => x.Description.Contains("unauthorized changes to access", StringComparison.CurrentCultureIgnoreCase));
-                o.FinancialProblems = events.Any(x => x.Description.Contains("Financial Problems", StringComparison.CurrentCultureIgnoreCase)) ||
+                o.CoworkerConflict = relatedEvents.Any(x => x.Description.Contains("coworker", StringComparison.CurrentCultureIgnoreCase));
+                o.EAPReferral = relatedEvents.Any(x => x.Description.Contains("EAP Referral", StringComparison.CurrentCultureIgnoreCase));
+                o.AccessRevoked = relatedEvents.Any(x => x.Description.Contains("Access Revoked", StringComparison.CurrentCultureIgnoreCase));
+                o.UnauthorizedCodingChange = relatedEvents.Any(x => x.Description.Contains("unauthorized changes to a code base", StringComparison.CurrentCultureIgnoreCase));
+                o.UnauthorizedAccessChange = relatedEvents.Any(x => x.Description.Contains("unauthorized changes to access", StringComparison.CurrentCultureIgnoreCase));
+                o.FinancialProblems = relatedEvents.Any(x => x.Description.Contains("Financial Problems", StringComparison.CurrentCultureIgnoreCase)) ||
                                       n.InsiderThreat.FinancialConsiderations.RelatedEvents.Any();
-                o.ArrestRecord = events.Any(x => x.Description.Contains("arrest", StringComparison.CurrentCultureIgnoreCase));
-                o.GamblingHistory = events.Any(x => x.Description.Contains("gambling", StringComparison.CurrentCultureIgnoreCase));
-                o.ServiceAccountUse = events.Any(x => x.Description.Contains("service account", StringComparison.CurrentCultureIgnoreCase));
-                o.RemoteAccess = events.Any(x => x.Description.Contains("Virtual Access Anomaly", StringComparison.CurrentCultureIgnoreCase));
-                o.BackdoorAccountUse = events.Any(x => x.Description.Contains("backdoor account", StringComparison.CurrentCultureIgnoreCase));
-                o.SolicitedByCompetitor = events.Any(x => x.Description.Contains("Solicited by Competitor", StringComparison.CurrentCultureIgnoreCase));
-                o.AfterHoursLogin = events.Any(x => x.Description.Contains("After Hours Login", StringComparison.CurrentCultureIgnoreCase));
-                o.PrivilegeCreep = events.Any(x => x.Description.Contains("Misusing Privileged Function", StringComparison.CurrentCultureIgnoreCase));
-                o.FileExtensionModification = events.Any(x => x.Description.Contains("modified file extension", StringComparison.CurrentCultureIgnoreCase));
-                o.FileHeaderModification = events.Any(x => x.Description.Contains("modified file header", StringComparison.CurrentCultureIgnoreCase));
-                o.FileContentModification = events.Any(x => x.Description.Contains("altered document", StringComparison.CurrentCultureIgnoreCase));
-                o.FileTypeModification = events.Any(x => x.Description.Contains("modified file extension", StringComparison.CurrentCultureIgnoreCase));
-                o.SensitiveInformationCopied = events.Any(x => x.Description.Contains("copied sensitive information", StringComparison.CurrentCultureIgnoreCase));
-                o.ScreenShots = events.Any(x => x.Description.Contains("took screenshots", StringComparison.CurrentCultureIgnoreCase));
-                o.ZipFile = events.Any(x => x.Description.Contains("compressed files", StringComparison.CurrentCultureIgnoreCase));
-                o.Encryption = events.Any(x => x.Description.Contains("encrypted files", StringComparison.CurrentCultureIgnoreCase));
-                o.DocumentMarkingTampering = events.Any(x => x.Description.Contains("altered document markings", StringComparison.CurrentCultureIgnoreCase));
-                o.Steganography = events.Any(x => x.Description.Contains("used steganography", StringComparison.CurrentCultureIgnoreCase));
-                o.LogDeletion = events.Any(x => x.Description.Contains("deleted logs", StringComparison.CurrentCultureIgnoreCase));
-                o.ConcealmentInformation = events.Any(x => x.Description.Contains("concealed actions", StringComparison.CurrentCultureIgnoreCase));
-                o.SaleAttempt = events.Any(x => x.Description.Contains("Information Sale Attempt", StringComparison.CurrentCultureIgnoreCase));
-                o.Scanner = events.Any(x => x.Description.Contains("scanned files", StringComparison.CurrentCultureIgnoreCase));
-                o.CloudStorage = events.Any(x => x.Description.Contains("cloud storage", StringComparison.CurrentCultureIgnoreCase));
-                o.RemovableMedia = events.Any(x => x.Description.Contains("removable media device", StringComparison.CurrentCultureIgnoreCase));
-                o.Print = events.Any(x => x.Description.Contains("printed sensitive files", StringComparison.CurrentCultureIgnoreCase));
-                o.NetworkShare = events.Any(x => x.Description.Contains("unauthorized changes", StringComparison.CurrentCultureIgnoreCase));
-                o.PersonalEmailAccount = events.Any(x => x.Description.Contains("personal email account", StringComparison.CurrentCultureIgnoreCase));
-                o.EmailToConspirator = events.Any(x => x.Description.Contains("Email to Conspirator", StringComparison.CurrentCultureIgnoreCase));
-                o.DNSExfiltrationTool = events.Any(x => x.Description.Contains("dns exfiltration", StringComparison.CurrentCultureIgnoreCase));
-                o.FileDeletion = events.Any(x => x.Description.Contains("deleted files", StringComparison.CurrentCultureIgnoreCase));
-                o.RecentHRTicket = events.Any(x => x.Reported > DateTime.Now.AddYears(-1)); //reported in the last year
+                o.ArrestRecord = relatedEvents.Any(x => x.Description.Contains("arrest", StringComparison.CurrentCultureIgnoreCase));
+                o.GamblingHistory = relatedEvents.Any(x => x.Description.Contains("gambling", StringComparison.CurrentCultureIgnoreCase));
+                o.ServiceAccountUse = relatedEvents.Any(x => x.Description.Contains("service account", StringComparison.CurrentCultureIgnoreCase));
+                o.RemoteAccess = relatedEvents.Any(x => x.Description.Contains("Virtual Access Anomaly", StringComparison.CurrentCultureIgnoreCase));
+                o.BackdoorAccountUse = relatedEvents.Any(x => x.Description.Contains("backdoor account", StringComparison.CurrentCultureIgnoreCase));
+                o.SolicitedByCompetitor = relatedEvents.Any(x => x.Description.Contains("Solicited by Competitor", StringComparison.CurrentCultureIgnoreCase));
+                o.AfterHoursLogin = relatedEvents.Any(x => x.Description.Contains("After Hours Login", StringComparison.CurrentCultureIgnoreCase));
+                o.PrivilegeCreep = relatedEvents.Any(x => x.Description.Contains("Misusing Privileged Function", StringComparison.CurrentCultureIgnoreCase));
+                o.FileExtensionModification = relatedEvents.Any(x => x.Description.Contains("modified file extension", StringComparison.CurrentCultureIgnoreCase));
+                o.FileHeaderModification = relatedEvents.Any(x => x.Description.Contains("modified file header", StringComparison.CurrentCultureIgnoreCase));
+                o.FileContentModification = relatedEvents.Any(x => x.Description.Contains("altered document", StringComparison.CurrentCultureIgnoreCase));
+                o.FileTypeModification = relatedEvents.Any(x => x.Description.Contains("modified file extension", StringComparison.CurrentCultureIgnoreCase));
+                o.SensitiveInformationCopied = relatedEvents.Any(x => x.Description.Contains("copied sensitive information", StringComparison.CurrentCultureIgnoreCase));
+                o.ScreenShots = relatedEvents.Any(x => x.Description.Contains("took screenshots", StringComparison.CurrentCultureIgnoreCase));
+                o.ZipFile = relatedEvents.Any(x => x.Description.Contains("compressed files", StringComparison.CurrentCultureIgnoreCase));
+                o.Encryption = relatedEvents.Any(x => x.Description.Contains("encrypted files", StringComparison.CurrentCultureIgnoreCase));
+                o.DocumentMarkingTampering = relatedEvents.Any(x => x.Description.Contains("altered document markings", StringComparison.CurrentCultureIgnoreCase));
+                o.Steganography = relatedEvents.Any(x => x.Description.Contains("used steganography", StringComparison.CurrentCultureIgnoreCase));
+                o.LogDeletion = relatedEvents.Any(x => x.Description.Contains("deleted logs", StringComparison.CurrentCultureIgnoreCase));
+                o.ConcealmentInformation = relatedEvents.Any(x => x.Description.Contains("concealed actions", StringComparison.CurrentCultureIgnoreCase));
+                o.SaleAttempt = relatedEvents.Any(x => x.Description.Contains("Information Sale Attempt", StringComparison.CurrentCultureIgnoreCase));
+                o.Scanner = relatedEvents.Any(x => x.Description.Contains("scanned files", StringComparison.CurrentCultureIgnoreCase));
+                o.CloudStorage = relatedEvents.Any(x => x.Description.Contains("cloud storage", StringComparison.CurrentCultureIgnoreCase));
+                o.RemovableMedia = relatedEvents.Any(x => x.Description.Contains("removable media device", StringComparison.CurrentCultureIgnoreCase));
+                o.Print = relatedEvents.Any(x => x.Description.Contains("printed sensitive files", StringComparison.CurrentCultureIgnoreCase));
+                o.NetworkShare = relatedEvents.Any(x => x.Description.Contains("unauthorized changes", StringComparison.CurrentCultureIgnoreCase));
+                o.PersonalEmailAccount = relatedEvents.Any(x => x.Description.Contains("personal email account", StringComparison.CurrentCultureIgnoreCase));
+                o.EmailToConspirator = relatedEvents.Any(x => x.Description.Contains("Email to Conspirator", StringComparison.CurrentCultureIgnoreCase));
+                o.DNSExfiltrationTool = relatedEvents.Any(x => x.Description.Contains("dns exfiltration", StringComparison.CurrentCultureIgnoreCase));
+                o.FileDeletion = relatedEvents.Any(x => x.Description.Contains("deleted files", StringComparison.CurrentCultureIgnoreCase));
+                o.RecentHRTicket = relatedEvents.Any(x => x.Reported > DateTime.Now.AddYears(-1)); //reported in the last year
                 o.BackgroundCkResult = n.InsiderThreat.IsBackgroundCheckStatusClear;
                 o.InterpersonalSkills = n.MentalHealth.InterpersonalSkills;
                 o.AdherenceToPolicy = n.MentalHealth.AdherenceToPolicy;
@@ -276,7 +277,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
 
         public override string FieldToString(object o)
         {
-            return Convert.ToBoolean(o) == true ? "X" : string.Empty;
+            return Convert.ToBoolean(o) ? "X" : string.Empty;
         }
 
     }

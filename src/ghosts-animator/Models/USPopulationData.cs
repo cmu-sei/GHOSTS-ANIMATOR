@@ -9,7 +9,6 @@ DM20-0930
 */
 
 using System.Collections.Generic;
-using Ghosts.Animator.Enums;
 
 namespace Ghosts.Animator.Models
 {

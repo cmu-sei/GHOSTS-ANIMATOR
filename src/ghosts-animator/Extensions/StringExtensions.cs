@@ -53,7 +53,7 @@ namespace Ghosts.Animator.Extensions
 
         public static string After(this string value, string a)
         {
-            var posA = value.LastIndexOf(a);
+            var posA = value.LastIndexOf(a, StringComparison.InvariantCultureIgnoreCase);
             if (posA == -1)
             {
                 return "";

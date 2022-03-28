@@ -77,9 +77,9 @@ namespace Ghosts.Animator.Api.Controllers
 
                     var managerList = createdNPCs.Where(x => x.Id != npc.Id 
                                                              && x.Employment.EmploymentRecords.Any(
-                                                                 x => x.Company == job.Company 
-                                                                            && x.Department == job.Department 
-                                                                            && x.Level >= job.Level));
+                                                                 o => o.Company == job.Company 
+                                                                            && o.Department == job.Department 
+                                                                            && o.Level >= job.Level)).ToList();
 
                     if (managerList.Any())
                     {

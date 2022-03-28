@@ -29,24 +29,22 @@ namespace Ghosts.Animator.Api.Controllers
     public class BuildController : ControllerBase
     {
         private readonly IMongoCollection<NPC> _mongo;
-        private readonly IMongoCollection<NPCIpAddress> _mongoIps;
 
         public BuildController(DatabaseSettings.IApplicationDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
             _mongo = database.GetCollection<NPC>(settings.CollectionNameNPCs);
-            _mongoIps = database.GetCollection<NPCIpAddress>(settings.CollectionNameIPAddresses);
         }
 
-        private FilterDefinition<NPC> BuildTeamFilter(string team, string enclave, string campaign)
-        {
-            var filter = Builders<NPC>.Filter.And(
-                Builders<NPC>.Filter.Eq("Campaign", campaign),
-                Builders<NPC>.Filter.Eq("Enclave", enclave),
-                Builders<NPC>.Filter.Eq("Team", team));
-            return filter;
-        }
+        // private FilterDefinition<NPC> BuildTeamFilter(string team, string enclave, string campaign)
+        // {
+        //     var filter = Builders<NPC>.Filter.And(
+        //         Builders<NPC>.Filter.Eq("Campaign", campaign),
+        //         Builders<NPC>.Filter.Eq("Enclave", enclave),
+        //         Builders<NPC>.Filter.Eq("Team", team));
+        //     return filter;
+        // }
 
         /// <summary>
         /// Returns all NPCs at the specified level - Campaign, Enclave, or Team

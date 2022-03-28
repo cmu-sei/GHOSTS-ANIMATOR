@@ -8,9 +8,7 @@ Carnegie Mellon® and CERT® are registered in the U.S. Patent and Trademark Off
 DM20-0930
 */
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Ghosts.Animator.Models
 {

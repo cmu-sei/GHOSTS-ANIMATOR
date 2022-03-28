@@ -22,7 +22,7 @@ namespace Ghosts.Animator
 {
     public static class MilitaryUnits
     {
-        public static Enums.MilitaryBranch GetServiceBranch()
+        public static MilitaryBranch GetServiceBranch()
         {
             var o = Enum.GetValues(typeof(MilitaryBranch)).Cast<MilitaryBranch>().ToList();
             return o.RandomElement();

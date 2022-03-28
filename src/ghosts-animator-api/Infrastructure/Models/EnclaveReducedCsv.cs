@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Server.IIS.Core;
+using System.Linq;
 
 namespace Ghosts.Animator.Api.Infrastructure.Models
 {
@@ -19,15 +19,11 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
             foreach (var npc in npcDictionary)
             {
                 var npcRow = new List<string>() {npc.Key};
-                foreach (var property in fieldsToReturn)
-                {
-                    var val = npcDictionary[npc.Key].ContainsKey(property) ? npcDictionary[npc.Key][property] : "";
-                    npcRow.Add(val);
-                }
-                rowList.Add(String.Join(",", npcRow));
+                npcRow.AddRange(fieldsToReturn.Select(property => npcDictionary[npc.Key].ContainsKey(property) ? npcDictionary[npc.Key][property] : ""));
+                rowList.Add(string.Join(",", npcRow));
             }
 
-            CsvData = String.Join(System.Environment.NewLine, rowList);
+            CsvData = string.Join(Environment.NewLine, rowList);
             
         }
     }

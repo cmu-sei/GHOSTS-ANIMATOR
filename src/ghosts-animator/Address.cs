@@ -22,7 +22,7 @@ namespace Ghosts.Animator
     {
         static Address()
         {
-            CITY_PREFIXES = _CITY_PREFIXES.SelectMany(item => COMPASS_DIRECTIONS.Select(dir => dir + " " + item)).ToArray();
+            //CITY_PREFIXES = _CITY_PREFIXES.SelectMany(item => COMPASS_DIRECTIONS.Select(dir => dir + " " + item)).ToArray();
             var raw = File.ReadAllText("config/us_population_data.json");
             US_POPULATION_DATA = JsonConvert.DeserializeObject<USPopulationData>(raw);
         }
@@ -401,16 +401,14 @@ namespace Ghosts.Animator
             return !string.IsNullOrEmpty(country) ? o.Where(x => x.Country.Equals(country, StringComparison.CurrentCultureIgnoreCase)) : o;
         }
 
-        private static readonly string[] COMPASS_DIRECTIONS = {"North", "East", "West", "South"};
-        private static readonly string[] _CITY_PREFIXES = {"New", "Lake", "Port", "Old", "Fort"};
-        private static readonly string[] CITY_PREFIXES;
-
-        private static readonly string[] CITY_SUFFIXES = {
-            "town", "ton", "land", "ville", "berg", "burgh", "borough", "bury", "view", "port",
-            "mouth", "stad", "furt", "chester", "mouth", "fort", "haven", "side", "shire"
-        };
+        // private static readonly string[] COMPASS_DIRECTIONS = {"North", "East", "West", "South"};
+        // private static readonly string[] _CITY_PREFIXES = {"New", "Lake", "Port", "Old", "Fort"};
+        // private static readonly string[] CITY_PREFIXES;
+        // private static readonly string[] CITY_SUFFIXES = {
+        //     "town", "ton", "land", "ville", "berg", "burgh", "borough", "bury", "view", "port",
+        //     "mouth", "stad", "furt", "chester", "mouth", "fort", "haven", "side", "shire"
+        // };
         
-
         private static readonly string[] STREET_SUFFIXES = {
             "Alley", "Avenue", "Branch", "Bridge", "Brook", "Brooks", "Burg", "Burgs", "Bypass", "Camp", "Canyon", "Cape", "Causeway", "Center",
             "Centers", "Circle", "Circles", "Cliff", "Cliffs", "Club", "Common", "Corner", "Corners", "Course", "Court", "Courts", "Cove", "Coves",

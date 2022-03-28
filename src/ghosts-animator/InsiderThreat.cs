@@ -8,6 +8,7 @@ Carnegie Mellon® and CERT® are registered in the U.S. Patent and Trademark Off
 DM20-0930
 */
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -113,12 +114,13 @@ namespace Ghosts.Animator
 
         private static void PopulateHrTickets(InsiderThreatProfile insiderThreatProfile)
         {
-            var selectedTicket = new[] {"Policy Violation","Disruptive Behavior","Financial Hardship","Job Performance Problem"}.RandomElement();
-            var newEvent = new RelatedEvent
-            {
-                Reported = AnimatorRandom.Date(),
-                Description = selectedTicket
-            };
+            Console.WriteLine($"Not implemented: {insiderThreatProfile}");
+            // var selectedTicket = new[] {"Policy Violation","Disruptive Behavior","Financial Hardship","Job Performance Problem"}.RandomElement();
+            // var newEvent = new RelatedEvent
+            // {
+            //     Reported = AnimatorRandom.Date(),
+            //     Description = selectedTicket
+            // };
         }
         
         public class CorrectiveAction

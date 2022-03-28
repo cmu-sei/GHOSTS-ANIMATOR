@@ -80,7 +80,7 @@ namespace Ghosts.Animator
             return COMPANIES.RandomElement();
         }
         
-        private static readonly string[] DEPARTMENTS = { "Human Resources", "IT", "Logistics", "Finance", "Corporate Strategy", ""};
+        //private static readonly string[] DEPARTMENTS = { "Human Resources", "IT", "Logistics", "Finance", "Corporate Strategy", ""};
 
         private static readonly string[] COMPANIES =
         {

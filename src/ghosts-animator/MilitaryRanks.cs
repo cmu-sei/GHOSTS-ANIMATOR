@@ -109,7 +109,7 @@ namespace Ghosts.Animator
                     if (m.MOS == null || !m.MOS.Any()) return null;
                     var possibleMOS = m.MOS.RandomElement();
                     if (possibleMOS == null) continue;
-                    var m1 = possibleMOS.Items.Where(x => PayToInt(x.Low, "low") <= PayToInt(rank.Pay) 
+                    var m1 = possibleMOS.Items.Where(x => PayToInt(x.Low) <= PayToInt(rank.Pay) 
                         && PayToInt(x.High, "high") >= PayToInt(rank.Pay));
                     var e = m1 as MOSModels.Item[] ?? m1.ToArray();
                     if (e.Any())

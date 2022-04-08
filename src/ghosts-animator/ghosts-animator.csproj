@@ -17,11 +17,12 @@
         <Description>GHOSTS ANIMATOR - please email ddupdyke@sei.cmu.edu with bugs/requests/other</Description>
         <Copyright>Carnegie Mellon University 2020</Copyright>
         <NoWarn>NU1701</NoWarn>
+        <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-      <PackageReference Include="NLog" Version="4.7.3" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="NLog" Version="4.7.15" />
     </ItemGroup>
 
     <ItemGroup>

@@ -11,7 +11,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
         public EnclaveReducedCsv(string[] fieldsToReturn, Dictionary<string, Dictionary<string, string>> npcDictionary)
         {
             var rowList = new List<string>();
-            var fields = String.Join(",", fieldsToReturn);
+            var fields = string.Join(",", fieldsToReturn);
             var header = "Name," + fields;
             rowList.Add(header);
 

@@ -87,7 +87,7 @@ namespace Ghosts.Animator.Api.Controllers
             var filteredList = list.Select(n => new NPCToCsv() {Id = n.Id, Email = n.Email}).ToList();
 
             var stream = new MemoryStream();
-            TextWriter streamWriter = new StreamWriter(stream);
+            var streamWriter = new StreamWriter(stream);
             engine.WriteStream(streamWriter, filteredList);
             streamWriter.Flush();
             stream.Seek(0, SeekOrigin.Begin);
@@ -108,7 +108,7 @@ namespace Ghosts.Animator.Api.Controllers
         {
             var s = new StringBuilder("users = {").Append(Environment.NewLine);
             var list = this.GetTeam(configuration.Campaign, configuration.Enclave, configuration.Team).ToList();
-            Console.WriteLine(list.Count());
+            Console.WriteLine(list.Count);
 
             var pool = configuration.GetIpPool();
             foreach (var item in pool)
@@ -171,12 +171,10 @@ namespace Ghosts.Animator.Api.Controllers
         public void DeleteTeam(string campaign, string enclave, string team)
         {
             var list = this.GetTeam(campaign, enclave, team).ToList();
-            foreach (var npc in list)
+            foreach (var ipFilter in list.Select(npc => npc.Id).Select(npcId => Builders<NPCIpAddress>.Filter.And(
+                         Builders<NPCIpAddress>.Filter.Eq("NpcId", npcId),
+                         Builders<NPCIpAddress>.Filter.Eq("Enclave", enclave))))
             {
-                var npcId = npc.Id;
-                var ipFilter = Builders<NPCIpAddress>.Filter.And(
-                    Builders<NPCIpAddress>.Filter.Eq("NpcId", npcId),
-                    Builders<NPCIpAddress>.Filter.Eq("Enclave", enclave));
                 _mongoIps.DeleteMany(ipFilter);
             }
 

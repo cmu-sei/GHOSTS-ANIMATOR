@@ -17,15 +17,9 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
             public string ConnectionString { get; set; }
             public string DatabaseName { get; set; }
 
-            public string CollectionNameNPCs
-            {
-                get { return "NPCs"; }
-            }
+            public string CollectionNameNPCs => "NPCs";
 
-            public string CollectionNameIPAddresses
-            {
-                get { return "IPAddresses"; }
-            }
+            public string CollectionNameIPAddresses => "IPAddresses";
         }
 
         public interface IApplicationDatabaseSettings

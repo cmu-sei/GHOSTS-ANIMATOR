@@ -294,6 +294,5 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
             var x = Guid.Parse(o.ToString() ?? "");
             return x == Guid.Empty ? "" : x.ToString();
         }
-
     }
 }

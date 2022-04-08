@@ -10,8 +10,8 @@ namespace Ghosts.Animator.Api.Infrastructure.Extensions
             IConfiguration section
         )
         {
-            CorsPolicyOptions policy = new CorsPolicyOptions();
-            ConfigurationBinder.Bind(section, policy);
+            var policy = new CorsPolicyOptions();
+            section.Bind(policy);
             builder.AddDefaultPolicy(policy.Build());
             return builder;
         }
@@ -28,7 +28,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Extensions
 
         public CorsPolicy Build()
         {
-            CorsPolicyBuilder policy = new CorsPolicyBuilder();
+            var policy = new CorsPolicyBuilder();
             if (this.AllowAnyOrigin)
                 policy.AllowAnyOrigin();
             else

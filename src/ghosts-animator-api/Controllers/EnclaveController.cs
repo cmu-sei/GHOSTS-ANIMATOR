@@ -26,7 +26,7 @@ namespace Ghosts.Animator.Api.Controllers
     /// </summary>
     [ApiController]
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/{campaign}/{enclave}")]
     public class EnclaveController : ControllerBase
     {
         private readonly IMongoCollection<NPC> _mongo;
@@ -57,7 +57,7 @@ namespace Ghosts.Animator.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<NPC>), (int) HttpStatusCode.OK)]
         [SwaggerResponse((int) HttpStatusCode.OK, Type = typeof(IEnumerable<NPC>))]
         [SwaggerOperation("getEnclave")]
-        [HttpGet("{campaign}/{enclave}")]
+        [HttpGet]
         public IEnumerable<NPC> GetEnclave(string campaign, string enclave)
         {
             var filter = BuildEnclaveFilter(campaign, enclave);
@@ -73,7 +73,7 @@ namespace Ghosts.Animator.Api.Controllers
         [ProducesResponseType(typeof(IActionResult), (int) HttpStatusCode.OK)]
         [SwaggerResponse((int) HttpStatusCode.OK, Type = typeof(IActionResult))]
         [SwaggerOperation("getEnclaveCsv")]
-        [HttpGet("{campaign}/{enclave}/csv")]
+        [HttpGet("csv")]
         public IActionResult GetAsCsv(string campaign, string enclave)
         {
             var engine = new FileHelperEngine<NPCToCsv>();
@@ -99,7 +99,7 @@ namespace Ghosts.Animator.Api.Controllers
         [ProducesResponseType((int) HttpStatusCode.OK)]
         [SwaggerResponse((int) HttpStatusCode.OK)]
         [SwaggerOperation("deleteEnclave")]
-        [HttpDelete("{campaign}/{enclave}")]
+        [HttpDelete]
         public void DeleteEnclave(string campaign, string enclave)
         {
             var npcFilter = this.BuildEnclaveFilter(campaign, enclave);
@@ -116,32 +116,27 @@ namespace Ghosts.Animator.Api.Controllers
         /// <param name="enclave"></param>
         /// <param name="fieldsToReturn"></param>
         /// <returns></returns>
-        [HttpPost("{campaign}/{enclave}/custom")]
+        [HttpPost("custom")]
         public IActionResult GetReducedNpcs(string campaign, string enclave, [FromBody] string[] fieldsToReturn)
         {
             var filter = BuildEnclaveFilter(campaign, enclave);
             var npcList = _mongo.Find(filter).ToList();
-            Dictionary<string, Dictionary<string, string>> npcDetails = new Dictionary<string, Dictionary<string, string>>();
+            var npcDetails = new Dictionary<string, Dictionary<string, string>>();
             
             foreach (var npc in npcList) {
-                Dictionary<string, string> npcProperties = new NPCReduced(fieldsToReturn, npc).PropertySelection;
+                var npcProperties = new NPCReduced(fieldsToReturn, npc).PropertySelection;
                 var name = npc.Name;
                 var npcName = name.ToString();
                 npcDetails[npcName] = npcProperties;
             }
-
-            //return npcDetails;
             
-            EnclaveReducedCsv enclaveCsv = new EnclaveReducedCsv(fieldsToReturn, npcDetails);
+            var enclaveCsv = new EnclaveReducedCsv(fieldsToReturn, npcDetails);
             var stream = new MemoryStream();
-            TextWriter streamWriter = new StreamWriter(stream);
+            var streamWriter = new StreamWriter(stream);
             streamWriter.Write(enclaveCsv.CsvData);
             streamWriter.Flush();
             stream.Seek(0, SeekOrigin.Begin);
             return File(stream, "text/csv", $"{Guid.NewGuid()}.csv");
-            
-            
         }
-        
     }
 }

@@ -110,7 +110,7 @@ namespace Ghosts.Animator.Api.Controllers
             var finalList = NPCToInsiderThreatCsv.ConvertToCsv(list.ToList());
             
             var stream = new MemoryStream();
-            TextWriter streamWriter = new StreamWriter(stream);
+            var streamWriter = new StreamWriter(stream);
             engine.WriteStream(streamWriter, finalList);
             await streamWriter.FlushAsync();
             stream.Seek(0, SeekOrigin.Begin);

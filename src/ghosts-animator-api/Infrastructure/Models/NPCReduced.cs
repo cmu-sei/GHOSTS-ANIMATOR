@@ -14,7 +14,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
             this.PropertySelection = new Dictionary<string, string>();
         }
 
-        public NPCReduced(string[] fieldsToReturn, NPC npc)
+        public NPCReduced(IEnumerable<string> fieldsToReturn, NPC npc)
         {
             //what we'll return
             this.PropertySelection = new Dictionary<string, string>();
@@ -41,7 +41,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
                     currentObject = currentObject?.GetType().GetProperty(f)?.GetValue(currentObject, null);
                 }
 
-                if (!(currentObject is null))
+                if (currentObject is not null)
                 {
                     if(currentObject.GetType().GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))) {}
                     this.PropertySelection.Add(fieldToReturn, currentObject.ToString());

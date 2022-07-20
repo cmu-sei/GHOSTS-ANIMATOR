@@ -55,6 +55,12 @@ namespace Ghosts.Animator.Extensions
                 yield return list[rand.Next(list.Count)];
         }
         
+        public static string RandomFromStringArray(this string[] ar)
+        {
+            var rand = AnimatorRandom.Rand;
+            return ar[rand.Next(ar.Length)];
+        }
+        
         private static T RandomElementUsing<T>(this IEnumerable<T> enumerable, Random rand)
         {
             var e = enumerable.ToList();

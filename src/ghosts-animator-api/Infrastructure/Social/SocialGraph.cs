@@ -8,44 +8,35 @@ Carnegie Mellon® and CERT® are registered in the U.S. Patent and Trademark Off
 DM20-0930
 */
 
+using System;
 using System.Collections.Generic;
 
-namespace Ghosts.Animator.Extensions
+namespace Ghosts.Animator.Api.Infrastructure.Social
 {
-    public static class NumberExtensions
+    public class SocialGraph
     {
-        public static IEnumerable<int> To(this int from, int to)
-        {
-            if (to >= from)
-            {
-                for (var i = from; i <= to; i++)
-                {
-                    yield return i;
-                }
-            }
-            else
-            {
-                for (var i = from; i >= to; i--)
-                {
-                    yield return i;
-                }
-            }
-        }
-        
-        public static int GetNumberByDecreasingWeights(this double value, int startPosition)
-        {
-            double min = 0;
-            const int maxPosition = 100;
-            const double weightFactor = 0.1;
+        public Guid Id { get; set; }
+        public IList<SocialConnection> Connections { get; set; }
+        public IList<KnowledgeItem> Knowledge { get; set; }
 
-            while (true)
-            {
-                if (startPosition == maxPosition) return maxPosition;
-                var limit = (1 - min)*weightFactor + min;
-                if (value < limit) return startPosition;
-                startPosition++;
-                min = limit;
-            }
+        public SocialGraph()
+        {
+            this.Connections = new List<SocialConnection>();
+            this.Knowledge = new List<KnowledgeItem>();
+        }
+
+        public class SocialConnection
+        {
+            public Guid Id { get; set; }
+            public string Name { get; set; }
+            public string Distance { get; set; }
+            public int RelationshipStatus { get; set; }
+        }
+
+        public class KnowledgeItem
+        {
+            public string Topic { get; set; }
+            public int Value { get; set; }
         }
     }
 }

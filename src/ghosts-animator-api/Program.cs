@@ -8,9 +8,13 @@ Carnegie Mellon® and CERT® are registered in the U.S. Patent and Trademark Off
 DM20-0930
 */
 
+using System.IO;
 using System.Reflection;
+using Ghosts.Animator.Api.Infrastructure.Models;
+using Ghosts.Animator.Api.Infrastructure.Social;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using NLog;
 
 namespace Ghosts.Animator.Api
@@ -18,9 +22,28 @@ namespace Ghosts.Animator.Api
     public class Program
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        public static ApplicationConfiguration Configuration { get; private set; } 
         public static void Main(string[] args)
         {
             log.Warn($"GHOSTS ANIMATOR API {Assembly.GetExecutingAssembly().GetName().Version} coming online...");
+            
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+
+            var config = builder.Build();
+            var appConfig = new ApplicationConfiguration();
+            config.GetSection("ApplicationSettings").Bind(appConfig);
+
+            var dbConfig = new DatabaseSettings.ApplicationDatabaseSettings();
+            config.GetSection("ApplicationDatabaseSettings").Bind(dbConfig);
+
+            Configuration = appConfig;
+            Configuration.DatabaseSettings = dbConfig;
+
+            var s = new SocialGraphManager();
+            s.Run();
+            
             BuildWebHost(args).Run();
         }
 

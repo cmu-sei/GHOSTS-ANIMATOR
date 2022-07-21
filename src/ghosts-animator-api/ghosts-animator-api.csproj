@@ -122,6 +122,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="output" />
       <Folder Include="wwwroot\relationships" />
     </ItemGroup>
 

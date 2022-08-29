@@ -8,6 +8,7 @@ Carnegie Mellon® and CERT® are registered in the U.S. Patent and Trademark Off
 DM20-0930
 */
 
+using System;
 using System.Collections.Generic;
 
 namespace Ghosts.Animator.Extensions
@@ -31,21 +32,24 @@ namespace Ghosts.Animator.Extensions
                 }
             }
         }
-        
-        public static int GetNumberByDecreasingWeights(this double value, int startPosition)
+
+        public static int GetNumberByDecreasingWeights(this double value, int startPosition, int maxPosition, double weightFactor)
         {
             double min = 0;
-            const int maxPosition = 100;
-            const double weightFactor = 0.1;
-
+            
             while (true)
             {
                 if (startPosition == maxPosition) return maxPosition;
-                var limit = (1 - min)*weightFactor + min;
+                var limit = (1 - min) * weightFactor + min;
                 if (value < limit) return startPosition;
                 startPosition++;
                 min = limit;
             }
+        }
+
+        public static bool BeatsDiceRoll(this double value)
+        {
+            return new Random().NextDouble() <= value;
         }
     }
 }

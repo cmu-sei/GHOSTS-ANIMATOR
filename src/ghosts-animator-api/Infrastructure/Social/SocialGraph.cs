@@ -10,7 +10,6 @@ DM20-0930
 
 using System;
 using System.Collections.Generic;
-using Microsoft.CodeAnalysis.Operations;
 
 namespace Ghosts.Animator.Api.Infrastructure.Social
 {

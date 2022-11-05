@@ -1,0 +1,81 @@
+@using Ghosts.Animator
+@using Ghosts.Animator.Extensions
+@{
+    Layout = null;
+    var directions = new[] { "&darr;", "&uarr;", "&harr;" };
+    var knowledge = new[] { "Philosophy;", "Physics", "Computer Science", "Socrates",
+        "Humanism",
+        "Logic",
+        "Thinking",
+        "History",
+        "Religion",
+        "Social sciences",
+        "Archaeology",
+        "Machine Learning",
+        "Economics",
+        "Geography", "Slaganomics" };
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Social Graph</title>
+    <link rel="stylesheet" type="text/css" href="/relationships/inspector.css"/>
+    <style>
+        .darr {color: red;}
+        .uarr {color: green;}
+        .harr {color: goldenrod;} 
+    </style>
+</head>
+<body>
+<div class="container bootstrap snippet">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 id="animator-build-relationship">GHOSTS ANIMATOR</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <img src="/api/npcs/9e1de51a-d741-48f5-a61b-7311c94cdf6b/photo" height="16" width="16" />
+            Connections for Farand Mervin Kupe:
+            <ul>
+                <div>
+                    <a href="9e1de51a-d741-48f5-a61b-7311c94cdf6b/interactions">
+                        <img src="/api/npcs/9e1de51a-d741-48f5-a61b-7311c94cdf6b/photo" height="16" width="16"/>
+                        Polly Patmore
+                    </a>
+                </div>
+                <div style="margin:0px 0px 20px 20px;">
+                    <ul>
+                        @for (var j = 0; j < AnimatorRandom.Rand.Next(1, 7); j++)
+                        {
+                            var dir = directions.RandomElement();
+                            <li>@knowledge.RandomElement() <span class="@dir.Replace("&","").Replace(";","")">(@AnimatorRandom.Rand.Next(1, 99) @Html.Raw(dir))</span></li>
+                        }
+                    </ul>
+                </div>
+                @for (var i = 0; i < AnimatorRandom.Rand.Next(1, 50); i++)
+                {
+                    <div>
+                        <a href="9e1de51a-d741-48f5-a61b-7311c94cdf6b/interactions">
+                            <img src="/api/npcs/9e1de51a-d741-48f5-a61b-7311c94cdf6b/photo" height="16" width="16"/>
+                            @Ghosts.Animator.Name.GetName()
+                        </a>
+                    </div>
+                    <div style="margin:0px 0px 20px 20px;">
+                        <ul>
+                            @for (var j = 0; j < AnimatorRandom.Rand.Next(1, 7); j++)
+                            {
+                                var dir = directions.RandomElement();
+                                <li>@knowledge.RandomElement() <span class="@dir.Replace("&", "").Replace(";", "")">(@AnimatorRandom.Rand.Next(1, 99) @Html.Raw(dir))</span></li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

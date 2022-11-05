@@ -1,0 +1,51 @@
+@page
+@using Ghosts.Animator
+@model List<Ghosts.Animator.Api.Infrastructure.Social.SocialGraph>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Social Graph</title>
+    <link rel="stylesheet" type="text/css" href="/relationships/inspector.css"/>
+</head>
+<body>
+<div class="container bootstrap snippet">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 id="animator-build-relationship">GHOSTS ANIMATOR</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            @if (!ViewBag.IsEnabled)
+            {
+                <div>Sorry, but social graph does not appear to be enabled</div>
+            }
+            else
+            {
+                <div>
+                    <a href="social/@Guid.NewGuid()">
+                        <img src="/api/npcs/9e1de51a-d741-48f5-a61b-7311c94cdf6b/photo" height="16" width="16" />
+                        Farand Mervin Kupe
+                    </a>
+                </div>
+                for(int i = 0; i<200; i++)
+                {
+                    <div>
+                        <a href="social/@Guid.NewGuid()">
+                            <img src="/api/npcs/9e1de51a-d741-48f5-a61b-7311c94cdf6b/photo" height="16" width="16" />
+                            @Ghosts.Animator.Name.GetName()
+                        </a>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+</body>
+</html>

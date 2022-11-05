@@ -1,0 +1,14 @@
+{
+  "name": "@d3/temporal-force-directed-graph",
+  "main": "6705012ea4863d3f@258.js",
+  "version": "258.0.0",
+  "homepage": "https://observablehq.com/@d3/temporal-force-directed-graph",
+  "author": {
+    "name": "D3",
+    "url": "https://observablehq.com/@d3"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}

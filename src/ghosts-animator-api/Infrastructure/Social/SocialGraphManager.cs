@@ -30,8 +30,16 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
         private IMongoCollection<NPC> _mongo;
         private List<SocialGraph> _socialGraphs;
         private readonly Random _random;
-        private string[] _knowledgeArray; 
+        private readonly string[] _knowledgeArray;
 
+        private const string SavePath = "output/";
+        private const string SocialGraphFile = "social_graph.json";
+
+        public static string GetSocialGraphFile()
+        {
+            return SavePath + SocialGraphFile;
+        }
+            
         public SocialGraphManager()
         {
             this._configuration = Program.Configuration;
@@ -49,10 +57,6 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
 
             _log.Info($"SocialGraph is enabled, starting up...");
 
-            var client = new MongoClient(this._configuration.DatabaseSettings.ConnectionString);
-            var database = client.GetDatabase(this._configuration.DatabaseSettings.DatabaseName);
-            this._mongo = database.GetCollection<NPC>(this._configuration.DatabaseSettings.CollectionNameNPCs);
-
             try
             {
                 new Thread(() =>
@@ -69,7 +73,12 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
 
         private void RunEx()
         {
-            this.LoadSocialGraph();
+            var client = new MongoClient(this._configuration.DatabaseSettings.ConnectionString);
+            var database = client.GetDatabase(this._configuration.DatabaseSettings.DatabaseName);
+            this._mongo = database.GetCollection<NPC>(this._configuration.DatabaseSettings.CollectionNameNPCs);
+
+            this.LoadSocialGraphs();
+            _log.Info($"SocialGraph loaded, running steps...");
             while (true)
             {
                 foreach (var graph in this._socialGraphs)
@@ -77,27 +86,25 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
                     this.Step(graph);
                 }
 
+                // post-step activities: saving results and reporting on them
                 File.WriteAllText("output/social_graph.json", JsonConvert.SerializeObject(this._socialGraphs, Formatting.Indented));
-
-                this.ReportMatrix();
-                this.ReportLearning();
-
+                this.Report();
                 _log.Info($"Step complete, sleeping for {this._configuration.SocialGraph.TurnLength}ms");
                 Thread.Sleep(this._configuration.SocialGraph.TurnLength);
             }
-            // ReSharper disable once FunctionNeverReturns
         }
 
-        private void LoadSocialGraph()
+        private void LoadSocialGraphs()
         {
             var graphs = new List<SocialGraph>();
-            var path = "output/";
+            var path = SavePath;
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
-            path += "social_graph.json";
+            path += SocialGraphFile;
             if (File.Exists(path))
             {
                 graphs = JsonConvert.DeserializeObject<List<SocialGraph>>(File.ReadAllText(path));
+                _log.Info($"SocialGraph loaded from disk...");
             }
             else
             {
@@ -123,27 +130,27 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
 
                     graphs.Add(graph);
                 }
+                _log.Info($"SocialGraph created from DB...");
             }
 
             this._socialGraphs = graphs;
         }
 
-        // (a) agents “know” all|many|some|few|none other agents and this affects their interactions, this “know” (relationshipStatus) value changes over time
-        // (b) a file -- social_graph.json — gets pushed down to each agent and represents “other agents this agent knows”
+        // (a) agents “know” some number of other agents, affecting their interactions, and this “know” (relationshipStatus) value changes over time
+        // (b) a file -- social_graph.json — gets pushed down to each agent and represents “other agents in relation to this agent”
         //      it is stored in ./instance, containing id, name, and “know” status of the other agents in the enclave
-        // (c) each social_turn (timespan), an interaction may take place, pick n from social_graph.json and interact
+        // (c) each step, n interactions may take place, picking from social_graph.json and interacting
         // (d) This interaction may affect knowledge (the existing preferences key/value pair —
-        //      the interaction could create a new knowledge, or increase an existing one by some value
+        //      the interaction could create new knowledge, or increase an existing one by some value
         private void Step(SocialGraph graph)
         {
             graph.CurrentStep++;
-            _log.Trace($"{graph.Id} is interacting at step {graph.CurrentStep}...");
+            _log.Trace($"{graph.CurrentStep}: {graph.Id} is interacting...");
 
             //get number of agents to interact with, weighted by decreasing weights calculation and who is in our graph
             var numberOfAgentsToInteract = this._random.NextDouble().GetNumberByDecreasingWeights(0, graph.Connections.Count, 0.4);
 
-            //pick other agent(s)
-            //allowing multiple interactions with the same person because that seems likely
+            //pick other agent(s), allowing multiple interactions with the same person because that seems likely
             //TODO: make this weighted by distance and/or influenced by like knowledge
             var agentsToInteract = graph.Connections.RandPick(numberOfAgentsToInteract);
             
@@ -176,13 +183,13 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
                         if (connection is not null)
                         {
                             connection.RelationshipStatus++;
-                            _log.Trace($"{learning.To}:{learning.From} Relationship improved...");
+                            _log.Trace($"{graph.CurrentStep}: {learning.To}:{learning.From} Relationship improved...");
                         }
                     }
                 }
                 else
                 {
-                    _log.Trace($"{graph.Id} didn't learn...");
+                    _log.Trace($"{graph.CurrentStep}: {graph.Id} didn't learn...");
                 }
             }
             
@@ -322,6 +329,12 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
             File.WriteAllText($"output/social_knowledge_graph.csv", line.ToString().TrimEnd(',') + Environment.NewLine);
         }
 
+        private void Report()
+        {
+            this.ReportMatrix();
+            this.ReportLearning();
+        }
+        
         private void ReportMatrix()
         {
             var line = new StringBuilder(",");

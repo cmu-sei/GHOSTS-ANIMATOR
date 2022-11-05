@@ -1,0 +1,39 @@
+@page
+@model Ghosts.Animator.Api.Views.Home.Index
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Animator Build Relationships</title>
+    <link rel="stylesheet" type="text/css" href="/relationships/inspector.css"/>
+</head>
+<body>
+<div class="container bootstrap snippet">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 id="animator-build-relationship">GHOSTS ANIMATOR</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li>
+                    <a href="swagger">API Swagger</a>
+                </li>
+                <li>
+                    @Html.ActionLink("Relationships", "Index", "Relationships", null, new { @class = "page-scroll" })
+                </li>
+                <li>
+                    @Html.ActionLink("SocialGraph", "Index", "Social", null, new { @class = "page-scroll" })
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

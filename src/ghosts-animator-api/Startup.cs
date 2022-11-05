@@ -92,7 +92,10 @@ namespace Ghosts.Animator.Api
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); } );
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Animator API V1"); });
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Animator API V1");
+            });
         }
     }
 }

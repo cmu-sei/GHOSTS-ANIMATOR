@@ -1,0 +1,26 @@
+@page
+@model Ghosts.Animator.Api.Views.Social.Interactions
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Interactions</title>
+    <link rel="stylesheet" type="text/css" href="/relationships/inspector.css"/>
+    <link rel="stylesheet" type="text/css" href="/temporal-force/inspector.css">
+</head>
+<body>
+<h1>Interactions</h1>
+<script type="module">
+        import define from "/temporal-force/index.js?o=@Guid.NewGuid()";
+        import {Runtime, Library, Inspector} from "/temporal-force/runtime.js?o=@Guid.NewGuid()";
+   
+        const runtime = new Runtime();
+        const main = runtime.module(define, Inspector.into(document.body));
+    </script>
+</body>
+</html>

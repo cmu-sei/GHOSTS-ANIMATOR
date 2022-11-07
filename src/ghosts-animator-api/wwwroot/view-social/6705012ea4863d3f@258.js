@@ -140,11 +140,20 @@ function _d3(require){return(
 require("d3@7")
 )}
 
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 export default function define(runtime, observer) {
+  let id = document.getElementById("id").value;
+  let guid = uuidv4();
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["sfhh@4.json", {url: new URL("./files/5c0e56b44362ec8e2621299d2ddce5ac68e4e1b11e08ac4547075b0e6374d9083a589eec442479ef7876be75215b8499cf9463743191cfe01e4ca3cb826135e5.json", import.meta.url), mimeType: "application/json", toString}]
+    ["sfhh@4.json", {url: new URL("./" + id + "/file?" + guid, import.meta.url), mimeType: "application/json", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);

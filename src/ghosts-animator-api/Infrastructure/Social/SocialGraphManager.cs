@@ -55,6 +55,12 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
                 return;
             }
 
+            if (!this._configuration.SocialGraph.IsInteracting)
+            {
+                _log.Info($"SocialGraph is not interacting, skipping.");
+                return;
+            }
+
             _log.Info($"SocialGraph is enabled, starting up...");
 
             try
@@ -108,7 +114,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
             }
             else
             {
-                var list = _mongo.Find(x => true).ToList().OrderBy(o => o.Enclave).ThenBy(o => o.Team).Take(25).ToList();
+                var list = _mongo.Find(x => true).ToList().OrderBy(o => o.Enclave).ThenBy(o => o.Team).Take(10).ToList();
                 foreach (var item in list)
                 {
                     //need to build a list of connections for every npc

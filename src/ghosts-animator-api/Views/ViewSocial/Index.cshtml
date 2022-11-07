@@ -1,5 +1,3 @@
-@page
-@using Ghosts.Animator
 @model List<Ghosts.Animator.Api.Infrastructure.Social.SocialGraph>
 
 @{
@@ -10,14 +8,14 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Social Graph</title>
+    <title>Social Graph < GHOSTS ANIMATOR</title>
     <link rel="stylesheet" type="text/css" href="/relationships/inspector.css"/>
 </head>
 <body>
 <div class="container bootstrap snippet">
     <div class="row">
         <div class="col-sm-12">
-            <h1 id="animator-build-relationship">GHOSTS ANIMATOR</h1>
+            <h1 id="animator-build-relationship">Social Graph Agents</h1>
         </div>
     </div>
     <div class="row">
@@ -28,18 +26,12 @@
             }
             else
             {
-                <div>
-                    <a href="social/@Guid.NewGuid()">
-                        <img src="/api/npcs/9e1de51a-d741-48f5-a61b-7311c94cdf6b/photo" height="16" width="16" />
-                        Farand Mervin Kupe
-                    </a>
-                </div>
-                for(int i = 0; i<200; i++)
+                foreach(var x in Model)
                 {
                     <div>
-                        <a href="social/@Guid.NewGuid()">
-                            <img src="/api/npcs/9e1de51a-d741-48f5-a61b-7311c94cdf6b/photo" height="16" width="16" />
-                            @Ghosts.Animator.Name.GetName()
+                        <a href="view-social/@x.Id">
+                            <img src="/api/npcs/@x.Id/photo" height="16" width="16"/>
+                            @x.Name
                         </a>
                     </div>
                 }

@@ -19,12 +19,13 @@ namespace Ghosts.Animator.Api.Controllers
 {
     [Controller]
     [Produces("application/json")]
-    [Route("/[controller]")]
-    public class RelationshipsController : Controller
+    [Route("view-relationships/")]
+    [ApiExplorerSettings(IgnoreApi = true)]
+    public class ViewRelationshipsController : Controller
     {
         private readonly IMongoCollection<NPC> _mongo;
         
-        public RelationshipsController(DatabaseSettings.IApplicationDatabaseSettings settings)
+        public ViewRelationshipsController(DatabaseSettings.IApplicationDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
@@ -37,7 +38,6 @@ namespace Ghosts.Animator.Api.Controllers
             return View("Index");
         }
         
-        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("profile/{id}")]
         public IActionResult Profile(Guid id)
         {
@@ -45,7 +45,6 @@ namespace Ghosts.Animator.Api.Controllers
             return View("Profile", npc);
         }
         
-        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("files/data1.csv")]
         public FileResult Download()
         {

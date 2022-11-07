@@ -18,6 +18,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
         public class SocialGraphSettings
         {
             public bool IsEnabled { get; set; }
+            public bool IsInteracting { get; set; }
             public int TurnLength { get; set; }
             
             public double ChanceOfKnowledgeTransfer { get; set; }

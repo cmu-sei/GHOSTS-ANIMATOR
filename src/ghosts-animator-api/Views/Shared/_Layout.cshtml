@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <link type="text/css" href="/bootstrap/css/bootstrap.css" rel="stylesheet" id="bootstrap-css"/>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script src="/bootstrap/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/flags/flags.css"/>
+    <title>GHOSTS ANIMATOR</title>
+    @await RenderSectionAsync("header", false)
+</head>
+<body>
+<header class="p-3 mb-3 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+                GHOSTS ANIMATOR
+            </a> &nbsp; &nbsp;
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li>
+                    <a href="/swagger" class="nav-link px-2 link-secondary">API Swagger</a>
+                </li>
+                <li>
+                    <a href="/view-relationships" class="nav-link px-2 link-secondary">Relationship Viewer</a>
+                </li>
+                <li>
+                    <a href="/view-social" class="nav-link px-2 link-secondary">Social Graph Viewer</a>
+                </li>
+            </ul>
+
+
+        </div>
+    </div>
+</header>
+<div class="container">
+    @RenderBody()
+</div>
+<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <div class="container">
+        <div class="col-md-4 d-flex align-items-center">
+            <span class="mb-3 mb-md-0 text-muted">CERT © @DateTime.Now.Year. All rights reserved.</span>
+        </div>
+    </div>
+</footer>
+@await RenderSectionAsync("scripts", false)
+</body>
+</html>

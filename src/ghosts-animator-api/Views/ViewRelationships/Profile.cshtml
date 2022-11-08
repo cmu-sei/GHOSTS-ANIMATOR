@@ -14,10 +14,6 @@ DM20-0930
 @using Ghosts.Animator.Models
 @model Ghosts.Animator.Api.Infrastructure.Models.NPC
 
-@{
-    Layout = null;
-}
-
 @functions {
 
     internal string WriteUnit(MilitaryUnit.Unit unit)
@@ -46,27 +42,9 @@ DM20-0930
 
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>@Model?.Name.ToString()</title>
-    <link href="/bootstrap/bootstrap_4.1.1.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="/bootstrap/bootstrap_4.1.1.min.js"></script>
-    <script src="/bootstrap/jquery.min.js"></script>
-    <!------ Include the above in your HEAD tag ---------->
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/bootstrap/bootstrap_3.3.7.min.css">
-    
-    <link rel="stylesheet" href="/flags/flags.css">
-</head>
-
-<body>
-
-<div class="container bootstrap snippet">
+<div class="container">
 <div class="row">
-    <div class="col-sm-10">
+    <div class="col-sm-12">
         <h1>@Model.Name.ToString()</h1>
     </div>
 </div>
@@ -98,26 +76,27 @@ DM20-0930
     </ul>
 </div><!--/col-3-->
 <div class="col-sm-9">
-<ul class="nav nav-tabs">
-    <li class="active">
-        <a data-toggle="tab" href="#home">Home</a>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="edu-tab" data-bs-toggle="tab" data-bs-target="#edu-tab-pane" type="button" role="tab" aria-controls="edu-tab-pane" aria-selected="false">Education & Career</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="ins-tab" data-bs-toggle="tab" data-bs-target="#ins-tab-pane" type="button" role="tab" aria-controls="ins-tab-pane" aria-selected="false">Insider Threat</button>
+  </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="mil-tab" data-bs-toggle="tab" data-bs-target="#mil-tab-pane" type="button" role="tab" aria-controls="mil-tab-pane" aria-selected="false">Military Service <img src="/mil/@(Model.Rank.Branch.ToString().ToLower()).png" style="width:12px; height: 12px;"/></button>
     </li>
-    <li>
-        <a data-toggle="tab" href="#car">Education & Career</a>
-    </li>
-    <li>
-        <a data-toggle="tab" href="#it">Insider Threat</a>
-    </li>
-    <li>
-        <a data-toggle="tab" href="#mil">Military Service <img src="/mil/@(Model.Rank.Branch.ToString().ToLower()).png" style="width:12px; height: 12px;"/></a>
-    </li>
-    <li>
-        <a data-toggle="tab" href="#rel">Relationships</a>
-    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="rel-tab" data-bs-toggle="tab" data-bs-target="#rel-tab-pane" type="button" role="tab" aria-controls="rel-tab-pane" aria-selected="false">Relationships</button>
+      </li>
 </ul>
-<div class="tab-content">
-<hr/>
-<div class="tab-pane active" id="home">
+<div class="tab-content" id="myTabContent">
+<br/>
+<div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
     <div class="form-group">
         <div class="col-xs-6">
             <label>
@@ -234,30 +213,40 @@ DM20-0930
             }
         </div>
     </div>
-    <div class="col-xs-12"><h3>Default Workstation</h3></div>
+    <div class="col-xs-12">
+        <h3>Default Workstation</h3>
+    </div>
     <div class="form-group">
         <div class="col-xs-12">
             <h4>@Model.Workstation.Name (@Model.Workstation.IPAddress)</h4>
             <p>@Model.Workstation.Username / @Model.Workstation.Domain</p>
         </div>
     </div>
-    <div class="col-xs-12"><h3>PGP Key</h3></div>
+    <div class="col-xs-12">
+        <h3>PGP Key</h3>
+    </div>
     <div class="form-group">
         <div class="col-xs-12">
             <h4>@Model.PGP.Email (@Model.PGP.Password)</h4>
-            <div><textarea style="width:100%; height: 100px">@Model.PGP.PrivateKey</textarea></div>
-            <div><textarea style="width:100%; height: 100px">@Model.PGP.PublicKey</textarea></div>
-        </div>
-    </div>
-    <div class="col-xs-12"><h3>CAC</h3></div>
-    <div class="form-group">
-            <div class="col-xs-12" style="padding-bottom:30px;">
-                <h4>@Model.CAC</h4>
-                CAC not on file
+            <div>
+                <textarea style="width:100%; height: 100px">@Model.PGP.PrivateKey</textarea>
+            </div>
+            <div>
+                <textarea style="width:100%; height: 100px">@Model.PGP.PublicKey</textarea>
             </div>
         </div>
+    </div>
+    <div class="col-xs-12">
+        <h3>CAC</h3>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-12" style="padding-bottom:30px;">
+            <h4>@Model.CAC</h4>
+            CAC not on file
+        </div>
+    </div>
 </div>
-<div class="tab-pane" id="car">
+<div class="tab-pane fade show active" id="edu-tab-pane" role="tabpanel" aria-labelledby="edu-tab" tabindex="0">
     <div class="form-group">
         <div class="col-xs-12">
             <h3 style="margin-top:0">Education</h3>
@@ -300,28 +289,30 @@ DM20-0930
         </div>
     </div>
 </div>
-<div class="tab-pane" id="it">
+<div class="tab-pane fade show active" id="ins-tab-pane" role="tabpanel" aria-labelledby="ins-tab" tabindex="0">
     <div class="form-group">
         <div class="col-xs-12">
-                    <h3>Finances</h3>
-                    <ul style="margin-top:20px">
-                        @foreach (var item in @Model.Finances.CreditCards)
-                        {
-                            <li>
-                                <p>@item.Number (@item.Type)</p>
-                            </li>
-                        }
-                        <li>Net Worth: @Model.Finances.NetWorth.ToString("C", CultureInfo.GetCultureInfo("en-US"))</li>
-                        <li>Total Debt: @Model.Finances.TotalDebt.ToString("C", CultureInfo.GetCultureInfo("en-US"))</li>
-                    </ul>
-                </div>
+            <h3>Finances</h3>
+            <ul style="margin-top:20px">
+                @foreach (var item in @Model.Finances.CreditCards)
+                {
+                    <li>
+                        <p>@item.Number (@item.Type)</p>
+                    </li>
+                }
+                <li>Net Worth: @Model.Finances.NetWorth.ToString("C", CultureInfo.GetCultureInfo("en-US"))</li>
+                <li>Total Debt: @Model.Finances.TotalDebt.ToString("C", CultureInfo.GetCultureInfo("en-US"))</li>
+            </ul>
+        </div>
         <div class="col-xs-12">
             <h3>Travel</h3>
             <ul style="margin-top:20px">
                 @foreach (var item in @Model.ForeignTravel.Trips)
                 {
                     <li>
-                        <p><span class="flag-icon flag-icon-@item.Code.ToLower()"></span> @item.Destination</p>
+                        <p>
+                            <span class="flag-icon flag-icon-@item.Code.ToLower()"></span> @item.Destination
+                        </p>
                         <p>Arrive Destination: @item.ArriveDestination</p>
                         <p>Depart Destination: @item.DepartDestination</p>
                     </li>
@@ -356,7 +347,8 @@ DM20-0930
             </ul>
         </div>
         <div class="col-xs-12">
-            <h3>Access</h3></div>
+            <h3>Access</h3>
+        </div>
         <div class="col-xs-6">
             <label>
                 <h4>Explosives Access</h4>
@@ -395,7 +387,7 @@ DM20-0930
         </div>
     </div>
 </div>
-<div class="tab-pane" id="mil">
+<div class="tab-pane fade show active" id="mil-tab-pane" role="tabpanel" aria-labelledby="mil-tab" tabindex="0">
     <div class="form-group">
         <div class="col-xs-12">
             <img src="/mil/@(Model.Rank.Branch.ToString().ToLower()).png" style="width:80px; height: 80px; float: right"/>
@@ -428,22 +420,22 @@ DM20-0930
         </div>
     </div>
 </div>
-<div class="tab-pane" id="rel">
+<div class="tab-pane fade show active" id="rel-tab-pane" role="tabpanel" aria-labelledby="rel-tab" tabindex="0">
     <div class="form-group">
         <div class="col-xs-12">
             <h3>Family</h3>
-                        <ul style="margin-top:20px">
-                            @if(!Model.Family.Members.Any())
-                            {
-                                <span>No family on record</span>
-                            }
-                            @foreach (var item in @Model.Family.Members)
-                            {
-                                <li>
-                                    <p><a href="#">@item.Name</a> (@item.Relationship)</p>
-                                </li>
-                            }
-                        </ul>
+            <ul style="margin-top:20px">
+                @if (!Model.Family.Members.Any())
+                {
+                    <span>No family on record</span>
+                }
+                @foreach (var item in @Model.Family.Members)
+                {
+                    <li>
+                        <p><a href="#">@item.Name</a> (@item.Relationship)</p>
+                    </li>
+                }
+            </ul>
             <h3>Relationships</h3>
             <ul style="margin-top:20px">
                 @if (!Model.Relationships.Any())
@@ -458,12 +450,10 @@ DM20-0930
                 }
             </ul>
         </div>
-        
+
+    </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-</div>
-</body>
-</html>

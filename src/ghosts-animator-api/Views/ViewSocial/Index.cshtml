@@ -1,18 +1,6 @@
 @model List<Ghosts.Animator.Api.Infrastructure.Social.SocialGraph>
 
-@{
-    Layout = null;
-}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <title>Social Graph < GHOSTS ANIMATOR</title>
-    <link rel="stylesheet" type="text/css" href="/relationships/inspector.css"/>
-</head>
-<body>
-<div class="container bootstrap snippet">
+<div class="container">
     <div class="row">
         <div class="col-sm-12">
             <h1 id="animator-build-relationship">Social Graph Agents</h1>
@@ -20,24 +8,22 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            @if (!ViewBag.IsEnabled)
+            @if (!ViewBag.IsEnabled || Model == null)
             {
-                <div>Sorry, but social graph does not appear to be enabled</div>
+                <div>Sorry, but social graph does not appear to be enabled or has not been loaded.</div>
             }
             else
             {
-                foreach(var x in Model)
-                {
-                    <div>
-                        <a href="view-social/@x.Id">
-                            <img src="/api/npcs/@x.Id/photo" height="16" width="16"/>
-                            @x.Name
-                        </a>
-                    </div>
-                }
+                <ul class="list-group">
+                    @foreach (var agent in Model)
+                    {
+                        <li class="list-group-item">
+                            <img src="/api/npcs/@agent.Id/photo" height="16" width="16" alt="Profile thumbnail"/>
+                            @agent.Name / <a href="view-relationships/profile/@agent.Id">Profile</a> / <a href="view-social/@agent.Id">Social Graph</a>
+                        </li>
+                    }
+                </ul>
             }
         </div>
     </div>
 </div>
-</body>
-</html>

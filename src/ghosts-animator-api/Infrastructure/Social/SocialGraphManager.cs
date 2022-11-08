@@ -31,6 +31,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
         private List<SocialGraph> _socialGraphs;
         private readonly Random _random;
         private readonly string[] _knowledgeArray;
+        private bool isEnabled = true;
 
         private const string SavePath = "output/";
         private const string SocialGraphFile = "social_graph.json";
@@ -84,8 +85,15 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
             this._mongo = database.GetCollection<NPC>(this._configuration.DatabaseSettings.CollectionNameNPCs);
 
             this.LoadSocialGraphs();
+
+            if ((this._socialGraphs.Count > 0) && (this._socialGraphs[0].CurrentStep > _configuration.SocialGraph.MaximumSteps))
+            {
+                _log.Trace("Graph has exceed maximum steps. Exiting...");
+                return;
+            }
+            
             _log.Info($"SocialGraph loaded, running steps...");
-            while (true)
+            while (this.isEnabled)
             {
                 foreach (var graph in this._socialGraphs)
                 {
@@ -150,6 +158,13 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
         //      the interaction could create new knowledge, or increase an existing one by some value
         private void Step(SocialGraph graph)
         {
+            if (graph.CurrentStep > _configuration.SocialGraph.MaximumSteps)
+            {
+                _log.Trace($"Maximum steps met: {graph.CurrentStep - 1}. Social graph is exiting...");
+                this.isEnabled = false;
+                return;
+            }
+            
             graph.CurrentStep++;
             _log.Trace($"{graph.CurrentStep}: {graph.Id} is interacting...");
 

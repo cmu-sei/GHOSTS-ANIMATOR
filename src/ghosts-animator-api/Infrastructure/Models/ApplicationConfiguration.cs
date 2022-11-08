@@ -21,6 +21,8 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
             public bool IsInteracting { get; set; }
             public int TurnLength { get; set; }
             
+            public int MaximumSteps { get; set; }
+            
             public double ChanceOfKnowledgeTransfer { get; set; }
             
             public DecaySettings Decay { get; set; }

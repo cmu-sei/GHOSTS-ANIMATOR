@@ -47,9 +47,9 @@ namespace Ghosts.Animator.Extensions
             }
         }
 
-        public static bool BeatsDiceRoll(this double value)
+        public static bool ChanceOfThisValue(this double value)
         {
-            return new Random().NextDouble() <= value;
+            return new Random().NextDouble() >= (1 - value);
         }
     }
 }

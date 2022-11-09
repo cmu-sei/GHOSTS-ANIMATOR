@@ -127,6 +127,7 @@
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="wwwroot\view-social\files\5c0e56b44362ec8e2621299d2ddce5ac68e4e1b11e08ac4547075b0e6374d9083a589eec442479ef7876be75215b8499cf9463743191cfe01e4ca3cb826135e5.json" />
+      <_ContentIncludedByDefault Remove="output\social_graph.json" />
     </ItemGroup>
 
 

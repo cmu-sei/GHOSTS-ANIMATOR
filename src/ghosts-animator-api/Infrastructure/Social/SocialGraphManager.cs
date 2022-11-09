@@ -88,7 +88,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
 
             if ((this._socialGraphs.Count > 0) && (this._socialGraphs[0].CurrentStep > _configuration.SocialGraph.MaximumSteps))
             {
-                _log.Trace("Graph has exceed maximum steps. Exiting...");
+                _log.Trace("Graph has exceed maximum steps. Sleeping...");
                 return;
             }
             
@@ -219,14 +219,21 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
             //in knowledge - the world changes, and so there is some amount of knowledge that is now obsolete
             //in relationships - without work, relationships just sort of evaporate
             var stepsToDecay = this._configuration.SocialGraph.Decay.StepsTo;
-            if (graph.CurrentStep > stepsToDecay && this._configuration.SocialGraph.Decay.ChanceOf.BeatsDiceRoll())
+            if (graph.CurrentStep > stepsToDecay)
             {
                 foreach (var k in graph.Knowledge.ToList().DistinctBy(x=>x.Topic))
                 {
-                    if (graph.Knowledge.Where(x => x.Topic == k.Topic).MaxBy(x => x.Step)?.Step < graph.CurrentStep - stepsToDecay)
+                    if (graph.Knowledge.Where(x => x.Topic == k.Topic).Sum(x => x.Value) > stepsToDecay)
                     {
-                        var learning = new SocialGraph.Learning(graph.Id, graph.Id, k.Topic, graph.CurrentStep, -1);
-                        graph.Knowledge.Add(learning);
+                        if (this._configuration.SocialGraph.Decay.ChanceOf.ChanceOfThisValue())
+                        {
+                            if (graph.Knowledge.Where(x => x.Topic == k.Topic).MaxBy(x => x.Step)?.Step < graph.CurrentStep - stepsToDecay)
+                            {
+                                var learning = new SocialGraph.Learning(graph.Id, graph.Id, k.Topic, graph.CurrentStep, -1);
+                                graph.Knowledge.Add(learning);
+                                break;
+                            }
+                        }
                     }
                 }
 
@@ -255,7 +262,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
             chance += (npc.MentalHealth.OverallPerformance * .1);
             chance += (graph.Knowledge.Count * .1);
             
-            if (chance.BeatsDiceRoll())
+            if (chance.ChanceOfThisValue())
             {
                 //knowledge is probably weighted to what you already know
                 var randomizer = new DynamicWeightedRandomizer<string>();

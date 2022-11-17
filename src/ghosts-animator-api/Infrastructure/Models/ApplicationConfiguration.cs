@@ -12,25 +12,40 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
 {
     public class ApplicationConfiguration
     {
-        public SocialGraphSettings SocialGraph { get; set; }
+        public SocialJobsSettings SocialJobs { get; set; }
         public DatabaseSettings.ApplicationDatabaseSettings DatabaseSettings { get; set; }
         
-        public class SocialGraphSettings
+        public class SocialJobsSettings
         {
             public bool IsEnabled { get; set; }
-            public bool IsInteracting { get; set; }
-            public int TurnLength { get; set; }
+            public SocialGraphSettings SocialGraph { get; set; }
+            public SocialSharingSettings SocialSharing { get; set; }
             
-            public int MaximumSteps { get; set; }
-            
-            public double ChanceOfKnowledgeTransfer { get; set; }
-            
-            public DecaySettings Decay { get; set; }
-
-            public class DecaySettings
+            public class SocialGraphSettings
             {
-                public int StepsTo { get; set; }
-                public double ChanceOf { get; set; }
+                public bool IsEnabled { get; set; }
+                public bool IsInteracting { get; set; }
+                public int TurnLength { get; set; }
+            
+                public int MaximumSteps { get; set; }
+            
+                public double ChanceOfKnowledgeTransfer { get; set; }
+            
+                public DecaySettings Decay { get; set; }
+
+                public class DecaySettings
+                {
+                    public int StepsTo { get; set; }
+                    public double ChanceOf { get; set; }
+                }
+            }
+
+            public class SocialSharingSettings
+            {
+                public bool IsEnabled { get; set; }
+                public bool IsInteracting { get; set; }
+                public int TurnLength { get; set; }
+                public int MaximumSteps { get; set; }
             }
         }
     }

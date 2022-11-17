@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Ghosts.Animator.Api.Infrastructure.Social;
+using Ghosts.Animator.Api.Infrastructure.Social.SocialJobs;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Newtonsoft.Json;
@@ -26,13 +27,13 @@ public class ViewSocialController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        ViewBag.IsEnabled = this._configuration.SocialGraph.IsEnabled;
-        if (!this._configuration.SocialGraph.IsEnabled)
+        ViewBag.IsEnabled = this._configuration.SocialJobs.SocialGraph.IsEnabled;
+        if (!this._configuration.SocialJobs.SocialGraph.IsEnabled)
         {
             return View();
         }
 
-        var path = SocialGraphManager.GetSocialGraphFile();
+        var path = SocialGraphJob.GetSocialGraphFile();
         if (!System.IO.File.Exists(path))
         {
             ViewBag.IsEnabled = false;
@@ -48,13 +49,13 @@ public class ViewSocialController : Controller
     [HttpGet("{id}")]
     public IActionResult Detail(Guid id)
     {
-        ViewBag.IsEnabled = this._configuration.SocialGraph.IsEnabled;
-        if (!this._configuration.SocialGraph.IsEnabled)
+        ViewBag.IsEnabled = this._configuration.SocialJobs.SocialGraph.IsEnabled;
+        if (!this._configuration.SocialJobs.SocialGraph.IsEnabled)
         {
             return View();
         }
 
-        var path = SocialGraphManager.GetSocialGraphFile();
+        var path = SocialGraphJob.GetSocialGraphFile();
         if (!System.IO.File.Exists(path))
         {
             ViewBag.IsEnabled = false;
@@ -77,7 +78,7 @@ public class ViewSocialController : Controller
     [HttpGet("{id}/file")]
     public IActionResult File(Guid id)
     {
-        var path = SocialGraphManager.GetSocialGraphFile();
+        var path = SocialGraphJob.GetSocialGraphFile();
         var graph = JsonConvert.DeserializeObject<List<SocialGraph>>(System.IO.File.ReadAllText(path)).FirstOrDefault(x => x.Id == id);
         _log.Info($"SocialGraph loaded from disk...");
 

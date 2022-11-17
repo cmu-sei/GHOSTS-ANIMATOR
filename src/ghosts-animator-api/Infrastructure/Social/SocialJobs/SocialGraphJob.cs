@@ -21,9 +21,9 @@ using Newtonsoft.Json;
 using NLog;
 using Weighted_Randomizer;
 
-namespace Ghosts.Animator.Api.Infrastructure.Social
+namespace Ghosts.Animator.Api.Infrastructure.Social.SocialJobs
 {
-    public class SocialGraphManager
+    public class SocialGraphJob
     {
         private static readonly Logger _log = LogManager.GetCurrentClassLogger();
         private readonly ApplicationConfiguration _configuration;
@@ -33,65 +33,29 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
         private readonly string[] _knowledgeArray;
         private bool isEnabled = true;
 
-        private const string SavePath = "output/";
+        private const string SavePath = "output/socialgraph/";
         private const string SocialGraphFile = "social_graph.json";
-
+        
         public static string GetSocialGraphFile()
         {
             return SavePath + SocialGraphFile;
         }
+
+        public SocialGraphJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random)
+        {
+            this._configuration = configuration;
+            this._random = random;
+            this._mongo = mongo;
             
-        public SocialGraphManager()
-        {
-            this._configuration = Program.Configuration;
-            this._random = Random.Shared;
             this._knowledgeArray = GetKnowledge();
-        }
-
-        public void Run()
-        {
-            if (!this._configuration.SocialGraph.IsEnabled)
-            {
-                _log.Info($"SocialGraph is not enabled, skipping.");
-                return;
-            }
-
-            if (!this._configuration.SocialGraph.IsInteracting)
-            {
-                _log.Info($"SocialGraph is not interacting, skipping.");
-                return;
-            }
-
-            _log.Info($"SocialGraph is enabled, starting up...");
-
-            try
-            {
-                new Thread(() =>
-                {
-                    Thread.CurrentThread.IsBackground = true;
-                    RunEx();
-                }).Start();
-            }
-            catch (Exception e)
-            {
-                _log.Trace(e);
-            }
-        }
-
-        private void RunEx()
-        {
-            var client = new MongoClient(this._configuration.DatabaseSettings.ConnectionString);
-            var database = client.GetDatabase(this._configuration.DatabaseSettings.DatabaseName);
-            this._mongo = database.GetCollection<NPC>(this._configuration.DatabaseSettings.CollectionNameNPCs);
-
             this.LoadSocialGraphs();
 
-            if ((this._socialGraphs.Count > 0) && (this._socialGraphs[0].CurrentStep > _configuration.SocialGraph.MaximumSteps))
+            if ((this._socialGraphs.Count > 0) && (this._socialGraphs[0].CurrentStep > _configuration.SocialJobs.SocialGraph.MaximumSteps))
             {
                 _log.Trace("Graph has exceed maximum steps. Sleeping...");
                 return;
             }
-            
+
             _log.Info($"SocialGraph loaded, running steps...");
             while (this.isEnabled)
             {
@@ -101,10 +65,10 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
                 }
 
                 // post-step activities: saving results and reporting on them
-                File.WriteAllText("output/social_graph.json", JsonConvert.SerializeObject(this._socialGraphs, Formatting.Indented));
+                File.WriteAllText(GetSocialGraphFile(), JsonConvert.SerializeObject(this._socialGraphs, Formatting.Indented));
                 this.Report();
-                _log.Info($"Step complete, sleeping for {this._configuration.SocialGraph.TurnLength}ms");
-                Thread.Sleep(this._configuration.SocialGraph.TurnLength);
+                _log.Info($"Step complete, sleeping for {this._configuration.SocialJobs.SocialGraph.TurnLength}ms");
+                Thread.Sleep(this._configuration.SocialJobs.SocialGraph.TurnLength);
             }
         }
 
@@ -144,6 +108,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
 
                     graphs.Add(graph);
                 }
+
                 _log.Info($"SocialGraph created from DB...");
             }
 
@@ -158,13 +123,13 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
         //      the interaction could create new knowledge, or increase an existing one by some value
         private void Step(SocialGraph graph)
         {
-            if (graph.CurrentStep > _configuration.SocialGraph.MaximumSteps)
+            if (graph.CurrentStep > _configuration.SocialJobs.SocialGraph.MaximumSteps)
             {
                 _log.Trace($"Maximum steps met: {graph.CurrentStep - 1}. Social graph is exiting...");
                 this.isEnabled = false;
                 return;
             }
-            
+
             graph.CurrentStep++;
             _log.Trace($"{graph.CurrentStep}: {graph.Id} is interacting...");
 
@@ -174,7 +139,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
             //pick other agent(s), allowing multiple interactions with the same person because that seems likely
             //TODO: make this weighted by distance and/or influenced by like knowledge
             var agentsToInteract = graph.Connections.RandPick(numberOfAgentsToInteract);
-            
+
             //now interact
             foreach (var agent in agentsToInteract)
             {
@@ -188,7 +153,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
 
                 // var npc = _mongo.Find(x => x.Id == graph.Id).FirstOrDefault();
                 // npc.MentalHealth.HappyQuotient
-                
+
                 //knowledge transferred?
                 var topic = CalculateLearning(graph);
                 if (topic is not null)
@@ -213,19 +178,19 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
                     _log.Trace($"{graph.CurrentStep}: {graph.Id} didn't learn...");
                 }
             }
-            
+
             //decay
             //https://pubsonline.informs.org/doi/10.1287/orsc.1090.0468
             //in knowledge - the world changes, and so there is some amount of knowledge that is now obsolete
             //in relationships - without work, relationships just sort of evaporate
-            var stepsToDecay = this._configuration.SocialGraph.Decay.StepsTo;
+            var stepsToDecay = this._configuration.SocialJobs.SocialGraph.Decay.StepsTo;
             if (graph.CurrentStep > stepsToDecay)
             {
-                foreach (var k in graph.Knowledge.ToList().DistinctBy(x=>x.Topic))
+                foreach (var k in graph.Knowledge.ToList().DistinctBy(x => x.Topic))
                 {
                     if (graph.Knowledge.Where(x => x.Topic == k.Topic).Sum(x => x.Value) > stepsToDecay)
                     {
-                        if (this._configuration.SocialGraph.Decay.ChanceOf.ChanceOfThisValue())
+                        if (this._configuration.SocialJobs.SocialGraph.Decay.ChanceOf.ChanceOfThisValue())
                         {
                             if (graph.Knowledge.Where(x => x.Topic == k.Topic).MaxBy(x => x.Step)?.Step < graph.CurrentStep - stepsToDecay)
                             {
@@ -239,7 +204,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
 
                 foreach (var c in graph.Connections)
                 {
-                    if(c.Interactions.Count > 1 && c.Interactions.MaxBy(x=>x.Step)?.Step < graph.CurrentStep - stepsToDecay)
+                    if (c.Interactions.Count > 1 && c.Interactions.MaxBy(x => x.Step)?.Step < graph.CurrentStep - stepsToDecay)
                     {
                         var interaction = new SocialGraph.Interaction
                         {
@@ -256,19 +221,19 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
         {
             string knowledge = null;
 
-            var chance = this._configuration.SocialGraph.ChanceOfKnowledgeTransfer;
+            var chance = this._configuration.SocialJobs.SocialGraph.ChanceOfKnowledgeTransfer;
             var npc = this._mongo.Find(x => x.Id == graph.Id).FirstOrDefault();
             chance += (npc.Education.Degrees.Count * .1);
             chance += (npc.MentalHealth.OverallPerformance * .1);
             chance += (graph.Knowledge.Count * .1);
-            
+
             if (chance.ChanceOfThisValue())
             {
                 //knowledge is probably weighted to what you already know
                 var randomizer = new DynamicWeightedRandomizer<string>();
                 foreach (var k in this._knowledgeArray)
                 {
-                    if(!randomizer.Contains(k))
+                    if (!randomizer.Contains(k))
                         randomizer.Add(k, graph.Knowledge.Count(x => x.Topic == k) + 1);
                 }
 
@@ -316,7 +281,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
                 line.Append(Environment.NewLine);
             }
 
-            File.WriteAllText($"output/social_knowledge.csv", line.ToString().TrimEnd(',') + Environment.NewLine);
+            File.WriteAllText($"{SavePath}social_knowledge.csv", line.ToString().TrimEnd(',') + Environment.NewLine);
 
             //GRAPH
             //write header
@@ -340,21 +305,23 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
                         knowledgeCount[knowledge] += learningCount;
                     }
                 }
+
                 line.Append(i).Append(',');
                 foreach (var knowledge in this._knowledgeArray)
                 {
                     line.Append(knowledgeCount[knowledge]).Append(',');
                 }
+
                 line.Length--;
                 line.Append(Environment.NewLine);
-                
+
                 foreach (var key in knowledgeCount.Keys)
                 {
                     knowledgeCount[key] = 0;
                 }
             }
-            
-            File.WriteAllText($"output/social_knowledge_graph.csv", line.ToString().TrimEnd(',') + Environment.NewLine);
+
+            File.WriteAllText($"{SavePath}social_knowledge_graph.csv", line.ToString().TrimEnd(',') + Environment.NewLine);
         }
 
         private void Report()
@@ -362,7 +329,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
             this.ReportMatrix();
             this.ReportLearning();
         }
-        
+
         private void ReportMatrix()
         {
             var line = new StringBuilder(",");
@@ -399,7 +366,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Social
                 line.Append(Environment.NewLine);
             }
 
-            File.WriteAllText($"output/social_matrix.csv", line.ToString().TrimEnd(',') + Environment.NewLine);
+            File.WriteAllText($"{SavePath}social_matrix.csv", line.ToString().TrimEnd(',') + Environment.NewLine);
         }
     }
 }

@@ -41,7 +41,7 @@ namespace Ghosts.Animator.Api
             Configuration = appConfig;
             Configuration.DatabaseSettings = dbConfig;
 
-            var s = new SocialGraphManager();
+            var s = new SocialJobManager();
             s.Run();
             
             BuildWebHost(args).Run();

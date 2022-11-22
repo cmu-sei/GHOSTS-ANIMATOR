@@ -13,7 +13,7 @@ At its core, Animator is a hyper-realistic user details generator.  Its primary 
 2. `cd ghosts-animator/src`
 3. `docker build . -t ghosts/animator`
 4. `docker compose up -d`
-5. Browse to `http://localhost:6001/swagger`
+5. Browse to `http://localhost:5000/swagger`
 
 ## Why Use Animator
 

@@ -22,7 +22,7 @@ services:
     volumes:
       - ./_data:/data/db
   ghosts-animator:
-    image: dustinupdyke/animator
+    image: dustinupdyke/ghosts-animator
     container_name: ghosts-animator-01
     ports:
       - '6001:5000'

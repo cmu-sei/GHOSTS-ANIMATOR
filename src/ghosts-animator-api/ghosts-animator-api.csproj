@@ -8,10 +8,10 @@
         <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
         <noWarn>1591</noWarn>
         
-        <ReleaseVersion>0.1.1.0</ReleaseVersion>
-        <Version>0.1.1.0</Version>
-        <AssemblyVersion>0.1.1.0</AssemblyVersion>
-        <FileVersion>0.1.1.0</FileVersion>
+        <ReleaseVersion>0.2.0.0</ReleaseVersion>
+        <Version>0.2.0.0</Version>
+        <AssemblyVersion>0.2.0.0</AssemblyVersion>
+        <FileVersion>0.2.1.0</FileVersion>
         <SynchReleaseVersion>false</SynchReleaseVersion>
 
         <Authors>GHOSTS Development Team @ Carnegie Mellon University</Authors>
@@ -29,6 +29,7 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="11.0.1" />
+        <PackageReference Include="Faker.Net" Version="2.0.154" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.3" />
         <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
         <PackageReference Include="FileHelpers" Version="3.5.1" />
@@ -122,7 +123,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\relationships" />
+      <Folder Include="wwwroot\view-relationships" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\view-social\files\5c0e56b44362ec8e2621299d2ddce5ac68e4e1b11e08ac4547075b0e6374d9083a589eec442479ef7876be75215b8499cf9463743191cfe01e4ca3cb826135e5.json" />
+      <_ContentIncludedByDefault Remove="output\social_graph.json" />
     </ItemGroup>
 
 

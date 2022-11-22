@@ -16,6 +16,20 @@ namespace Ghosts.Animator.Extensions
 {
     public static class EnumerableExtensions
     {
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random rng)
+        {
+            var elements = source.ToArray();
+            for (var i = elements.Length - 1; i >= 0; i--)
+            {
+                // Swap element "i" with a random earlier element it (or itself)
+                // ... except we don't really need to swap it fully, as we can
+                // return it immediately, and afterwards it's irrelevant.
+                var swapIndex = rng.Next(i + 1);
+                yield return elements[swapIndex];
+                elements[swapIndex] = elements[i];
+            }
+        }
+        
         public static string RandomFromProbabilityList(this Dictionary<string, double> list)
         {
             var u = list.Sum(x => x.Value);
@@ -53,6 +67,12 @@ namespace Ghosts.Animator.Extensions
 
             for (var i = 0; i < itemsToTake; i++)
                 yield return list[rand.Next(list.Count)];
+        }
+        
+        public static string RandomFromStringArray(this string[] ar)
+        {
+            var rand = AnimatorRandom.Rand;
+            return ar[rand.Next(ar.Length)];
         }
         
         private static T RandomElementUsing<T>(this IEnumerable<T> enumerable, Random rand)

@@ -303,3 +303,5 @@ ghosts-animator-api/config/*
 _data/*
 *_data/*
 _data/
+src/ghosts-animator-api/output/
+src/ghosts-animator-api/output/*

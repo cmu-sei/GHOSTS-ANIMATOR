@@ -25,7 +25,7 @@ services:
     image: dustinupdyke/ghosts-animator:0.2.0
     container_name: ghosts-animator-01
     ports:
-      - '6001:5000'
+      - '5000:5000'
     networks:
       - ghosts-network
     restart: always

@@ -12,6 +12,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Ghosts.Animator.Api.Infrastructure;
 using Ghosts.Animator.Api.Infrastructure.Extensions;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Microsoft.AspNetCore.Builder;
@@ -52,7 +53,7 @@ namespace Ghosts.Animator.Api
                 {
                     Version = $"v1",
                     Title = "GHOSTS Animator API",
-                    Description = $"Animator API v1 - Assembly: {Assembly.GetExecutingAssembly().GetName().Version}",
+                    Description = $"Animator API v1 - Assembly: {ApplicationDetails.Version} - File: {ApplicationDetails.VersionFile}",
                     Contact = new OpenApiContact()
                     {
                         Name = "THE GHOSTS DEVELOPMENT TEAM",
@@ -86,7 +87,6 @@ namespace Ghosts.Animator.Api
             }
 
             app.UseStaticFiles();
-            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); } );

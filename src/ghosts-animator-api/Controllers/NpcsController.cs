@@ -11,6 +11,7 @@ DM20-0930
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Ghosts.Animator.Models;
@@ -45,6 +46,19 @@ namespace Ghosts.Animator.Api.Controllers
         public IEnumerable<NpcProfile> Get()
         {
             return _mongo.Find(x => true).ToList();
+        }
+        
+        /// <summary>
+        /// Returns name and Id for all NPCs in the system (caution, could return a large amount of data)
+        /// </summary>
+        /// <returns>IEnumerable&lt;NpcNameId&gt;</returns>
+        [ProducesResponseType(typeof(IEnumerable<NpcNameId>), (int) HttpStatusCode.OK)]
+        [SwaggerResponse((int) HttpStatusCode.OK, Type = typeof(IEnumerable<NpcNameId>))]
+        [SwaggerOperation("getNPCList")]
+        [HttpGet("list")]
+        public IEnumerable<NpcNameId> List()
+        {
+            return _mongo.Find(_ => true).ToList().Select(item => new NpcNameId() { Id = item.Id, Name = item.Name.ToString() }).ToList();
         }
         
         /// <summary>

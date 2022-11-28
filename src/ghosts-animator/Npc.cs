@@ -9,8 +9,10 @@ DM20-0930
 */
 
 using System;
+using System.IO;
 using Ghosts.Animator.Models;
 using Ghosts.Animator.Services;
+using Newtonsoft.Json;
 
 namespace Ghosts.Animator
 {
@@ -87,6 +89,19 @@ namespace Ghosts.Animator
             NpcProfile.Attributes = AttributesService.GetAttributes();
                 
             return NpcProfile;
+        }
+
+        public static NpcProfile LoadFromFile(string filePath)
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<NpcProfile>(filePath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error loading file: {e}");
+                return null;
+            }
         }
     }
 }

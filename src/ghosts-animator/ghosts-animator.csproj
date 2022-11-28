@@ -1,20 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>Ghosts.Animator</RootNamespace>
         <AssemblyName>ghosts.animator</AssemblyName>
 
-        <Version>1.0.0.0</Version>
-        <AssemblyVersion>1.0.0.0</AssemblyVersion>
-        <FileVersion>1.0.0.0</FileVersion>
-        <ReleaseVersion>1.0.0.0</ReleaseVersion>
+        <Version>1.1.0.0</Version>
+        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <FileVersion>1.1.0.0</FileVersion>
+        <ReleaseVersion>1.1.0.0</ReleaseVersion>
         <SynchReleaseVersion>false</SynchReleaseVersion>
 
         <Authors>GHOSTS Development Team @ Carnegie Mellon University</Authors>
         <Company>Carnegie Mellon University</Company>
         <Product>GHOSTS ANIMATOR</Product>
-        <Description>GHOSTS ANIMATOR - please email ddupdyke@sei.cmu.edu with bugs/requests/other</Description>
+        <Description>GHOSTS ANIMATOR - please email ddupdyke at sei.cmu.edu with bugs/requests/other</Description>
         <Copyright>Carnegie Mellon University 2020</Copyright>
         <NoWarn>NU1701</NoWarn>
         <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
@@ -103,11 +102,4 @@
             <HintPath>..\lib\PgpCore.dll</HintPath>
         </Reference>
     </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Models\NpcProfile.cs">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </Compile>
-    </ItemGroup>
-
 </Project>

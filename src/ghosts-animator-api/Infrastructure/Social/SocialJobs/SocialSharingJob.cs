@@ -9,9 +9,10 @@ DM20-0930
 */
 
 using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using Ghosts.Animator.Api.Infrastructure.Models;
@@ -19,6 +20,7 @@ using Ghosts.Animator.Extensions;
 using Ghosts.Animator.Models;
 using MongoDB.Driver;
 using NLog;
+using RestSharp;
 
 namespace Ghosts.Animator.Api.Infrastructure.Social.SocialJobs
 {
@@ -29,22 +31,34 @@ namespace Ghosts.Animator.Api.Infrastructure.Social.SocialJobs
         private readonly IMongoCollection<NPC> _mongo;
         private readonly Random _random;
         private const string SavePath = "output/socialsharing/";
-        
+        private int CurrentStep = 0;
+
         public SocialSharingJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random)
         {
             this._configuration = configuration;
             this._random = random;
             this._mongo = mongo;
 
-            if (!Directory.Exists(SavePath))
+            if (_configuration.SocialJobs.SocialSharing.IsInteracting)
             {
-                Directory.CreateDirectory(SavePath);
-            }
+                if (!Directory.Exists(SavePath))
+                {
+                    Directory.CreateDirectory(SavePath);
+                }
 
-            while (true)
-            {
-                this.Step();
-                Thread.Sleep(this._configuration.SocialJobs.SocialSharing.TurnLength);
+                while (true)
+                {
+                    if (this.CurrentStep > _configuration.SocialJobs.SocialSharing.MaximumSteps)
+                    {
+                        _log.Trace($"Maximum steps met: {this.CurrentStep - 1}. Social sharing is exiting...");
+                        return;
+                    }
+                    
+                    this.Step();
+                    Thread.Sleep(this._configuration.SocialJobs.SocialSharing.TurnLength);
+                    
+                    this.CurrentStep++;
+                }
             }
         }
 
@@ -86,10 +100,38 @@ namespace Ghosts.Animator.Api.Infrastructure.Social.SocialJobs
                 //     var propValue = agent.GetType().GetProperty(prop).GetValue(agent, null);
                 //     Console.WriteLine($"{prop}:{propValue}");
                 // }
+                
+                if (_configuration.SocialJobs.SocialSharing.IsSendingTimelinesToGhostsApi && !string.IsNullOrEmpty(_configuration.GhostsApiUrl))
+                {
+                    //send to ghosts api
+                    //_configuration.GhostsApiUrl
+                
+                    var postPayload = File.ReadAllText(@"config/socializer_post.json");
+                    postPayload = postPayload.Replace("{id}", Guid.NewGuid().ToString());
+                    postPayload = postPayload.Replace("{user}", agent.Email);
+                    postPayload = postPayload.Replace("{message}", tweetText);
+                    postPayload = postPayload.Replace("{socializer_url}", _configuration.SocialJobs.SocialSharing.SocializerUrl);
+                    postPayload = postPayload.Replace("{now}", DateTime.Now.ToString(CultureInfo.InvariantCulture));
+                    
+                    _log.Trace(postPayload);
+                    
+                    var client = new RestClient(_configuration.GhostsApiUrl);
+                    var request = new RestRequest("machineupdates", Method.Post);
+                    request.RequestFormat = DataFormat.Json;
+                    request.AddBody(postPayload);
+
+                    try
+                    {
+                        var response = client.Execute(request);
+                    }
+                    catch (Exception e)
+                    {
+                        _log.Error($"Could not post timeline command to ghosts api {_configuration.GhostsApiUrl}: {e}");
+                    }
+                }
             }
             
             File.AppendAllText($"{SavePath}tweets.txt", lines.ToString());
-
         }
 
         private string ProcessAccount(NpcProfile agent)

@@ -12,6 +12,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
 {
     public class ApplicationConfiguration
     {
+        public string GhostsApiUrl { get; set; }
         public SocialJobsSettings SocialJobs { get; set; }
         public DatabaseSettings.ApplicationDatabaseSettings DatabaseSettings { get; set; }
         
@@ -44,6 +45,8 @@ namespace Ghosts.Animator.Api.Infrastructure.Models
             {
                 public bool IsEnabled { get; set; }
                 public bool IsInteracting { get; set; }
+                public bool IsSendingTimelinesToGhostsApi { get; set; }
+                public string SocializerUrl { get; set; }
                 public int TurnLength { get; set; }
                 public int MaximumSteps { get; set; }
             }

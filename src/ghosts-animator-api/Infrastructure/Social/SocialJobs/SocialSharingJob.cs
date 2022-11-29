@@ -20,6 +20,7 @@ using Ghosts.Animator.Extensions;
 using Ghosts.Animator.Models;
 using MongoDB.Driver;
 using NLog;
+using NLog.Fluent;
 using RestSharp;
 
 namespace Ghosts.Animator.Api.Infrastructure.Social.SocialJobs
@@ -116,13 +117,14 @@ namespace Ghosts.Animator.Api.Infrastructure.Social.SocialJobs
                     _log.Trace(postPayload);
                     
                     var client = new RestClient(_configuration.GhostsApiUrl);
-                    var request = new RestRequest("machineupdates", Method.Post);
+                    var request = new RestRequest("api/machineupdates", Method.Post);
                     request.RequestFormat = DataFormat.Json;
                     request.AddBody(postPayload);
 
                     try
                     {
                         var response = client.Execute(request);
+                        _log.Trace(response.StatusCode);
                     }
                     catch (Exception e)
                     {

@@ -9,7 +9,6 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
 WORKDIR /app
 ENV ASPNETCORE_URLS http://+:5000
-ENV GHOSTS_ANIMATOR_VERSION=0.1.1.0
 COPY --from=build-env /app/out .
 COPY ./ghosts-animator-api/config ./config
 

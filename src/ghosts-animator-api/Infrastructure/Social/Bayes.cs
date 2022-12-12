@@ -1,3 +1,5 @@
+// Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
+
 namespace Ghosts.Animator.Api.Infrastructure.Social;
 
 public class Bayes

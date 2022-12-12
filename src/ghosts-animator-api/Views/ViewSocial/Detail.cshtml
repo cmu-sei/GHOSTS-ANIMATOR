@@ -1,13 +1,11 @@
 @model Ghosts.Animator.Api.Infrastructure.Social.SocialGraph
 
 @{
-    var directions = new[] { "&darr;", "&uarr;", "&harr;" };
-
     string FormatClass(int x)
     {
         if (x<0)
-            return $"darr";
-        return x == 0 ? "harr" : $"uarr";
+            return "darr";
+        return x == 0 ? "harr" : "uarr";
     }
     
     string FormatValue(int x)
@@ -26,12 +24,12 @@
     }
 }
 
-    <style>
-        .darr {color: red;}
-        .uarr {color: green;}
-        .harr {color: goldenrod;} 
-        .bump {margin:0px 0px 20px 20px;}
-    </style>
+<style>
+    .darr {color: red;}
+    .uarr {color: green;}
+    .harr {color: goldenrod;} 
+    .bump {margin:0px 0px 20px 20px;}
+</style>
 <div class="container">
     <div class="row">
         <div class="col-sm-12">

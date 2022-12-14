@@ -38,6 +38,8 @@ public class ApplicationConfiguration
             public bool IsEnabled { get; set; }
             public bool IsInteracting { get; set; }
             public bool IsSendingTimelinesToGhostsApi { get; set; }
+            
+            public bool IsChatGptEnabled { get; set; }
             public string SocializerUrl { get; set; }
             public int TurnLength { get; set; }
             public int MaximumSteps { get; set; }

@@ -72,7 +72,12 @@ public class SocialSharingJob
         var agents = this._mongo.Find(x => true).ToList().Shuffle(_random).Take(_random.Next(5, 20));
         foreach (var agent in agents)
         {
-            var tweetText = "";
+            string tweetText = null; 
+            
+            if(Program.Configuration.SocialJobs.SocialSharing.IsChatGptEnabled)
+                tweetText = ChatGpt.ChatService.Get(agent);
+            
+            //var tweetText = "";
             while (string.IsNullOrEmpty(tweetText))
             {
                 if (agent.Birthdate.Date.DayOfYear == DateTime.Now.Date.DayOfYear)

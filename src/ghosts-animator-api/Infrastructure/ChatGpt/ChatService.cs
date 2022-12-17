@@ -13,7 +13,7 @@ public class ChatService
 {
     /// <summary>
     /// You'll need a .env file at config/.env with this line:
-    /// chatgtp_api_key:<your key here />
+    /// chatgtp_api_key:your_key_here
     /// </summary>
     /// <returns></returns>
     public static string GetApiKey()

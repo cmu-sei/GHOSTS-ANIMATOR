@@ -10,6 +10,7 @@ using System.Threading;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Ghosts.Animator.Extensions;
 using Ghosts.Animator.Models;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using MongoDB.Driver;
 using NLog;
 using RestSharp;
@@ -47,10 +48,10 @@ public class SocialSharingJob
                         _log.Trace($"Maximum steps met: {this.CurrentStep - 1}. Social sharing is exiting...");
                         return;
                     }
-                    
+
                     this.Step();
                     Thread.Sleep(this._configuration.SocialJobs.SocialSharing.TurnLength);
-                    
+
                     this.CurrentStep++;
                 }
             }
@@ -72,11 +73,11 @@ public class SocialSharingJob
         var agents = this._mongo.Find(x => true).ToList().Shuffle(_random).Take(_random.Next(5, 20));
         foreach (var agent in agents)
         {
-            string tweetText = null; 
-            
-            if(Program.Configuration.SocialJobs.SocialSharing.IsChatGptEnabled)
+            string tweetText = null;
+
+            if (Program.Configuration.SocialJobs.SocialSharing.IsChatGptEnabled)
                 tweetText = ChatGpt.ChatService.Get(agent);
-            
+
             //var tweetText = "";
             while (string.IsNullOrEmpty(tweetText))
             {
@@ -108,18 +109,33 @@ public class SocialSharingJob
             //     var propValue = agent.GetType().GetProperty(prop).GetValue(agent, null);
             //     Console.WriteLine($"{prop}:{propValue}");
             // }
-                
+
             if (_configuration.SocialJobs.SocialSharing.IsSendingTimelinesToGhostsApi && !string.IsNullOrEmpty(_configuration.GhostsApiUrl))
             {
+                var userFormValue = new[] { "user", "usr", "u", "uid", "user_id", "u_id" }.RandomFromStringArray();
+                var messageFormValue = new[] { "message", "msg", "m", "message_id", "msg_id", "msg_text", "text", "payload" }.RandomFromStringArray();
+
+                //{\"user\":\"{user}\",\"message\":\"{message}}
+                var formValues = new StringBuilder();
+                formValues.Append('{')
+                    .Append("\\\"").Append(userFormValue).Append("\\\":\\\"").Append(agent.Email).Append("\\\"")
+                    .Append(",\\\"").Append(messageFormValue).Append("\\\":\\\"").Append(tweetText).Append("\\\"");
+                for (var i = 0; i < AnimatorRandom.Rand.Next(0, 6); i++)
+                {
+                    formValues
+                        .Append(",\\\"").Append(Lorem.GetWord().ToLower()).Append("\\\":\\\"").Append(AnimatorRandom.Rand.NextDouble()).Append("\\\"");
+                }
+
+                formValues.Append('}');
+                
                 var postPayload = File.ReadAllText("config/socializer_post.json");
                 postPayload = postPayload.Replace("{id}", Guid.NewGuid().ToString());
-                postPayload = postPayload.Replace("{user}", agent.Email);
-                postPayload = postPayload.Replace("{message}", tweetText);
-                postPayload = postPayload.Replace("{socializer_url}", _configuration.SocialJobs.SocialSharing.SocializerUrl);
+                postPayload = postPayload.Replace("{payload}", formValues.ToString());
+                postPayload = postPayload.Replace("{url}", _configuration.SocialJobs.SocialSharing.SocializerUrl);
                 postPayload = postPayload.Replace("{now}", DateTime.Now.ToString(CultureInfo.InvariantCulture));
-                    
-                // _log.Trace(postPayload);
-                    
+
+                _log.Trace(postPayload);
+
                 var client = new RestClient(_configuration.GhostsApiUrl);
                 var request = new RestRequest("api/machineupdates", Method.Post)
                 {
@@ -130,8 +146,8 @@ public class SocialSharingJob
                 try
                 {
                     var response = client.Execute(request);
-                    if(response.StatusCode != HttpStatusCode.OK);
-                        throw(new Exception($"ghosts api responded with {response.StatusCode}"));
+                    if (response.StatusCode != HttpStatusCode.OK)
+                        throw (new Exception($"ghosts api responded with {response.StatusCode}"));
                 }
                 catch (Exception e)
                 {
@@ -139,7 +155,7 @@ public class SocialSharingJob
                 }
             }
         }
-            
+
         File.AppendAllText($"{SavePath}tweets.txt", lines.ToString());
     }
 
@@ -158,12 +174,12 @@ public class SocialSharingJob
             return list.RandomFromStringArray();
         }
     }
-        
+
     private static string ProcessBirthday(NpcProfile agent)
     {
         var list = new[]
         {
-            "Happy birthday to me!", 
+            "Happy birthday to me!",
             $"Out for dinner on my {DateTime.Now.Year - agent.Birthdate.Year} birthday!",
             $"I'm {DateTime.Now.Year - agent.Birthdate.Year} today!",
             $"{DateTime.Now.Year - agent.Birthdate.Year} looks good on me."
@@ -177,8 +193,8 @@ public class SocialSharingJob
         var o = agent.Family.Members.RandomElement();
         var list = new[]
         {
-            $"Visiting my {o.Relationship} {o.Name} today.", 
-            $"Hanging with {o.Name} my {o.Relationship}.", 
+            $"Visiting my {o.Relationship} {o.Name} today.",
+            $"Hanging with {o.Name} my {o.Relationship}.",
             $"{o.Relationship} and I say {o.Name} - ",
             $"My {o.Relationship} {o.Name}."
         };
@@ -191,8 +207,8 @@ public class SocialSharingJob
         var o = agent.Address.RandomElement();
         var list = new[]
         {
-            $"Visiting the {o.State} capital today. Beautiful!", 
-            $"Chilling in {o.City} today. Literally freezing.", 
+            $"Visiting the {o.State} capital today. Beautiful!",
+            $"Chilling in {o.City} today. Literally freezing.",
             $"Love {o.City} - so beautiful!",
             $"Love {o.City} - so great!"
         };
@@ -203,10 +219,10 @@ public class SocialSharingJob
     {
         if (!agent.Employment.EmploymentRecords.Any()) return "";
         var o = agent.Employment.EmploymentRecords.RandomElement();
-        var list = new[] 
-        { 
-            $"Love working at {o.Company}", 
-            $"Hanging with my peeps from {o.Company} at the office today!", 
+        var list = new[]
+        {
+            $"Love working at {o.Company}",
+            $"Hanging with my peeps from {o.Company} at the office today!",
             $"{o.Company} is hiring for my team - DM me for details",
             $"My team at {o.Company} is hiring WFH - DM me for info"
         };

@@ -20,6 +20,7 @@ public class Program
         
     public static void Main(string[] args)
     {
+        log.Warn(ApplicationDetails.Header);
         log.Warn($"GHOSTS ANIMATOR API {ApplicationDetails.Version} ({ApplicationDetails.VersionFile}) coming online...");
             
         var builder = new ConfigurationBuilder()

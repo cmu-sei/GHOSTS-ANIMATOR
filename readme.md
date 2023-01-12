@@ -8,7 +8,7 @@ At its core, Animator is a hyper-realistic user details generator.  Its primary 
 
 ## Quick Start
 
-[Documentation for Animator is here](https://cmu-sei.github.io/GHOSTS/animator/) with easy access to the rest of the framework as well.
+[Documentation for Animator is here](https://cmu-sei.github.io/GHOSTS/animator/) with easy access to the rest of the GHOSTS framework as well.
 
 1. `git clone https://github.com/cmu-sei/GHOSTS-ANIMATOR`
 2. `cd ghosts-animator/src`
@@ -121,3 +121,8 @@ ___
 
 GHOSTS Animator began as a port of Faker.Net (https://github.com/jonwingfield/Faker.Net), which is itself a  
 C# port of ffaker for ruby (https://github.com/EmmanuelOga/ffaker). Similar libraries exist for python, et al.
+___
+
+[DISTRIBUTION STATEMENT A] This material has been approved for public release and unlimited distribution.
+
+Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.

@@ -6,7 +6,6 @@ using Ghosts.Animator.Api.Infrastructure.Models;
 using Ghosts.Animator.Api.Infrastructure.Social.SocialJobs;
 using MongoDB.Driver;
 using NLog;
-using NLog.Targets;
 
 namespace Ghosts.Animator.Api.Infrastructure.Social;
 
@@ -18,7 +17,8 @@ public class SocialJobManager
     private readonly Random _random;
     private Thread _socialSharingJobThread;
     private Thread _socialGraphJobThread;
-        
+    private Thread _socialBeliefsJobThread;
+
     public SocialJobManager()
     {
         this._configuration = Program.Configuration;
@@ -38,15 +38,12 @@ public class SocialJobManager
         var client = new MongoClient(this._configuration.DatabaseSettings.ConnectionString);
         var database = client.GetDatabase(this._configuration.DatabaseSettings.DatabaseName);
         this._mongo = database.GetCollection<NPC>(this._configuration.DatabaseSettings.CollectionNameNPCs);
-            
+
         try
         {
-            if (!this._configuration.SocialJobs.SocialGraph.IsEnabled)
+            if (this._configuration.SocialJobs.SocialGraph.IsEnabled && this._configuration.SocialJobs.SocialGraph.IsInteracting)
             {
-                _log.Info($"Social Graph is not enabled, skipping.");
-            }
-            else
-            {
+                _log.Info($"Starting SocialGraph...");
                 _socialGraphJobThread = new Thread(() =>
                 {
                     Thread.CurrentThread.IsBackground = true;
@@ -54,27 +51,53 @@ public class SocialJobManager
                 });
                 _socialGraphJobThread.Start();
             }
+            else
+            {
+                _log.Info($"SocialGraph is not enabled, skipping.");
+            }
         }
         catch (Exception e)
         {
             _log.Trace(e);
         }
-            
+
         try
         {
-            if (!this._configuration.SocialJobs.SocialSharing.IsEnabled)
+            if (this._configuration.SocialJobs.SocialBelief.IsEnabled && this._configuration.SocialJobs.SocialBelief.IsInteracting)
             {
-                _log.Info($"Social Sharing is not enabled, skipping.");
+                _log.Info($"Starting SocialBelief...");
+                _socialBeliefsJobThread = new Thread(() =>
+                {
+                    Thread.CurrentThread.IsBackground = true;
+                    var _ = new SocialBeliefJob(this._configuration, this._mongo, this._random);
+                });
+                _socialBeliefsJobThread.Start();
             }
             else
             {
+                _log.Info($"SocialBelief is not enabled, skipping.");
+            }
+        }
+        catch (Exception e)
+        {
+            _log.Trace(e);
+        }
+
+        try
+        {
+            if (this._configuration.SocialJobs.SocialSharing.IsEnabled && this._configuration.SocialJobs.SocialSharing.IsInteracting)
+            {
+                _log.Info($"Starting SocialSharing...");
                 _socialSharingJobThread = new Thread(() =>
                 {
                     Thread.CurrentThread.IsBackground = true;
                     var _ = new SocialSharingJob(this._configuration, this._mongo, this._random);
                 });
                 _socialSharingJobThread.Start();
-                
+            }
+            else
+            {
+                _log.Info($"SocialSharing is not enabled, skipping.");
             }
         }
         catch (Exception e)
@@ -82,7 +105,7 @@ public class SocialJobManager
             _log.Trace(e);
         }
     }
-    
+
     public void Stop()
     {
         Console.WriteLine("Stopping social jobs...");
@@ -92,7 +115,7 @@ public class SocialJobManager
         }
         catch
         {
-            
+            // ignore
         }
 
         try
@@ -101,9 +124,18 @@ public class SocialJobManager
         }
         catch
         {
-            
+            // ignore
         }
+
+        try
+        {
+            _socialBeliefsJobThread?.Interrupt();
+        }
+        catch
+        {
+            // ignore
+        }
+
         Console.WriteLine("Social jobs stopped");
     }
 }
-    

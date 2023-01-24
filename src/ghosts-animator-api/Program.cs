@@ -39,7 +39,7 @@ public class Program
 
         // start any configured social jobs
         SocialJobManager = new SocialJobManager();
-        //Program.SocialJobManager.Run();
+        SocialJobManager.Run();
             
         BuildWebHost(args).Run();
     }

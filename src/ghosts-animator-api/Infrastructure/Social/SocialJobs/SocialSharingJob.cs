@@ -100,8 +100,10 @@ public class SocialSharingJob
                 }
             }
 
+            tweetText = tweetText.Replace("\"", "'"); // need to scrub quotes, will break csv file
+
             Console.WriteLine($"{agent.Name} said: {tweetText}");
-            lines.AppendFormat($"{DateTime.Now}|{agent.Id}|{tweetText}{Environment.NewLine}");
+            lines.AppendFormat($"{DateTime.Now},{agent.Id},\"{tweetText}\"{Environment.NewLine}");
 
             // var propertyNames = agent.GetType().GetProperties().Select(p => p.Name).ToArray();
             // foreach (var prop in propertyNames)
@@ -156,7 +158,7 @@ public class SocialSharingJob
             }
         }
 
-        File.AppendAllText($"{SavePath}tweets.txt", lines.ToString());
+        File.AppendAllText($"{SavePath}tweets.csv", lines.ToString());
     }
 
     private static string ProcessAccount(NpcProfile agent)

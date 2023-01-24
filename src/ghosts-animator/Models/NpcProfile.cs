@@ -42,6 +42,7 @@ namespace Ghosts.Animator.Models
         
         public IEnumerable<AccountsProfile.Account> Accounts { get; set; }
 
+        public MotivationalProfile MotivationalProfile { get; set; }
         public PgpService.PgpProfile PGP { get; set; }
         public string CAC  { get; set; }
         
@@ -67,6 +68,7 @@ namespace Ghosts.Animator.Models
             this.Relationships = new List<RelationshipProfile>();
             this.Health = new HealthProfile();
             this.Attributes = new Dictionary<string, string>();
+            this.MotivationalProfile = new MotivationalProfile();
         }
     }
     

@@ -1,21 +1,23 @@
 // Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
 
+using System;
+
 namespace Ghosts.Animator.Api.Infrastructure.Social;
 
 public class Bayes
 {
-    public readonly float LikelihoodH1;
-    public readonly float PriorH1;
-    public readonly float LikelihoodH2;
-    public readonly float PriorH2;
-    public float PosteriorH1;
-    public float PosteriorH2;
-    public int Position;
+    public readonly decimal LikelihoodH1;
+    public readonly decimal PriorH1;
+    public readonly decimal LikelihoodH2;
+    public readonly decimal PriorH2;
+    public decimal PosteriorH1;
+    public decimal PosteriorH2;
+    public long Position;
 
     /// <summary>
     /// straight iterative bayes calculation, where priors become the previous posterior
     /// </summary>
-    public Bayes(int position, float likelihood_h_1, float prior_h_1, float likelihood_h_2, float prior_h_2)
+    public Bayes(long position, decimal likelihood_h_1, decimal prior_h_1, decimal likelihood_h_2, decimal prior_h_2)
     {
         this.Position = position;
         this.LikelihoodH1 = likelihood_h_1;
@@ -41,7 +43,7 @@ public class Bayes
         if (((this.LikelihoodH1 * this.PriorH1) + (this.LikelihoodH2 * this.PriorH2)) > 0)
         {
             this.PosteriorH1 = (this.LikelihoodH1 * this.PriorH1) /
-                                 ((this.LikelihoodH1 * this.PriorH1) + (this.LikelihoodH2 * this.PriorH2));
+                               ((this.LikelihoodH1 * this.PriorH1) + (this.LikelihoodH2 * this.PriorH2));
         }
         else
         {
@@ -51,7 +53,7 @@ public class Bayes
         if (((this.LikelihoodH2 * this.PriorH2) + (this.LikelihoodH1 * this.PriorH1)) > 0)
         {
             this.PosteriorH2 = (this.LikelihoodH2 * this.PriorH2) /
-                                 ((this.LikelihoodH2 * this.PriorH2) + (this.LikelihoodH1 * this.PriorH1));
+                               ((this.LikelihoodH2 * this.PriorH2) + (this.LikelihoodH1 * this.PriorH1));
         }
         else
         {
@@ -62,7 +64,7 @@ public class Bayes
         this.PosteriorH2 = Normalize(this.PosteriorH2);
     }
 
-    private static float Normalize(float n)
+    private static decimal Normalize(decimal n)
     {
         if (n > 1)
         {
@@ -74,6 +76,6 @@ public class Bayes
             n = 0;
         }
 
-        return n;
+        return Math.Round(n, 10);
     }
 }

@@ -79,6 +79,8 @@ namespace Ghosts.Animator
             NpcProfile.PhotoLink = PhysicalCharacteristics.GetPhotoUrl();
 
             NpcProfile.Attributes = AttributesService.GetAttributes();
+
+            NpcProfile.MotivationalProfile = MotivationalProfile.GetNew();
                 
             return NpcProfile;
         }

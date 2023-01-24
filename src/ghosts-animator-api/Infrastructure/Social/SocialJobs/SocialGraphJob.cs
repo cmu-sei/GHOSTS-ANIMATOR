@@ -59,7 +59,7 @@ public class SocialGraphJob
                 }
 
                 // post-step activities: saving results and reporting on them
-                File.WriteAllText(GetSocialGraphFile(), JsonConvert.SerializeObject(this._socialGraphs, Formatting.Indented));
+                File.WriteAllText(GetSocialGraphFile(), JsonConvert.SerializeObject(this._socialGraphs, Formatting.None));
                 this.Report();
                 _log.Info($"Step complete, sleeping for {this._configuration.SocialJobs.SocialGraph.TurnLength}ms");
                 Thread.Sleep(this._configuration.SocialJobs.SocialGraph.TurnLength);
@@ -179,7 +179,7 @@ public class SocialGraphJob
                 _log.Trace($"{graph.CurrentStep}: {graph.Id} didn't learn...");
             }
         }
-
+        
         //decay
         //https://pubsonline.informs.org/doi/10.1287/orsc.1090.0468
         //in knowledge - the world changes, and so there is some amount of knowledge that is now obsolete

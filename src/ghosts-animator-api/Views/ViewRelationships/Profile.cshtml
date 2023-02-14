@@ -1,13 +1,3 @@
-<!--
-GHOSTS ANIMATOR
-Copyright 2020 Carnegie Mellon University.
-NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED, AS TO ANY MATTER INCLUDING, BUT NOT LIMITED TO, WARRANTY OF FITNESS FOR PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
-Released under a MIT (SEI)-style license, please see license.txt or contact permission@sei.cmu.edu for full terms.
-[DISTRIBUTION STATEMENT A] This material has been approved for public release and unlimited distribution.  Please see Copyright notice for non-US Government use and distribution.
-Carnegie Mellon® and CERT® are registered in the U.S. Patent and Trademark Office by Carnegie Mellon University.
-DM20-0930
--->
-
 @using System.Globalization
 @using System.Text
 @using Ghosts.Animator.Enums
@@ -16,7 +6,7 @@ DM20-0930
 
 @functions {
 
-    internal string WriteUnit(MilitaryUnit.Unit unit)
+    private static string WriteUnit(MilitaryUnit.Unit unit)
     {
         if (unit == null)
         {
@@ -88,7 +78,7 @@ DM20-0930
     <button class="nav-link" id="ins-tab" data-bs-toggle="tab" data-bs-target="#ins-tab-pane" type="button" role="tab" aria-controls="ins-tab-pane" aria-selected="false">Insider Threat</button>
   </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="mil-tab" data-bs-toggle="tab" data-bs-target="#mil-tab-pane" type="button" role="tab" aria-controls="mil-tab-pane" aria-selected="false">Military Service <img src="/mil/@(Model.Rank.Branch.ToString().ToLower()).png" style="width:12px; height: 12px;"/></button>
+        <button class="nav-link" id="mil-tab" data-bs-toggle="tab" data-bs-target="#mil-tab-pane" type="button" role="tab" aria-controls="mil-tab-pane" aria-selected="false">Military Service <img src="/mil/@(Model.Rank.Branch.ToString().ToLower()).png" alt="service branch" style="width:12px; height: 12px;"/></button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="rel-tab" data-bs-toggle="tab" data-bs-target="#rel-tab-pane" type="button" role="tab" aria-controls="rel-tab-pane" aria-selected="false">Relationships</button>
@@ -254,17 +244,23 @@ DM20-0930
                 @foreach (var item in Model.Education.Degrees)
                 {
                     <li>
-                        @if (item.Level == DegreeLevel.HSDiploma)
+                        @switch (item.Level)
                         {
-                            <h4>HS Graduate</h4>
-                        }
-                        else if (item.Level == DegreeLevel.GED)
-                        {
-                            <h4>GED</h4>
-                        }
-                        else
-                        {
-                            <h4>@item.DegreeType in @item.Major</h4>
+                            case DegreeLevel.HSDiploma:
+                                <h4>HS Graduate</h4>
+                                break;
+                            case DegreeLevel.GED:
+                                <h4>GED</h4>
+                                break;
+                            case DegreeLevel.Associates:
+                            case DegreeLevel.Bachelors:
+                            case DegreeLevel.Masters:
+                            case DegreeLevel.Doctorate:
+                            case DegreeLevel.Professional:
+                            case DegreeLevel.None:
+                            default:
+                                <h4>@item.DegreeType in @item.Major</h4>
+                                break;
                         }
 
                         <p>@item.School.Name (@item.School.Location)</p>
@@ -294,7 +290,7 @@ DM20-0930
         <div class="col-xs-12">
             <h3>Finances</h3>
             <ul style="margin-top:20px">
-                @foreach (var item in @Model.Finances.CreditCards)
+                @foreach (var item in Model.Finances.CreditCards)
                 {
                     <li>
                         <p>@item.Number (@item.Type)</p>
@@ -307,7 +303,7 @@ DM20-0930
         <div class="col-xs-12">
             <h3>Travel</h3>
             <ul style="margin-top:20px">
-                @foreach (var item in @Model.ForeignTravel.Trips)
+                @foreach (var item in Model.ForeignTravel.Trips)
                 {
                     <li>
                         <p>
@@ -390,7 +386,7 @@ DM20-0930
 <div class="tab-pane fade show active" id="mil-tab-pane" role="tabpanel" aria-labelledby="mil-tab" tabindex="0">
     <div class="form-group">
         <div class="col-xs-12">
-            <img src="/mil/@(Model.Rank.Branch.ToString().ToLower()).png" style="width:80px; height: 80px; float: right"/>
+            <img src="/mil/@(Model.Rank.Branch.ToString().ToLower()).png" alt="service rank" style="width:80px; height: 80px; float: right"/>
             <h3>@Model.Rank.Branch @Model.Rank.Classification</h3>
             <ul style="margin-top:20px">
                 <p>@Model.Rank.Name (@Model.Rank.Abbr) @Model.Rank.Pay</p>
@@ -403,7 +399,7 @@ DM20-0930
         <div class="col-xs-12">
             <h3>Assigned Unit</h3>
             <ul style="margin-top:20px">
-                @foreach (var item in @Model.Unit.Sub)
+                @foreach (var item in Model.Unit.Sub)
                 {
                     <li>
                         <p>@item.Name (@item.Type) @item.Nick</p>
@@ -429,7 +425,7 @@ DM20-0930
                 {
                     <span>No family on record</span>
                 }
-                @foreach (var item in @Model.Family.Members)
+                @foreach (var item in Model.Family.Members)
                 {
                     <li>
                         <p><a href="#">@item.Name</a> (@item.Relationship)</p>
@@ -442,7 +438,7 @@ DM20-0930
                 {
                     <span>No extended relationships on record</span>
                 }
-                @foreach (var item in @Model.Relationships)
+                @foreach (var item in Model.Relationships)
                 {
                     <li>
                         <p>@item.With (@item.Type)</p>

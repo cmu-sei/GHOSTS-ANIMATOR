@@ -1,3 +1,5 @@
+// Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
+
 using System.Diagnostics;
 using System.Reflection;
 
@@ -22,4 +24,16 @@ public static class ApplicationDetails
             return fileName != null ? FileVersionInfo.GetVersionInfo(fileName).FileVersion : "";
         }
     }
+    
+    public static string Header => 
+        @"             ('-. .-.               .-')    .-') _     .-')    
+            ( OO )  /              ( OO ). (  OO) )   ( OO ).  
+  ,----.    ,--. ,--. .-'),-----. (_)---\_)/     '._ (_)---\_) 
+ '  .-./-') |  | |  |( OO'  .-.  '/    _ | |'--...__)/    _ |  
+ |  |_( O- )|   .|  |/   |  | |  |\  :` `. '--.  .--'\  :` `.  
+ |  | .--, \|       |\_) |  |\|  | '..`''.)   |  |    '..`''.) 
+(|  | '. (_/|  .-.  |  \ |  | |  |.-._)   \   |  |   .-._)   \ 
+ |  '--'  | |  | |  |   `'  '-'  '\       /   |  |   \       / 
+  `------'  `--' `--'     `-----'  `-----'    `--'    `-----'  ";
+
 }

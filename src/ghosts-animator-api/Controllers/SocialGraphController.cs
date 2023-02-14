@@ -1,6 +1,10 @@
+// Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
+
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Text;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Ghosts.Animator.Api.Infrastructure.Social;
 using Ghosts.Animator.Models;
@@ -24,6 +28,21 @@ public class SocialGraphController : Controller
         _mongo = database.GetCollection<NPC>(settings.CollectionNameNPCs);
     }
 
+    [SwaggerOperation("startSocialGraph")]
+    [HttpGet("start")]
+    public IActionResult Start()
+    {
+        Program.SocialJobManager.Run();
+        return Ok();
+    }
+    
+    [SwaggerOperation("stopSocialGraph")]
+    [HttpGet("stop")]
+    public IActionResult stop()
+    {
+        Program.SocialJobManager.Stop();
+        return Ok();
+    }
     
     /// <summary>
     /// Get NPC's social graph by Id
@@ -36,8 +55,10 @@ public class SocialGraphController : Controller
     [HttpGet("{id:guid}")]
     public SocialGraph GetById(Guid id)
     {
-        var graph = new SocialGraph();
-        graph.Id = id;
+        var graph = new SocialGraph
+        {
+            Id = id
+        };
         var list = _mongo.Find(x => true).ToList().OrderBy(o => o.Enclave).ThenBy(o=>o.Team);
         
         NPC previousNpc = null;
@@ -46,21 +67,23 @@ public class SocialGraphController : Controller
             
         foreach (var npc in list)
         {
-            var connection = new SocialGraph.SocialConnection();
-            connection.Id = npc.Id;
-            connection.Name = npc.Name.ToString();
-            
+            var connection = new SocialGraph.SocialConnection
+            {
+                Id = npc.Id,
+                Name = npc.Name.ToString()
+            };
+
             if (previousNpc == null)
             {
                 connection.Distance = npc.Campaign;
             }
-            else if (previousNpc?.Enclave != npc.Enclave)
+            else if (previousNpc.Enclave != npc.Enclave)
             {
                 enclave = npc.Enclave;
                 connection.Distance = npc.Enclave;
                 continue;
             }
-            else if (string.IsNullOrEmpty(team) || previousNpc?.Team != npc.Team)
+            else if (string.IsNullOrEmpty(team) || previousNpc.Team != npc.Team)
             {
                 team = $"{enclave}/{npc.Team}";
                 connection.Distance = team;

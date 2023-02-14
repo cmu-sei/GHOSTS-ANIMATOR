@@ -1,3 +1,5 @@
+// Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +8,6 @@ using Ghosts.Animator.Api.Infrastructure.Models;
 using Ghosts.Animator.Api.Infrastructure.Social;
 using Ghosts.Animator.Api.Infrastructure.Social.SocialJobs;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
 using Newtonsoft.Json;
 using NLog;
 
@@ -80,35 +81,41 @@ public class ViewSocialController : Controller
     {
         var path = SocialGraphJob.GetSocialGraphFile();
         var graph = JsonConvert.DeserializeObject<List<SocialGraph>>(System.IO.File.ReadAllText(path)).FirstOrDefault(x => x.Id == id);
-        _log.Info($"SocialGraph loaded from disk...");
+        _log.Info("SocialGraph loaded from disk...");
 
         var interactions = new InteractionMap();
-        var startTime = DateTime.Now.AddMinutes(-(graph.Connections.Count)).AddMinutes(-1);
+        var startTime = DateTime.Now.AddMinutes(-graph.Connections.Count).AddMinutes(-1);
         var endTime = DateTime.Now.AddMinutes(1);
         
-        var node = new Node();
-        node.id = id.ToString();
-        node.start = startTime;
-        node.end = endTime;
+        var node = new Node
+        {
+            id = id.ToString(),
+            start = startTime,
+            end = endTime
+        };
         interactions.nodes.Add(node);
         
         foreach (var connection in graph.Connections)
         {
             if (connection.Interactions.Count < 1)
                 continue;
-            node = new Node();
-            node.id = connection.Id.ToString();
-            node.start = startTime.AddMinutes(connection.Interactions.Min(x=>x.Step));
-            node.end = endTime;
+            node = new Node
+            {
+                id = connection.Id.ToString(),
+                start = startTime.AddMinutes(connection.Interactions.Min(x=>x.Step)),
+                end = endTime
+            };
             interactions.nodes.Add(node);
         }
 
         foreach (var learning in graph.Knowledge)
         {
-            var link = new Link();
-            link.start = startTime.AddMinutes(learning.Step);
-            link.source = learning.To.ToString();
-            link.target = learning.From.ToString();
+            var link = new Link
+            {
+                start = startTime.AddMinutes(learning.Step),
+                source = learning.To.ToString(),
+                target = learning.From.ToString()
+            };
             link.end = link.start.AddMinutes(1);
             interactions.links.Add(link);
         }

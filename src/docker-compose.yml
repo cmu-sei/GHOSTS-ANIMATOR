@@ -29,6 +29,4 @@ services:
     networks:
       - ghosts-network
     restart: always
-    volumes:
-      - ./_api/appsettings.json:/appsettings.json
-      - ./_output:/output
+    

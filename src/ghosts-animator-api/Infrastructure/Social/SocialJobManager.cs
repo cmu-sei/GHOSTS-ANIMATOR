@@ -3,13 +3,13 @@
 using System;
 using System.Threading;
 using Ghosts.Animator.Api.Infrastructure.Models;
-using Ghosts.Animator.Api.Infrastructure.Social.SocialJobs;
+using Ghosts.Animator.Api.Infrastructure.Social.Animations;
 using MongoDB.Driver;
 using NLog;
 
 namespace Ghosts.Animator.Api.Infrastructure.Social;
 
-public class SocialJobManager
+public class AnimationsManager
 {
     private static readonly Logger _log = LogManager.GetCurrentClassLogger();
     private readonly ApplicationConfiguration _configuration;
@@ -19,7 +19,7 @@ public class SocialJobManager
     private Thread _socialGraphJobThread;
     private Thread _socialBeliefsJobThread;
 
-    public SocialJobManager()
+    public AnimationsManager()
     {
         this._configuration = Program.Configuration;
         this._random = Random.Shared;
@@ -27,13 +27,13 @@ public class SocialJobManager
 
     public void Run()
     {
-        if (!this._configuration.SocialJobs.IsEnabled)
+        if (!this._configuration.Animations.IsEnabled)
         {
-            _log.Info($"Social Jobs are not enabled, skipping.");
+            _log.Info($"Animations are not enabled, skipping.");
             return;
         }
 
-        _log.Info($"Social Jobs are enabled, starting up...");
+        _log.Info($"Animations are enabled, starting up...");
 
         var client = new MongoClient(this._configuration.DatabaseSettings.ConnectionString);
         var database = client.GetDatabase(this._configuration.DatabaseSettings.DatabaseName);
@@ -41,7 +41,7 @@ public class SocialJobManager
 
         try
         {
-            if (this._configuration.SocialJobs.SocialGraph.IsEnabled && this._configuration.SocialJobs.SocialGraph.IsInteracting)
+            if (this._configuration.Animations.SocialGraph.IsEnabled && this._configuration.Animations.SocialGraph.IsInteracting)
             {
                 _log.Info($"Starting SocialGraph...");
                 _socialGraphJobThread = new Thread(() =>
@@ -63,7 +63,7 @@ public class SocialJobManager
 
         try
         {
-            if (this._configuration.SocialJobs.SocialBelief.IsEnabled && this._configuration.SocialJobs.SocialBelief.IsInteracting)
+            if (this._configuration.Animations.SocialBelief.IsEnabled && this._configuration.Animations.SocialBelief.IsInteracting)
             {
                 _log.Info($"Starting SocialBelief...");
                 _socialBeliefsJobThread = new Thread(() =>
@@ -85,7 +85,7 @@ public class SocialJobManager
 
         try
         {
-            if (this._configuration.SocialJobs.SocialSharing.IsEnabled && this._configuration.SocialJobs.SocialSharing.IsInteracting)
+            if (this._configuration.Animations.SocialSharing.IsEnabled && this._configuration.Animations.SocialSharing.IsInteracting)
             {
                 _log.Info($"Starting SocialSharing...");
                 _socialSharingJobThread = new Thread(() =>
@@ -108,7 +108,7 @@ public class SocialJobManager
 
     public void Stop()
     {
-        Console.WriteLine("Stopping social jobs...");
+        Console.WriteLine("Stopping Animations...");
         try
         {
             _socialGraphJobThread?.Interrupt();
@@ -136,6 +136,6 @@ public class SocialJobManager
             // ignore
         }
 
-        Console.WriteLine("Social jobs stopped");
+        Console.WriteLine("Animations stopped");
     }
 }

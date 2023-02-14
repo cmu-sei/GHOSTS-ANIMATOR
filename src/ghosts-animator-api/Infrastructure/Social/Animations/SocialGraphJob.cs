@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 using NLog;
 using Weighted_Randomizer;
 
-namespace Ghosts.Animator.Api.Infrastructure.Social.SocialJobs;
+namespace Ghosts.Animator.Api.Infrastructure.Social.Animations;
 
 public class SocialGraphJob
 {
@@ -44,7 +44,7 @@ public class SocialGraphJob
             this._knowledgeArray = GetKnowledge();
             this.LoadSocialGraphs();
 
-            if (this._socialGraphs.Count > 0 && this._socialGraphs[0].CurrentStep > _configuration.SocialJobs.SocialGraph.MaximumSteps)
+            if (this._socialGraphs.Count > 0 && this._socialGraphs[0].CurrentStep > _configuration.Animations.SocialGraph.MaximumSteps)
             {
                 _log.Trace("Graph has exceed maximum steps. Sleeping...");
                 return;
@@ -61,8 +61,8 @@ public class SocialGraphJob
                 // post-step activities: saving results and reporting on them
                 File.WriteAllText(GetSocialGraphFile(), JsonConvert.SerializeObject(this._socialGraphs, Formatting.None));
                 this.Report();
-                _log.Info($"Step complete, sleeping for {this._configuration.SocialJobs.SocialGraph.TurnLength}ms");
-                Thread.Sleep(this._configuration.SocialJobs.SocialGraph.TurnLength);
+                _log.Info($"Step complete, sleeping for {this._configuration.Animations.SocialGraph.TurnLength}ms");
+                Thread.Sleep(this._configuration.Animations.SocialGraph.TurnLength);
             }
         }
         catch (ThreadInterruptedException)
@@ -124,7 +124,7 @@ public class SocialGraphJob
     //      the interaction could create new knowledge, or increase an existing one by some value
     private void Step(SocialGraph graph)
     {
-        if (graph.CurrentStep > _configuration.SocialJobs.SocialGraph.MaximumSteps)
+        if (graph.CurrentStep > _configuration.Animations.SocialGraph.MaximumSteps)
         {
             _log.Trace($"Maximum steps met: {graph.CurrentStep - 1}. Social graph is exiting...");
             this.isEnabled = false;
@@ -184,14 +184,14 @@ public class SocialGraphJob
         //https://pubsonline.informs.org/doi/10.1287/orsc.1090.0468
         //in knowledge - the world changes, and so there is some amount of knowledge that is now obsolete
         //in relationships - without work, relationships just sort of evaporate
-        var stepsToDecay = this._configuration.SocialJobs.SocialGraph.Decay.StepsTo;
+        var stepsToDecay = this._configuration.Animations.SocialGraph.Decay.StepsTo;
         if (graph.CurrentStep > stepsToDecay)
         {
             foreach (var k in graph.Knowledge.ToList().DistinctBy(x => x.Topic))
             {
                 if (graph.Knowledge.Where(x => x.Topic == k.Topic).Sum(x => x.Value) > stepsToDecay)
                 {
-                    if (this._configuration.SocialJobs.SocialGraph.Decay.ChanceOf.ChanceOfThisValue())
+                    if (this._configuration.Animations.SocialGraph.Decay.ChanceOf.ChanceOfThisValue())
                     {
                         if (graph.Knowledge.Where(x => x.Topic == k.Topic).MaxBy(x => x.Step)?.Step < graph.CurrentStep - stepsToDecay)
                         {
@@ -222,7 +222,7 @@ public class SocialGraphJob
     {
         string knowledge = null;
 
-        var chance = this._configuration.SocialJobs.SocialGraph.ChanceOfKnowledgeTransfer;
+        var chance = this._configuration.Animations.SocialGraph.ChanceOfKnowledgeTransfer;
         var npc = this._mongo.Find(x => x.Id == graph.Id).FirstOrDefault();
         chance += npc.Education.Degrees.Count * .1;
         chance += npc.MentalHealth.OverallPerformance * .1;

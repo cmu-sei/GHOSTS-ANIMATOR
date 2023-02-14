@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Ghosts.Animator.Api.Infrastructure.Social;
-using Ghosts.Animator.Api.Infrastructure.Social.SocialJobs;
+using Ghosts.Animator.Api.Infrastructure.Social.Animations;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NLog;
@@ -28,8 +28,8 @@ public class ViewSocialController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        ViewBag.IsEnabled = this._configuration.SocialJobs.SocialGraph.IsEnabled;
-        if (!this._configuration.SocialJobs.SocialGraph.IsEnabled)
+        ViewBag.IsEnabled = this._configuration.Animations.SocialGraph.IsEnabled;
+        if (!this._configuration.Animations.SocialGraph.IsEnabled)
         {
             return View();
         }
@@ -50,8 +50,8 @@ public class ViewSocialController : Controller
     [HttpGet("{id}")]
     public IActionResult Detail(Guid id)
     {
-        ViewBag.IsEnabled = this._configuration.SocialJobs.SocialGraph.IsEnabled;
-        if (!this._configuration.SocialJobs.SocialGraph.IsEnabled)
+        ViewBag.IsEnabled = this._configuration.Animations.SocialGraph.IsEnabled;
+        if (!this._configuration.Animations.SocialGraph.IsEnabled)
         {
             return View();
         }

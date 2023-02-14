@@ -11,7 +11,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using NLog;
 
-namespace Ghosts.Animator.Api.Infrastructure.Social.SocialJobs;
+namespace Ghosts.Animator.Api.Infrastructure.Social.Animations;
 
 public class SocialBeliefJob
 {
@@ -40,7 +40,7 @@ public class SocialBeliefJob
 
             this.LoadSocialBeliefs();
 
-            if (this._socialGraphs.Count > 0 && this._socialGraphs[0].CurrentStep > _configuration.SocialJobs.SocialGraph.MaximumSteps)
+            if (this._socialGraphs.Count > 0 && this._socialGraphs[0].CurrentStep > _configuration.Animations.SocialGraph.MaximumSteps)
             {
                 _log.Trace("SocialBelief has exceed maximum steps. Sleeping...");
                 return;
@@ -57,8 +57,8 @@ public class SocialBeliefJob
                 // post-step activities: saving results and reporting on them
                 File.WriteAllText(GetSocialGraphFile(), JsonConvert.SerializeObject(this._socialGraphs, Formatting.None));
                 this.Report();
-                _log.Info($"Step complete, sleeping for {this._configuration.SocialJobs.SocialGraph.TurnLength}ms");
-                Thread.Sleep(this._configuration.SocialJobs.SocialBelief.TurnLength);
+                _log.Info($"Step complete, sleeping for {this._configuration.Animations.SocialGraph.TurnLength}ms");
+                Thread.Sleep(this._configuration.Animations.SocialBelief.TurnLength);
             }
         }
         catch (ThreadInterruptedException)
@@ -116,7 +116,7 @@ public class SocialBeliefJob
 
     private void Step(SocialGraph graph)
     {
-        if (graph.CurrentStep > this._configuration.SocialJobs.SocialBelief.MaximumSteps)
+        if (graph.CurrentStep > this._configuration.Animations.SocialBelief.MaximumSteps)
         {
             _log.Trace($"Maximum steps met: {graph.CurrentStep - 1}. SocialBelief is exiting...");
             this.isEnabled = false;

@@ -16,7 +16,7 @@ public class Program
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
     public static ApplicationConfiguration Configuration { get; private set; }
     
-    public static SocialJobManager SocialJobManager { get; private set; }
+    public static AnimationsManager SocialJobManager { get; private set; }
         
     public static void Main(string[] args)
     {
@@ -38,7 +38,7 @@ public class Program
         Configuration.DatabaseSettings = dbConfig;
 
         // start any configured social jobs
-        SocialJobManager = new SocialJobManager();
+        SocialJobManager = new AnimationsManager();
         SocialJobManager.Run();
             
         BuildWebHost(args).Run();

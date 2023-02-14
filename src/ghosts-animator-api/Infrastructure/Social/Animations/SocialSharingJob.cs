@@ -15,7 +15,7 @@ using MongoDB.Driver;
 using NLog;
 using RestSharp;
 
-namespace Ghosts.Animator.Api.Infrastructure.Social.SocialJobs;
+namespace Ghosts.Animator.Api.Infrastructure.Social.Animations;
 
 public class SocialSharingJob
 {
@@ -34,7 +34,7 @@ public class SocialSharingJob
             this._random = random;
             this._mongo = mongo;
 
-            if (_configuration.SocialJobs.SocialSharing.IsInteracting)
+            if (_configuration.Animations.SocialSharing.IsInteracting)
             {
                 if (!Directory.Exists(SavePath))
                 {
@@ -43,14 +43,14 @@ public class SocialSharingJob
 
                 while (true)
                 {
-                    if (this.CurrentStep > _configuration.SocialJobs.SocialSharing.MaximumSteps)
+                    if (this.CurrentStep > _configuration.Animations.SocialSharing.MaximumSteps)
                     {
                         _log.Trace($"Maximum steps met: {this.CurrentStep - 1}. Social sharing is exiting...");
                         return;
                     }
 
                     this.Step();
-                    Thread.Sleep(this._configuration.SocialJobs.SocialSharing.TurnLength);
+                    Thread.Sleep(this._configuration.Animations.SocialSharing.TurnLength);
 
                     this.CurrentStep++;
                 }
@@ -75,7 +75,7 @@ public class SocialSharingJob
         {
             string tweetText = null;
 
-            if (Program.Configuration.SocialJobs.SocialSharing.IsChatGptEnabled)
+            if (Program.Configuration.Animations.SocialSharing.IsChatGptEnabled)
                 tweetText = ChatGpt.ChatService.Get(agent);
 
             //var tweetText = "";
@@ -112,7 +112,7 @@ public class SocialSharingJob
             //     Console.WriteLine($"{prop}:{propValue}");
             // }
 
-            if (_configuration.SocialJobs.SocialSharing.IsSendingTimelinesToGhostsApi && !string.IsNullOrEmpty(_configuration.GhostsApiUrl))
+            if (_configuration.Animations.SocialSharing.IsSendingTimelinesToGhostsApi && !string.IsNullOrEmpty(_configuration.GhostsApiUrl))
             {
                 var userFormValue = new[] { "user", "usr", "u", "uid", "user_id", "u_id" }.RandomFromStringArray();
                 var messageFormValue = new[] { "message", "msg", "m", "message_id", "msg_id", "msg_text", "text", "payload" }.RandomFromStringArray();
@@ -133,7 +133,7 @@ public class SocialSharingJob
                 var postPayload = File.ReadAllText("config/socializer_post.json");
                 postPayload = postPayload.Replace("{id}", Guid.NewGuid().ToString());
                 postPayload = postPayload.Replace("{payload}", formValues.ToString());
-                postPayload = postPayload.Replace("{url}", _configuration.SocialJobs.SocialSharing.SocializerUrl);
+                postPayload = postPayload.Replace("{url}", _configuration.Animations.SocialSharing.SocializerUrl);
                 postPayload = postPayload.Replace("{now}", DateTime.Now.ToString(CultureInfo.InvariantCulture));
 
                 _log.Trace(postPayload);

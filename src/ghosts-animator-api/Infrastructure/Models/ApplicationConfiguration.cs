@@ -5,10 +5,10 @@ namespace Ghosts.Animator.Api.Infrastructure.Models;
 public class ApplicationConfiguration
 {
     public string GhostsApiUrl { get; set; }
-    public SocialJobsSettings SocialJobs { get; set; }
+    public AnimationsSettings Animations { get; set; }
     public DatabaseSettings.ApplicationDatabaseSettings DatabaseSettings { get; set; }
 
-    public class SocialJobsSettings
+    public class AnimationsSettings
     {
         public bool IsEnabled { get; set; }
         public SocialGraphSettings SocialGraph { get; set; }

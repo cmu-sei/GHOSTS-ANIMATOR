@@ -3,7 +3,6 @@
 using System.IO;
 using Ghosts.Animator.Api.Infrastructure;
 using Ghosts.Animator.Api.Infrastructure.Models;
-using Ghosts.Animator.Api.Infrastructure.Social;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -16,8 +15,6 @@ public class Program
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
     public static ApplicationConfiguration Configuration { get; private set; }
     
-    public static AnimationsManager SocialJobManager { get; private set; }
-        
     public static void Main(string[] args)
     {
         log.Warn(ApplicationDetails.Header);
@@ -36,11 +33,7 @@ public class Program
 
         Configuration = appConfig;
         Configuration.DatabaseSettings = dbConfig;
-
-        // start any configured social jobs
-        SocialJobManager = new AnimationsManager();
-        SocialJobManager.Run();
-            
+    
         BuildWebHost(args).Run();
     }
 

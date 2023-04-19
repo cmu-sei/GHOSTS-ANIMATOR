@@ -61,6 +61,9 @@ namespace Ghosts.Animator
             {
                 assignedRank.Billet = GetBillet(assignedRank);
                 var t = GetMOS(assignedRank);
+                if (t is null)
+                    return null;
+
                 assignedRank.MOS = t[0];
                 assignedRank.MOSID = t[1];
 

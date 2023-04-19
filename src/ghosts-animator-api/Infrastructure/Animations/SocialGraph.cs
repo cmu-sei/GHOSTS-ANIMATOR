@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Ghosts.Animator.Api.Infrastructure.Social;
+namespace Ghosts.Animator.Api.Infrastructure.Animations;
 
 public class SocialGraph
 {

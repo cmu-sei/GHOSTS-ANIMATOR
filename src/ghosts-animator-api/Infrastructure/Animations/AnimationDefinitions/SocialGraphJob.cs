@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 using NLog;
 using Weighted_Randomizer;
 
-namespace Ghosts.Animator.Api.Infrastructure.Social.Animations;
+namespace Ghosts.Animator.Api.Infrastructure.Animations.AnimationDefinitions;
 
 public class SocialGraphJob
 {
@@ -170,20 +170,24 @@ public class SocialGraphJob
                     if (connection is not null)
                     {
                         connection.RelationshipStatus++;
-                        _log.Trace($"{graph.CurrentStep}: {learning.To}:{learning.From} Relationship improved...");
+                        var o = $"{graph.CurrentStep}: {learning.To}:{learning.From} Relationship improved...";
+                        Console.WriteLine(o);
+                        _log.Trace(o);
                     }
                 }
             }
             else
             {
-                _log.Trace($"{graph.CurrentStep}: {graph.Id} didn't learn...");
+                var o = $"{graph.CurrentStep}: {graph.Id} didn't learn...";
+                Console.WriteLine(o);
+                _log.Trace(o);
             }
         }
         
         //decay
         //https://pubsonline.informs.org/doi/10.1287/orsc.1090.0468
         //in knowledge - the world changes, and so there is some amount of knowledge that is now obsolete
-        //in relationships - without work, relationships just sort of evaporate
+        //in relationships - without work, relationships can decay
         var stepsToDecay = this._configuration.Animations.SocialGraph.Decay.StepsTo;
         if (graph.CurrentStep > stepsToDecay)
         {
@@ -224,6 +228,9 @@ public class SocialGraphJob
 
         var chance = this._configuration.Animations.SocialGraph.ChanceOfKnowledgeTransfer;
         var npc = this._mongo.Find(x => x.Id == graph.Id).FirstOrDefault();
+        if (npc == null)
+            return string.Empty;
+        
         chance += npc.Education.Degrees.Count * .1;
         chance += npc.MentalHealth.OverallPerformance * .1;
         chance += graph.Knowledge.Count * .1;
@@ -249,7 +256,7 @@ public class SocialGraphJob
         return graph.Knowledge.Count(x => x.From == learning.From) > 1;
     }
 
-    private static string[] GetKnowledge()
+    public static string[] GetKnowledge()
     {
         var k = File.ReadAllText("config/knowledge_topics.txt").Split(Environment.NewLine);
         Array.Sort(k);

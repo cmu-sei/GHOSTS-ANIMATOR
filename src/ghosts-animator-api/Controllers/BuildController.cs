@@ -81,7 +81,7 @@ public class BuildController : ControllerBase
                 for (var i = 0; i < team.Npcs.Number; i++)
                 {
                     var last = t.ElapsedMilliseconds;
-                    var branch = team.Npcs.Configuration.Branch ?? MilitaryUnits.GetServiceBranch();
+                    var branch = team.Npcs.Configuration?.Branch ?? MilitaryUnits.GetServiceBranch();
                     var npc = NPC.TransformTo(Npc.Generate(branch));
                     npc.Team = team.Name;
                     npc.Campaign = config.Campaign;

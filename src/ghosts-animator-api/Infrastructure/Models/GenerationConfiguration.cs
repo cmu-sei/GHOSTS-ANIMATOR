@@ -1,5 +1,6 @@
 // Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
 
+using System;
 using System.Collections.Generic;
 using Ghosts.Animator.Enums;
 using Ghosts.Animator.Models;
@@ -54,18 +55,18 @@ public class GenerationConfigurationExample : IExamplesProvider<GenerationConfig
 
         return new GenerationConfiguration
         {
-            Campaign = "GCD 2021",
+            Campaign = $"Exercise Season {DateTime.Now.Year}",
             Enclaves = new List<EnclaveConfiguration>
             {
                 new()
                 {
-                    Name = "RCC-K",
+                    Name = $"Brigade {Faker.Company.Name()}",
                     Teams = new List<TeamConfiguration>
                     {
                         new()
                         {
-                            Name = "INTEL", DomainTemplate = "intel{machine_number}-rcc-k.disa.mil",
-                            MachineNameTemplate = "INTEL{machine_number}",
+                            Name = $"Engineering", DomainTemplate = "eng{machine_number}-brigade.unit.co",
+                            MachineNameTemplate = "eng{machine_number}",
                             Npcs = new NpcConfiguration
                             {
                                 Number = 10,

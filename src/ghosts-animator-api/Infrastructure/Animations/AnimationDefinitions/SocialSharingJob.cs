@@ -15,7 +15,7 @@ using MongoDB.Driver;
 using NLog;
 using RestSharp;
 
-namespace Ghosts.Animator.Api.Infrastructure.Social.Animations;
+namespace Ghosts.Animator.Api.Infrastructure.Animations.AnimationDefinitions;
 
 public class SocialSharingJob
 {

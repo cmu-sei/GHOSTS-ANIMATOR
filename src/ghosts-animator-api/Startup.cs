@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Ghosts.Animator.Api.Infrastructure;
+using Ghosts.Animator.Api.Infrastructure.Animations;
 using Ghosts.Animator.Api.Infrastructure.Extensions;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Microsoft.AspNetCore.Builder;
@@ -34,7 +35,7 @@ public class Startup
 
         services.AddSingleton<DatabaseSettings.IApplicationDatabaseSettings>(sp =>
             sp.GetRequiredService<IOptions<DatabaseSettings.ApplicationDatabaseSettings>>().Value);
-            
+
         services.AddCors(options => options.UseConfiguredCors(Configuration.GetSection("CorsPolicy")));
 
         services.AddSwaggerGen(c =>
@@ -61,6 +62,9 @@ public class Startup
         });
         services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
             
+        // start any configured social jobs
+        services.AddSingleton<IHostedService, AnimationsManager>();
+        
         services.AddControllers().AddJsonOptions(options => 
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 

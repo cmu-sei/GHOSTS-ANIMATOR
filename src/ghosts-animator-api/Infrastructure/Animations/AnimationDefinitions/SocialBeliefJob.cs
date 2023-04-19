@@ -11,7 +11,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using NLog;
 
-namespace Ghosts.Animator.Api.Infrastructure.Social.Animations;
+namespace Ghosts.Animator.Api.Infrastructure.Animations.AnimationDefinitions;
 
 public class SocialBeliefJob
 {
@@ -169,6 +169,8 @@ public class SocialBeliefJob
                     .Append(Environment.NewLine);
             }
         }
+        
+        Console.WriteLine(line.ToString().TrimEnd(','));
 
         File.WriteAllText($"{SavePath}social_beliefs.csv", line.ToString().TrimEnd(',') + Environment.NewLine);
     }

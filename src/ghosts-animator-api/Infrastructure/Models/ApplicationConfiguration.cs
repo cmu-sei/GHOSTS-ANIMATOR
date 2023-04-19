@@ -19,6 +19,7 @@ public class ApplicationConfiguration
         public class SocialGraphSettings
         {
             public bool IsEnabled { get; set; }
+            public bool IsMultiThreaded { get; set; }
             public bool IsInteracting { get; set; }
             public int TurnLength { get; set; }
 
@@ -38,6 +39,7 @@ public class ApplicationConfiguration
         public class SocialSharingSettings
         {
             public bool IsEnabled { get; set; }
+            public bool IsMultiThreaded { get; set; }
             public bool IsInteracting { get; set; }
             public bool IsSendingTimelinesToGhostsApi { get; set; }
 
@@ -50,6 +52,7 @@ public class ApplicationConfiguration
         public class SocialBeliefSettings
         {
             public bool IsEnabled { get; set; }
+            public bool IsMultiThreaded { get; set; }
             public bool IsInteracting { get; set; }
             public int TurnLength { get; set; }
             public int MaximumSteps { get; set; }

@@ -1,12 +1,12 @@
 // Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
 
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Ghosts.Animator.Api.Infrastructure.Animations;
 using Ghosts.Animator.Api.Infrastructure.Models;
-using Ghosts.Animator.Api.Infrastructure.Social;
 using Ghosts.Animator.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -20,27 +20,29 @@ namespace Ghosts.Animator.Api.Controllers;
 public class SocialGraphController : Controller
 {
     private readonly IMongoCollection<NPC> _mongo;
+    private AnimationsManager _animationsManager;
         
-    public SocialGraphController(DatabaseSettings.IApplicationDatabaseSettings settings)
+    public SocialGraphController(DatabaseSettings.IApplicationDatabaseSettings settings, AnimationsManager animationsManager)
     {
         var client = new MongoClient(settings.ConnectionString);
         var database = client.GetDatabase(settings.DatabaseName);
         _mongo = database.GetCollection<NPC>(settings.CollectionNameNPCs);
+        _animationsManager = animationsManager;
     }
 
     [SwaggerOperation("startSocialGraph")]
     [HttpGet("start")]
-    public IActionResult Start()
+    public async Task<IActionResult> Start(CancellationToken cancellationToken)
     {
-        Program.SocialJobManager.Run();
+        await _animationsManager.StartAsync(cancellationToken);
         return Ok();
     }
     
     [SwaggerOperation("stopSocialGraph")]
     [HttpGet("stop")]
-    public IActionResult stop()
+    public async Task<IActionResult> stop(CancellationToken cancellationToken)
     {
-        Program.SocialJobManager.Stop();
+        await _animationsManager.StopAsync(cancellationToken);
         return Ok();
     }
     

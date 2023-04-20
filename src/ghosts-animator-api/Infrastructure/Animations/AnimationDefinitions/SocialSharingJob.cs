@@ -76,7 +76,7 @@ public class SocialSharingJob
             string tweetText = null;
 
             if (Program.Configuration.Animations.SocialSharing.IsChatGptEnabled)
-                tweetText = ChatGpt.ChatService.Get(agent);
+                tweetText = OpenAi.OpenAiService.Get(agent);
 
             //var tweetText = "";
             while (string.IsNullOrEmpty(tweetText))

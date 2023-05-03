@@ -7,10 +7,12 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using Ghosts.Animator.Api.Hubs;
 using Ghosts.Animator.Api.Infrastructure.Models;
+using Ghosts.Animator.Api.Infrastructure.OpenAi;
 using Ghosts.Animator.Extensions;
 using Ghosts.Animator.Models;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.AspNetCore.SignalR;
 using MongoDB.Driver;
 using NLog;
 using RestSharp;
@@ -25,14 +27,18 @@ public class SocialSharingJob
     private readonly Random _random;
     private const string SavePath = "output/socialsharing/";
     private readonly int CurrentStep;
+    private readonly IHubContext<ActivityHub> _activityHubContext;
+    private readonly OpenAIConnectorService _llmConnectorService;
 
-    public SocialSharingJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random)
+    public SocialSharingJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random, IHubContext<ActivityHub> activityHubContext)
     {
         try
         {
+            this._activityHubContext = activityHubContext;
             this._configuration = configuration;
             this._random = random;
             this._mongo = mongo;
+            this._llmConnectorService = new OpenAIConnectorService();
 
             if (_configuration.Animations.SocialSharing.IsInteracting)
             {
@@ -66,7 +72,7 @@ public class SocialSharingJob
         }
     }
 
-    private void Step()
+    private async void Step()
     {
         //take some random NPCs
         var lines = new StringBuilder();
@@ -76,7 +82,10 @@ public class SocialSharingJob
             string tweetText = null;
 
             if (Program.Configuration.Animations.SocialSharing.IsChatGptEnabled)
-                tweetText = OpenAi.OpenAiService.Get(agent);
+            {
+                tweetText = await this._llmConnectorService.GenerateTweet(agent);
+                //tweetText = OpenAi.OpenAiService.Get(agent);
+            }
 
             //var tweetText = "";
             while (string.IsNullOrEmpty(tweetText))
@@ -156,9 +165,18 @@ public class SocialSharingJob
                     _log.Error($"Could not post timeline command to ghosts api {_configuration.GhostsApiUrl}: {e}");
                 }
             }
+            
+            //post to hub
+            await this._activityHubContext.Clients.All.SendAsync("show",
+                "1",
+                agent.Id.ToString(),
+                "social",
+                tweetText,
+                DateTime.Now.ToString(CultureInfo.InvariantCulture)
+            );
         }
 
-        File.AppendAllText($"{SavePath}tweets.csv", lines.ToString());
+        await File.AppendAllTextAsync($"{SavePath}tweets.csv", lines.ToString());
     }
 
     private static string ProcessAccount(NpcProfile agent)

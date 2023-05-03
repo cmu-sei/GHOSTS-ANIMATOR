@@ -6,7 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Ghosts.Animator.Api.Hubs;
 using Ghosts.Animator.Api.Infrastructure.Models;
+using Ghosts.Animator.Extensions;
+using Microsoft.AspNetCore.SignalR;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using NLog;
@@ -24,16 +27,27 @@ public class SocialBeliefJob
 
     private const string SavePath = "output/socialbelief/";
     private const string SocialGraphFile = "social_belief.json";
+    private readonly IHubContext<ActivityHub> _activityHubContext;
 
     public static string GetSocialGraphFile()
     {
         return SavePath + SocialGraphFile;
     }
 
-    public SocialBeliefJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random)
+    public static string[] Beliefs = new[]
+    {
+        "Strong passwords are essential.", "Regular software updates matter.", "Public Wi-Fi is risky.", "Antivirus software is a must.",
+        "Encryption protects data.", "Phishing attacks are common.", "Two-factor authentication helps.", "Social engineering is a threat.",
+        "IoT devices can be vulnerable.", "Cyberwarfare affects nations.", "Ransomware can cripple businesses.", "Insider threats are real.",
+        "Dark web is a breeding ground.", "DDoS attacks disrupt services.", "Hacktivists promote causes."
+    };
+
+    public SocialBeliefJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random,
+        IHubContext<ActivityHub> activityHubContext)
     {
         try
         {
+            this._activityHubContext = activityHubContext;
             this._configuration = configuration;
             this._random = random;
             this._mongo = mongo;
@@ -139,13 +153,21 @@ public class SocialBeliefJob
         if (belief == null)
         {
             var l = Convert.ToDecimal(this._random.NextDouble() * (0.75 - 0.25) + 0.25);
-            
-            belief = new SocialGraph.Belief(graph.Id, graph.Id, "H_1", graph.CurrentStep, l, (decimal)0.5);
+            belief = new SocialGraph.Belief(graph.Id, graph.Id, Beliefs.RandomFromStringArray(), graph.CurrentStep, l, (decimal)0.5);
         }
 
         var bayes = new Bayes(graph.CurrentStep, belief.Likelihood, belief.Posterior, 1 - belief.Likelihood, 1 - belief.Posterior);
-        var newBelief = new SocialGraph.Belief(graph.Id, graph.Id, "H_1", graph.CurrentStep, belief.Likelihood, bayes.PosteriorH1);
+        var newBelief = new SocialGraph.Belief(graph.Id, graph.Id, Beliefs.RandomFromStringArray(), graph.CurrentStep, belief.Likelihood, bayes.PosteriorH1);
         graph.Beliefs.Add(newBelief);
+
+        //post to hub
+        this._activityHubContext.Clients.All.SendAsync("show",
+            newBelief.Step,
+            newBelief.To.ToString(),
+            "belief",
+            $"{graph.Name} has deeper belief in {newBelief.Name}",
+            DateTime.Now.ToString()
+        );
     }
 
 
@@ -169,7 +191,7 @@ public class SocialBeliefJob
                     .Append(Environment.NewLine);
             }
         }
-        
+
         Console.WriteLine(line.ToString().TrimEnd(','));
 
         File.WriteAllText($"{SavePath}social_beliefs.csv", line.ToString().TrimEnd(',') + Environment.NewLine);

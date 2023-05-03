@@ -3,8 +3,10 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Ghosts.Animator.Api.Hubs;
 using Ghosts.Animator.Api.Infrastructure.Animations.AnimationDefinitions;
 using Ghosts.Animator.Api.Infrastructure.Models;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Driver;
@@ -23,12 +25,14 @@ public class AnimationsManager : IHostedService
     private Thread _socialBeliefsJobThread;
     
     private readonly IServiceScopeFactory _scopeFactory;
+    protected IHubContext<ActivityHub> _activityHubContext;
 
-    public AnimationsManager(IServiceScopeFactory scopeFactory)
+    public AnimationsManager(IServiceScopeFactory scopeFactory, IHubContext<ActivityHub> activityHubContext)
     {
         _scopeFactory = scopeFactory;
         this._configuration = Program.Configuration;
         this._random = Random.Shared;
+        this._activityHubContext = activityHubContext;
     }
     
     public Task StartAsync(CancellationToken cancellationToken)
@@ -72,7 +76,7 @@ public class AnimationsManager : IHostedService
         return Task.CompletedTask;
     }
 
-    private async void Run()
+    private void Run()
     {
         if (!this._configuration.Animations.IsEnabled)
         {
@@ -96,13 +100,13 @@ public class AnimationsManager : IHostedService
                     _socialGraphJobThread = new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
-                        var _ = new SocialGraphJob(this._configuration, this._mongo, this._random);
+                        var _ = new SocialGraphJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                     });
                     _socialGraphJobThread.Start();
                 }
                 else
                 {
-                    var _ = new SocialGraphJob(this._configuration, this._mongo, this._random);
+                    var _ = new SocialGraphJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                 }
             }
             else
@@ -125,13 +129,13 @@ public class AnimationsManager : IHostedService
                     _socialBeliefsJobThread = new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
-                        var _ = new SocialBeliefJob(this._configuration, this._mongo, this._random);
+                        var _ = new SocialBeliefJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                     });
                     _socialBeliefsJobThread.Start();
                 }
                 else
                 {
-                    var _ = new SocialBeliefJob(this._configuration, this._mongo, this._random);
+                    var _ = new SocialBeliefJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                 }
             }
             else
@@ -154,13 +158,13 @@ public class AnimationsManager : IHostedService
                     _socialSharingJobThread = new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
-                        var _ = new SocialSharingJob(this._configuration, this._mongo, this._random);
+                        var _ = new SocialSharingJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                     });
                     _socialSharingJobThread.Start();
                 }
                 else
                 {
-                    var _ = new SocialSharingJob(this._configuration, this._mongo, this._random);
+                    var _ = new SocialSharingJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                 }
             }
             else

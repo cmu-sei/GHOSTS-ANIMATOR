@@ -12,7 +12,7 @@ function GetNpcUrl(o, id) {
     const x = o.find(x => x.target.toLowerCase() === id.toLowerCase());
     if (x === undefined)
         return "return null;";
-    return "window.open('./profile/" + x.npc_id + "')";
+    return "window.open('./view-relationships/profile/" + x.npc_id + "')";
 }
 
 function GetNpcPhoto(o, id) {

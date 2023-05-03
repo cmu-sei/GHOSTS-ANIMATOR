@@ -95,6 +95,7 @@ public class NPCsController : ControllerBase
     {
         //get npc and find image
         var npc = _mongo.Find(x => x.Id == id).FirstOrDefault();
+        if (npc == null) return NotFound();
         //load image as stream
         var stream = new FileStream(npc.PhotoLink, FileMode.Open);
         return File(stream, "image/jpg", $"{npc.Name.ToString().Replace(" ", "_")}.jpg");

@@ -8,10 +8,10 @@
         <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
         <noWarn>1591</noWarn>
         
-        <ReleaseVersion>0.5.0.0</ReleaseVersion>
-        <Version>0.5.0.0</Version>
-        <AssemblyVersion>0.5.0.0</AssemblyVersion>
-        <FileVersion>0.5.0.0</FileVersion>
+        <ReleaseVersion>0.6.0.0</ReleaseVersion>
+        <Version>0.6.0.0</Version>
+        <AssemblyVersion>0.6.0.0</AssemblyVersion>
+        <FileVersion>0.6.0.0</FileVersion>
         <SynchReleaseVersion>false</SynchReleaseVersion>
 
         <Authors>GHOSTS Development Team @ Carnegie Mellon University</Authors>
@@ -29,11 +29,12 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="11.0.1" />
+        <PackageReference Include="Betalgo.OpenAI" Version="6.8.5" />
         <PackageReference Include="Faker.Net" Version="2.0.154" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.16" />
         <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
         <PackageReference Include="FileHelpers" Version="3.5.1" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="NLog" Version="4.7.15" />
         <PackageReference Include="RestSharp" Version="108.0.3" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
@@ -130,6 +131,8 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="wwwroot\view-social\files\5c0e56b44362ec8e2621299d2ddce5ac68e4e1b11e08ac4547075b0e6374d9083a589eec442479ef7876be75215b8499cf9463743191cfe01e4ca3cb826135e5.json" />
       <_ContentIncludedByDefault Remove="output\social_graph.json" />
+      <_ContentIncludedByDefault Remove="output\socialbelief\social_belief.json" />
+      <_ContentIncludedByDefault Remove="output\socialgraph\social_graph.json" />
     </ItemGroup>
 
 

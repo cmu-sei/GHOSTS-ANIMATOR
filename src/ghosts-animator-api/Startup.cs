@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Ghosts.Animator.Api.Hubs;
 using Ghosts.Animator.Api.Infrastructure;
 using Ghosts.Animator.Api.Infrastructure.Animations;
 using Ghosts.Animator.Api.Infrastructure.Extensions;
@@ -69,6 +70,10 @@ public class Startup
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
         services.AddMvc();
+        
+        services.AddSignalR()
+            .AddJsonProtocol(options => { options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+        
         services.AddControllersWithViews().AddRazorRuntimeCompilation();
         services.AddRouting(options => options.LowercaseUrls = true);
     }
@@ -83,7 +88,11 @@ public class Startup
         app.UseStaticFiles();
         app.UseRouting();
         app.UseCors();
-        app.UseEndpoints(endpoints => { endpoints.MapControllers(); } );
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers(); 
+            endpoints.MapHub<ActivityHub>("/hubs/activities");
+        } );
 
         app.UseSwagger();
         app.UseSwaggerUI(c =>

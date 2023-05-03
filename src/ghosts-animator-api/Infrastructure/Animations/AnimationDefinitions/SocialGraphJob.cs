@@ -6,8 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Ghosts.Animator.Api.Hubs;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Ghosts.Animator.Extensions;
+using Microsoft.AspNetCore.SignalR;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using NLog;
@@ -27,16 +29,18 @@ public class SocialGraphJob
 
     private const string SavePath = "output/socialgraph/";
     private const string SocialGraphFile = "social_graph.json";
+    private readonly IHubContext<ActivityHub> _activityHubContext;
         
     public static string GetSocialGraphFile()
     {
         return SavePath + SocialGraphFile;
     }
 
-    public SocialGraphJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random)
+    public SocialGraphJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random, IHubContext<ActivityHub> activityHubContext)
     {
         try
         {
+            this._activityHubContext = activityHubContext;
             this._configuration = configuration;
             this._random = random;
             this._mongo = mongo;
@@ -161,6 +165,18 @@ public class SocialGraphJob
             {
                 var learning = new SocialGraph.Learning(graph.Id, agent.Id, topic, graph.CurrentStep, 1);
                 graph.Knowledge.Add(learning);
+                
+                //post to hub
+                this._activityHubContext.Clients.All.SendAsync("show",
+                    graph.CurrentStep,
+                    agent.Id,
+                    "knowledge",
+                    $"learned more about {learning.Topic} ({learning.Value})",
+                    DateTime.Now.ToString()
+                );
+
+                Thread.Sleep(_configuration.Animations.SocialGraph.TurnLength);
+                
                 _log.Trace(learning.ToString);
 
                 //does relationship value change?
@@ -170,9 +186,22 @@ public class SocialGraphJob
                     if (connection is not null)
                     {
                         connection.RelationshipStatus++;
-                        var o = $"{graph.CurrentStep}: {learning.To}:{learning.From} Relationship improved...";
+                        
+                        var npcTo = this._mongo.Find(x => x.Id == learning.To).FirstOrDefault();
+                        var npcFrom = this._mongo.Find(x => x.Id == learning.From).FirstOrDefault();
+                        
+                        var o = $"{graph.CurrentStep}: {npcFrom.Name.ToString()}'s relationship improved with {npcTo.Name.ToString()}...";
                         Console.WriteLine(o);
                         _log.Trace(o);
+                        
+                        //post to hub
+                        this._activityHubContext.Clients.All.SendAsync("show",
+                            graph.CurrentStep,
+                            agent.Id,
+                            "relationship",
+                            o,
+                            DateTime.Now.ToString()
+                        );
                     }
                 }
             }
@@ -181,6 +210,15 @@ public class SocialGraphJob
                 var o = $"{graph.CurrentStep}: {graph.Id} didn't learn...";
                 Console.WriteLine(o);
                 _log.Trace(o);
+                
+                //post to hub
+                this._activityHubContext.Clients.All.SendAsync("show",
+                    graph.CurrentStep,
+                    agent.Id,
+                    "relationship",
+                    o,
+                    DateTime.Now.ToString()
+                );
             }
         }
         
@@ -201,6 +239,16 @@ public class SocialGraphJob
                         {
                             var learning = new SocialGraph.Learning(graph.Id, graph.Id, k.Topic, graph.CurrentStep, -1);
                             graph.Knowledge.Add(learning);
+                            
+                            //post to hub
+                            this._activityHubContext.Clients.All.SendAsync("show",
+                                graph.CurrentStep,
+                                graph.Id,
+                                "knowledge",
+                                $"had knowledge decay in {k.Topic} occur",
+                                DateTime.Now.ToString()
+                            );
+                            
                             break;
                         }
                     }
@@ -217,6 +265,15 @@ public class SocialGraphJob
                         Value = -1
                     };
                     c.Interactions.Add(interaction);
+                    
+                    //post to hub
+                    this._activityHubContext.Clients.All.SendAsync("show",
+                        graph.CurrentStep,
+                        graph.Id,
+                        "relationship",
+                        $"Experienced general relationship decay",
+                        DateTime.Now.ToString()
+                    );
                 }
             }
         }

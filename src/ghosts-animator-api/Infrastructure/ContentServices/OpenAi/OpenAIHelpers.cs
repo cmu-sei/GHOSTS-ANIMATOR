@@ -3,7 +3,7 @@ using System.Linq;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Newtonsoft.Json;
 
-namespace Ghosts.Animator.Api.Infrastructure.OpenAi;
+namespace Ghosts.Animator.Api.Infrastructure.ContentServices.OpenAi;
 
 public static class OpenAIHelpers
 {

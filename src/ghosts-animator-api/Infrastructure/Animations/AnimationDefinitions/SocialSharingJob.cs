@@ -102,6 +102,7 @@ public class SocialSharingJob
                 
                 var postPayload = File.ReadAllText("config/socializer_post.json");
                 postPayload = postPayload.Replace("{id}", Guid.NewGuid().ToString());
+                postPayload = postPayload.Replace("{user}", agent.Email);
                 postPayload = postPayload.Replace("{payload}", formValues.ToString());
                 postPayload = postPayload.Replace("{url}", _configuration.Animations.SocialSharing.SocializerUrl);
                 postPayload = postPayload.Replace("{now}", DateTime.Now.ToString(CultureInfo.InvariantCulture));

@@ -6,5 +6,5 @@
   "activeUtc": "{now}",
   "createdUtc": "{now}",
   "status": 0,
-  "update": "{\"id\":\"00000000-0000-0000-0000-000000000000\",\"timeLineHandlers\":[{\"HandlerType\":\"BrowserFirefox\",\"Initial\":\"about:blank\",\"UtcTimeOn\":\"00:00:00\",\"UtcTimeOff\":\"24.00:00:00\",\"HandlerArgs\":{},\"Loop\":false,\"TimeLineEvents\":[{\"Command\":\"random\",\"CommandArgs\":[{\"Uri\":\"{url}\",\"Method\":\"POST\",\"FormValues\":{payload}\"}}],\"DelayAfter\":60000,\"DelayBefore\":0}]}]}"
+  "update": "{\"id\":\"{id}\",\"timeLineHandlers\":[{\"HandlerType\":\"BrowserFirefox\",\"Initial\":\"about:blank\",\"UtcTimeOn\":\"00:00:00\",\"UtcTimeOff\":\"24.00:00:00\",\"HandlerArgs\":{},\"Loop\":false,\"TimeLineEvents\":[{\"Command\":\"random\",\"CommandArgs\":[{\"Uri\":\"{url}\",\"Method\":\"POST\",\"FormValues\":{payload}\"}}],\"DelayAfter\":60000,\"DelayBefore\":0}]}]}"
 }

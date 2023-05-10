@@ -20,7 +20,7 @@ public class ContentCreationService
     {
         string tweetText = null;
 
-        if (Program.Configuration.Animations.SocialSharing.IsChatGptEnabled)
+        if (Program.Configuration.Animations.SocialSharing.IsChatGptEnabled && this._llmConnectorService.IsReady)
         {
             tweetText = await this._llmConnectorService.GenerateTweet(agent).ConfigureAwait(false);
         }

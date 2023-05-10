@@ -2,6 +2,8 @@
 
 using System;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Ghosts.Animator.Api.Hubs;
@@ -63,9 +65,6 @@ public class Startup
         });
         services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
             
-        // start any configured social jobs
-        services.AddSingleton<IHostedService, AnimationsManager>();
-        
         services.AddControllers().AddJsonOptions(options => 
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
@@ -76,6 +75,9 @@ public class Startup
         
         services.AddControllersWithViews().AddRazorRuntimeCompilation();
         services.AddRouting(options => options.LowercaseUrls = true);
+        
+        // start any configured animation jobs
+        services.AddSingleton<IHostedService, AnimationsManager>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

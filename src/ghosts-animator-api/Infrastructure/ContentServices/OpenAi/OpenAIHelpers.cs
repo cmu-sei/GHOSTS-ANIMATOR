@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using Ghosts.Animator.Api.Infrastructure.Models;
@@ -8,16 +9,11 @@ namespace Ghosts.Animator.Api.Infrastructure.ContentServices.OpenAi;
 public static class OpenAIHelpers
 {
     /// <summary>
-    /// You'll need a .env file at config/.env with this line:
-    /// chatgtp_api_key:your_key_here
+    /// You'll need to supply your openAi api key via an environment variable
     /// </summary>
-    /// <returns></returns>
     public static string GetApiKey()
     {
-        var path = Path.Combine(Directory.GetCurrentDirectory(), "config", ".env");
-        if (!File.Exists(path)) return null;
-        var lines = File.ReadAllLines(path);
-        return (from line in lines where line.StartsWith("open_ai_api_key") select line.Replace("open_ai_api_key:", "")).FirstOrDefault();
+        return Environment.GetEnvironmentVariable("OPEN_AI_API_KEY");
     }
     
     public static string GetFlattenedNPC(NPC agent)

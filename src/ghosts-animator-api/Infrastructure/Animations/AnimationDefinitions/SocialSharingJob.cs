@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading;
 using Ghosts.Animator.Api.Hubs;
 using Ghosts.Animator.Api.Infrastructure.ContentServices;
-using Ghosts.Animator.Api.Infrastructure.ContentServices.OpenAi;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Ghosts.Animator.Extensions;
 using Microsoft.AspNetCore.SignalR;
@@ -28,7 +27,6 @@ public class SocialSharingJob
     private const string SavePath = "output/socialsharing/";
     private readonly int CurrentStep;
     private readonly IHubContext<ActivityHub> _activityHubContext;
-    private readonly OpenAIConnectorService _llmConnectorService;
 
     public SocialSharingJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random, IHubContext<ActivityHub> activityHubContext)
     {
@@ -38,7 +36,7 @@ public class SocialSharingJob
             this._configuration = configuration;
             this._random = random;
             this._mongo = mongo;
-            this._llmConnectorService = new OpenAIConnectorService();
+            
 
             if (_configuration.Animations.SocialSharing.IsInteracting)
             {

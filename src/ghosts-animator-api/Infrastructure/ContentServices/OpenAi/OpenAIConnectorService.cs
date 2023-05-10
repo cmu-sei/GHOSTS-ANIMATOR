@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Ghosts.Animator.Api.Infrastructure.Models;
+using NLog;
 using OpenAI.GPT3;
 using OpenAI.GPT3.Managers;
 using OpenAI.GPT3.ObjectModels.RequestModels;
@@ -11,14 +14,45 @@ namespace Ghosts.Animator.Api.Infrastructure.ContentServices.OpenAi;
 
 public class OpenAIConnectorService
 {
+    private static readonly Logger _log = LogManager.GetCurrentClassLogger();
     private readonly OpenAIService _service;
+    public bool IsReady { get; set; }
 
     public OpenAIConnectorService()
     {
+        var apiKey = OpenAIHelpers.GetApiKey();
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            _log.Warn("OpenAI enabled, but no API key supplied");
+            return;
+        }
+        
+        HttpClientHandler handler;
+        if (!string.IsNullOrEmpty(Program.Configuration.Proxy))
+        {
+            handler = new HttpClientHandler()
+            {
+                Proxy = new WebProxy(Program.Configuration.Proxy),
+                UseProxy = true
+            };
+        }
+        else
+        {
+            handler = new HttpClientHandler()
+            {
+                Proxy = new WebProxy(),
+                UseProxy = false
+            };
+        }
+
+        var client = new HttpClient(handler);
+
         this._service = new OpenAIService(new OpenAiOptions
         {
-            ApiKey = OpenAIHelpers.GetApiKey()
-        });
+            ApiKey = apiKey
+        }, client);
+
+        this.IsReady = true;
     }
 
     //public async Task<string> GenerateDocumentContent(NPC npc)
@@ -83,13 +117,13 @@ public class OpenAIConnectorService
         if (completionResult.Successful)
         {
             var resp = completionResult.Choices.First().Message.Content;
-            Console.WriteLine(resp);
+            _log.Trace(resp);
             return resp;
         }
 
         if (completionResult.Error != null)
         {
-            Console.WriteLine(completionResult.Error.Message);
+            _log.Warn(completionResult.Error.Message);
         }
 
         return string.Empty;

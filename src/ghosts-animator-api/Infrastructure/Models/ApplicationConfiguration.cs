@@ -5,6 +5,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Models;
 public class ApplicationConfiguration
 {
     public string GhostsApiUrl { get; set; }
+    public string Proxy { get; set; }
     public AnimationsSettings Animations { get; set; }
     public DatabaseSettings.ApplicationDatabaseSettings DatabaseSettings { get; set; }
 

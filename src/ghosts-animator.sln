@@ -5,6 +5,7 @@ ProjectSection(SolutionItems) = preProject
 	README.md = ../README.md
 	.gitignore = ../.gitignore
 	docker-compose.yml = docker-compose.yml
+	.dockerignore = .dockerignore
 	Dockerfile = Dockerfile
 	LICENSE.MD = ../LICENSE.MD
 EndProjectSection

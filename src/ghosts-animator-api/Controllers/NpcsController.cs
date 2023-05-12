@@ -102,17 +102,31 @@ public class NPCsController : ControllerBase
     }
         
     /// <summary>
-    /// Generate random NPC by random service branch
+    /// Create one NPC (handy for syncing up from ghosts core api)
     /// </summary>
     /// <returns>NPC Profile</returns>
     [ProducesResponseType(typeof(NpcProfile), (int) HttpStatusCode.OK)]
     [SwaggerResponse((int) HttpStatusCode.OK, Type = typeof(NpcProfile))]
-    [SwaggerOperation("generateNpc")]
+    [SwaggerOperation("createNpc")]
     [HttpPost]
-    public NpcProfile GenerateOne()
+    public NpcProfile Create(NpcProfile npcProfile, bool generate)
     {
-        var npc = NPC.TransformTo(Npc.Generate(MilitaryUnits.GetServiceBranch()));
-        _mongo.InsertOne(npc, new InsertOneOptions { BypassDocumentValidation = false});
+        NpcProfile npc;
+        if (generate)
+        {
+            npc = NPC.TransformTo(Npc.Generate(MilitaryUnits.GetServiceBranch()));
+            npc.Name = npcProfile.Name;
+            npc.Email = npcProfile.Email;
+        }
+        else
+        {
+            npc = npcProfile;
+        }
+        
+        npc.Id = Guid.NewGuid();
+        npc.Created = DateTime.UtcNow;
+        
+        _mongo.InsertOne(NPC.TransformTo(npc), new InsertOneOptions { BypassDocumentValidation = false});
         return npc;
     }
         

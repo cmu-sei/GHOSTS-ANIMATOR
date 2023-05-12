@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using Ghosts.Animator.Api.Infrastructure.Models;
+using Ghosts.Animator.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Swashbuckle.AspNetCore.Annotations;
@@ -18,25 +19,16 @@ namespace Ghosts.Animator.Api.Controllers;
 [ApiController]
 [Produces("application/json")]
 [Route("api/[controller]")]
-public class BuildController : ControllerBase
+public class GenerateController : ControllerBase
 {
     private readonly IMongoCollection<NPC> _mongo;
 
-    public BuildController(DatabaseSettings.IApplicationDatabaseSettings settings)
+    public GenerateController(DatabaseSettings.IApplicationDatabaseSettings settings)
     {
         var client = new MongoClient(settings.ConnectionString);
         var database = client.GetDatabase(settings.DatabaseName);
         _mongo = database.GetCollection<NPC>(settings.CollectionNameNPCs);
     }
-
-    // private FilterDefinition<NPC> BuildTeamFilter(string team, string enclave, string campaign)
-    // {
-    //     var filter = Builders<NPC>.Filter.And(
-    //         Builders<NPC>.Filter.Eq("Campaign", campaign),
-    //         Builders<NPC>.Filter.Eq("Enclave", enclave),
-    //         Builders<NPC>.Filter.Eq("Team", team));
-    //     return filter;
-    // }
 
     /// <summary>
     /// Returns all NPCs at the specified level - Campaign, Enclave, or Team
@@ -97,5 +89,20 @@ public class BuildController : ControllerBase
         Console.WriteLine($"{createdNPCs.Count} NPCs generated in {t.ElapsedMilliseconds} ms");
 
         return createdNPCs;
+    }
+    
+    /// <summary>
+    /// Generate random NPC by random service branch
+    /// </summary>
+    /// <returns>NPC Profile</returns>
+    [ProducesResponseType(typeof(NpcProfile), (int) HttpStatusCode.OK)]
+    [SwaggerResponse((int) HttpStatusCode.OK, Type = typeof(NpcProfile))]
+    [SwaggerOperation("generateNpc")]
+    [HttpPost("one")]
+    public NpcProfile GenerateOne()
+    {
+        var npc = NPC.TransformTo(Npc.Generate(MilitaryUnits.GetServiceBranch()));
+        _mongo.InsertOne(npc, new InsertOneOptions { BypassDocumentValidation = false});
+        return npc;
     }
 }

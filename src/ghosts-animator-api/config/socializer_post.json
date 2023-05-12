@@ -1,7 +1,7 @@
 {
   "id":0,
   "machineId": "00000000-0000-0000-0000-000000000000",
-  "type": 0,
+  "type": 10,
   "username": "{user}",
   "activeUtc": "{now}",
   "createdUtc": "{now}",

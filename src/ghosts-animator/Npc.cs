@@ -36,7 +36,8 @@ namespace Ghosts.Animator
             NpcProfile.Rank = MilitaryRanks.GetRankByBranch(config.Branch.Value);
             NpcProfile.BiologicalSex = PhysicalCharacteristics.GetBiologicalSex();
 
-            NpcProfile.Birthdate = PhysicalCharacteristics.GetBirthdate(NpcProfile.Rank.Pay);
+            if(NpcProfile.Rank?.Pay != null)
+                NpcProfile.Birthdate = PhysicalCharacteristics.GetBirthdate(NpcProfile.Rank.Pay);
             NpcProfile.Health = HealthService.GetHealthProfile();
             
             NpcProfile.Address.Add(Address.GetHomeAddress());

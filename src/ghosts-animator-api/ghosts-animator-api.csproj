@@ -125,6 +125,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="config\timelines" />
       <Folder Include="wwwroot\view-relationships" />
     </ItemGroup>
 

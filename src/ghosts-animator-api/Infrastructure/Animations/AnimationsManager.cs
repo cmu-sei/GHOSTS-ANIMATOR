@@ -176,5 +176,34 @@ public class AnimationsManager : IHostedService
         {
             _log.Trace(e);
         }
+        
+        try
+        {
+            if (this._configuration.Animations.FullAutonomy.IsEnabled && this._configuration.Animations.FullAutonomy.IsInteracting)
+            {
+                _log.Info($"Starting FullAutonomy...");
+                if (this._configuration.Animations.FullAutonomy.IsMultiThreaded)
+                {
+                    _socialSharingJobThread = new Thread(() =>
+                    {
+                        Thread.CurrentThread.IsBackground = true;
+                        var _ = new FullAutonomyJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                    });
+                    _socialSharingJobThread.Start();
+                }
+                else
+                {
+                    var _ = new FullAutonomyJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                }
+            }
+            else
+            {
+                _log.Info($"FullAutonomy is not enabled, skipping.");
+            }
+        }
+        catch (Exception e)
+        {
+            _log.Trace(e);
+        }
     }
 }

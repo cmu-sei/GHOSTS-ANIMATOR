@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -25,7 +26,7 @@ public class OpenAIConnectorService
             _log.Warn("OpenAI enabled, but no API key supplied");
             return;
         }
-        
+
         HttpClientHandler handler;
         if (!string.IsNullOrEmpty(Program.Configuration.Proxy))
         {
@@ -59,7 +60,7 @@ public class OpenAIConnectorService
     //public async Task<string> GeneratePowerPointContent(NPC npc)
 
     //public async Task<string> GenerateEmail(NPC npc)
-    
+
     public async Task<string> GeneratePowershellScript(NPC npc)
     {
         var flattenedAgent = OpenAIHelpers.GetFlattenedNPC(npc);
@@ -72,7 +73,7 @@ public class OpenAIConnectorService
 
         return await ExecuteQuery(messages);
     }
-    
+
     public async Task<string> GenerateCommand(NPC npc)
     {
         var flattenedAgent = OpenAIHelpers.GetFlattenedNPC(npc);
@@ -109,7 +110,8 @@ public class OpenAIConnectorService
         {
             Messages = messages,
             Model = OpenAI.GPT3.ObjectModels.Models.Gpt_4,
-            MaxTokens = 50 //optional
+            //Model = OpenAI.GPT3.ObjectModels.Models.ChatGpt3_5Turbo,
+            MaxTokens = 500 //optional
             //Temperature = 0.7 //optional
         });
 
@@ -126,5 +128,32 @@ public class OpenAIConnectorService
         }
 
         return string.Empty;
+    }
+
+    public async Task<string> GenerateNextAction(NPC npc, string history)
+    {
+        var flattenedAgent = OpenAIHelpers.GetFlattenedNPC(npc);
+
+        Console.WriteLine($"{npc.Name} with {history.Length} history records");
+
+        var messages = new List<ChatMessage>
+        {
+            ChatMessage.FromSystem($"Given this json information about a person ```{flattenedAgent[..3050]}```"),
+            ChatMessage.FromSystem($"And that they've recently done the following: ```{history}```"),
+            ChatMessage.FromSystem($"And that they can use any program on a computer."),
+            ChatMessage.FromSystem(
+                "What might they do—given who they are, what role they play within the organization, and what a realistic representation of this person might actually do?"),
+            ChatMessage.FromSystem("People do a wide array of activities in a day, and we want to mimic that."),
+            ChatMessage.FromSystem("People sometimes do irrational things, and we need to account for this."),
+            ChatMessage.FromSystem("Consider that 14 times a year there is a full moon, and we need to account for this."),
+            ChatMessage.FromSystem(
+                "Consider that periodically someone will do something on their computer that is not allowed by company policy—they will do this by mistake or intentionally."),
+            ChatMessage.FromSystem("Consider that people often do things off-line that influence their online actions."),
+            ChatMessage.FromSystem(
+                "Just tell me what they do, there is no need to tell me about what data I sent you, just reply with the action and why you chose that action IN ONE SENTENCE."),
+            ChatMessage.FromSystem("Do not use word, or excel. what would this person do?"),
+        };
+
+        return await ExecuteQuery(messages);
     }
 }

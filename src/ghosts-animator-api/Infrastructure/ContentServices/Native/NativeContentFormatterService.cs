@@ -6,7 +6,7 @@ using Ghosts.Animator.Models;
 
 namespace Ghosts.Animator.Api.Infrastructure.ContentServices.Native;
 
-public static class NativeContentConnectorService
+public static class NativeContentFormatterService
 {
     public static string GenerateTweet(NPC agent)
     {

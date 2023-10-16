@@ -64,9 +64,16 @@ public class ApplicationConfiguration
             public bool IsMultiThreaded { get; set; }
             public bool IsInteracting { get; set; }
             public bool IsSendingTimelinesToGhostsApi { get; set; }
-            public bool IsChatGptEnabled { get; set; }
+            public ContentEngineType ContentEngine { get; set; }
             public int TurnLength { get; set; }
             public int MaximumSteps { get; set; }
+
+            public enum ContentEngineType
+            {
+                Direct = 0,
+                OpenAi = 10,
+                Ollama = 20
+            }
         }
     }
 }

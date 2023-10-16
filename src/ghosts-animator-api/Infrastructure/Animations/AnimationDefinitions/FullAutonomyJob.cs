@@ -31,7 +31,8 @@ public class FullAutonomyJob
     private readonly int CurrentStep;
     private readonly IHubContext<ActivityHub> _activityHubContext;
 
-    public FullAutonomyJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random, IHubContext<ActivityHub> activityHubContext)
+    public FullAutonomyJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random,
+        IHubContext<ActivityHub> activityHubContext)
     {
         try
         {
@@ -39,9 +40,11 @@ public class FullAutonomyJob
             this._configuration = configuration;
             this._random = random;
             this._mongo = mongo;
-            
-            this.History = File.Exists(this.HistoryFile) ? File.ReadAllLinesAsync(this.HistoryFile).Result.ToList() : new List<string>();
-            
+
+            this.History = File.Exists(this.HistoryFile)
+                ? File.ReadAllLinesAsync(this.HistoryFile).Result.ToList()
+                : new List<string>();
+
             if (_configuration.Animations.SocialSharing.IsInteracting)
             {
                 if (!Directory.Exists(SavePath))
@@ -76,14 +79,8 @@ public class FullAutonomyJob
 
     private async void Step()
     {
-        if (!Program.Configuration.Animations.FullAutonomy.IsEnabled || !Program.Configuration.Animations.FullAutonomy.IsChatGptEnabled)
-        {
-            throw new ArgumentException("Can't go fully autonomous with this configuration");
-        }
-        
         var contentService = new ContentCreationService();
-     
-        
+
         var agents = this._mongo.Find(x => true).ToList().Shuffle(_random).Take(_random.Next(5, 20));
         foreach (var agent in agents)
         {
@@ -91,22 +88,22 @@ public class FullAutonomyJob
             var nextAction = await contentService.GenerateNextAction(agent, string.Join('\n', history));
 
             var line = $"{agent.Id}|{nextAction}|{DateTime.UtcNow}\n";
-            
+
             await File.AppendAllTextAsync(HistoryFile, line);
             this.History.Add(line);
-            
+
             Thread.Sleep(500);
 
-            //post to hub
-            // await this._activityHubContext.Clients.All.SendAsync("show",
-            //     "1",
-            //     agent.Id.ToString(),
-            //     "social",
-            //     tweetText,
-            //     DateTime.Now.ToString(CultureInfo.InvariantCulture)
-            // );
+            // post to hub
+            await this._activityHubContext.Clients.All.SendAsync("show",
+                "1",
+                agent.Id.ToString(),
+                "social",
+                nextAction,
+                DateTime.Now.ToString(CultureInfo.InvariantCulture)
+            );
         }
 
-        //await File.AppendAllTextAsync($"{SavePath}tweets.csv", lines.ToString());
+        await File.AppendAllTextAsync($"{SavePath}tweets.csv", this.History.ToString());
     }
 }

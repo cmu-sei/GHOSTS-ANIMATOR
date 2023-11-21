@@ -45,34 +45,33 @@ public class ApplicationConfiguration
             public int TurnLength { get; set; }
             public int MaximumSteps { get; set; }
         }
-        
+
         public class SocialSharingSettings
         {
             public bool IsEnabled { get; set; }
             public bool IsMultiThreaded { get; set; }
             public bool IsInteracting { get; set; }
             public bool IsSendingTimelinesToGhostsApi { get; set; }
-            public bool IsChatGptEnabled { get; set; }
             public string SocializerUrl { get; set; }
             public int TurnLength { get; set; }
             public int MaximumSteps { get; set; }
         }
-        
+
         public class FullAutonomySettings
         {
             public bool IsEnabled { get; set; }
             public bool IsMultiThreaded { get; set; }
             public bool IsInteracting { get; set; }
             public bool IsSendingTimelinesToGhostsApi { get; set; }
-            public ContentEngineType ContentEngine { get; set; }
+            public ContentEngineSettings ContentEngine { get; set; }
             public int TurnLength { get; set; }
             public int MaximumSteps { get; set; }
 
-            public enum ContentEngineType
+            public class ContentEngineSettings
             {
-                Direct = 0,
-                OpenAi = 10,
-                Ollama = 20
+                public string Source { get; set; }
+                public string Model { get; set; }
+                public string Host { get; set; }
             }
         }
     }

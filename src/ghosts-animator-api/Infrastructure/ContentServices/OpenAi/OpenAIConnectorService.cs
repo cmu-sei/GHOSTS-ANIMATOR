@@ -21,7 +21,7 @@ public class OpenAIConnectorService
         var apiKey = OpenAIHelpers.GetApiKey();
         if (string.IsNullOrEmpty(apiKey))
         {
-            _log.Warn("No OpenAI API key supplied. OpenAIConnectorService not enabled.");
+            _log.Warn("No OPEN_AI_API_KEY environment variable set. OpenAIConnectorService not enabled.");
             return;
         }
 

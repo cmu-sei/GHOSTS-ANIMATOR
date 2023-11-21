@@ -13,8 +13,8 @@ namespace Ghosts.Animator.Api.Infrastructure.ContentServices.Ollama;
 
 public class OllamaConnectorService
 {
-    private static readonly string OLLAMA_HOST = Environment.GetEnvironmentVariable("OLLAMA_HOST") ?? "http://localhost:11434";
-    private static readonly string OLLAMA_MODEL = Environment.GetEnvironmentVariable("OLLAMA_MODEL") ?? "llama2:13b";
+    private static readonly string OLLAMA_HOST = Environment.GetEnvironmentVariable("OLLAMA_HOST") ?? Program.Configuration.Animations.FullAutonomy.ContentEngine.Host;
+    private static readonly string OLLAMA_MODEL = Environment.GetEnvironmentVariable("OLLAMA_MODEL") ?? Program.Configuration.Animations.FullAutonomy.ContentEngine.Model;
     private static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
     public async Task<string> ExecuteQuery(string prompt)

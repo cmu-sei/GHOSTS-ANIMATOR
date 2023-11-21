@@ -11,26 +11,20 @@ namespace Ghosts.Animator.Api.Infrastructure.ContentServices;
 
 public class ContentCreationService
 {
-    private OpenAIFormatterService _openAiFomatterService;
-    private OllamaFormatterService _ollamaFormatterService;
+    private OpenAIFormatterService _openAiFormatterService = new();
+    private OllamaFormatterService _ollamaFormatterService = new();
     private static readonly Logger _log = LogManager.GetCurrentClassLogger();
-
-    public ContentCreationService()
-    {
-        _openAiFomatterService = new OpenAIFormatterService();
-        _ollamaFormatterService = new OllamaFormatterService();
-    }
 
     public async Task<string> GenerateNextAction(NPC agent, string history)
     {
         var nextAction = string.Empty;
         try
         {
-            if (Program.Configuration.Animations.FullAutonomy.ContentEngine == ApplicationConfiguration.AnimationsSettings.FullAutonomySettings.ContentEngineType.OpenAi && this._openAiFomatterService.IsReady)
+            if (Program.Configuration.Animations.FullAutonomy.ContentEngine.Source.ToLower() == "openai" && this._openAiFormatterService.IsReady)
             {
-                nextAction = await this._openAiFomatterService.GenerateNextAction(agent, history).ConfigureAwait(false);
+                nextAction = await this._openAiFormatterService.GenerateNextAction(agent, history).ConfigureAwait(false);
             }
-            else if (Program.Configuration.Animations.FullAutonomy.ContentEngine == ApplicationConfiguration.AnimationsSettings.FullAutonomySettings.ContentEngineType.Ollama)
+            else if (Program.Configuration.Animations.FullAutonomy.ContentEngine.Source.ToLower() == "ollama")
             {
                 nextAction = await this._ollamaFormatterService.GenerateNextAction(agent, history);
             }
@@ -50,15 +44,6 @@ public class ContentCreationService
 
         try
         {
-            if (Program.Configuration.Animations.FullAutonomy.ContentEngine == ApplicationConfiguration.AnimationsSettings.FullAutonomySettings.ContentEngineType.OpenAi && this._openAiFomatterService.IsReady)
-            {
-                tweetText = await this._openAiFomatterService.GenerateTweet(agent).ConfigureAwait(false);
-            }
-            else if (Program.Configuration.Animations.FullAutonomy.ContentEngine == ApplicationConfiguration.AnimationsSettings.FullAutonomySettings.ContentEngineType.Ollama)
-            {
-                tweetText = await this._ollamaFormatterService.GenerateTweet(agent);
-            }
-
             while (string.IsNullOrEmpty(tweetText))
             {
                 tweetText = NativeContentFormatterService.GenerateTweet(agent);

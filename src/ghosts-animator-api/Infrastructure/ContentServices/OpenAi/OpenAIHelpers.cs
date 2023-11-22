@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Ghosts.Animator.Api.Infrastructure.ContentServices.OpenAi;
 
-public static class OpenAIHelpers
+public static class OpenAiHelpers
 {
     /// <summary>
     /// You'll need to supply your openAi api key via an environment variable

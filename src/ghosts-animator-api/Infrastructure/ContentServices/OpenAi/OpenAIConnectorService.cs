@@ -10,15 +10,15 @@ using OpenAI.GPT3.ObjectModels.RequestModels;
 
 namespace Ghosts.Animator.Api.Infrastructure.ContentServices.OpenAi;
 
-public class OpenAIConnectorService
+public class OpenAiConnectorService
 {
     private static readonly Logger _log = LogManager.GetCurrentClassLogger();
     private readonly OpenAIService _service;
     public bool IsReady { get; set; }
 
-    public OpenAIConnectorService()
+    public OpenAiConnectorService()
     {
-        var apiKey = OpenAIHelpers.GetApiKey();
+        var apiKey = OpenAiHelpers.GetApiKey();
         if (string.IsNullOrEmpty(apiKey))
         {
             _log.Warn("No OPEN_AI_API_KEY environment variable set. OpenAIConnectorService not enabled.");

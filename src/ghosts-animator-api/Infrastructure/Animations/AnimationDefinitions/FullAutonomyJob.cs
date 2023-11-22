@@ -87,7 +87,8 @@ public class FullAutonomyJob
             var history = this.History.Where(x => x.StartsWith(agent.Id.ToString()));
             var nextAction = await contentService.GenerateNextAction(agent, string.Join('\n', history));
 
-            var line = $"{agent.Id}|{nextAction}|{DateTime.UtcNow}\n";
+            var line = $"{agent.Id}|{nextAction}|{DateTime.UtcNow}";
+            line = $"{line.Replace(System.Environment.NewLine, "")}\n";
 
             await File.AppendAllTextAsync(HistoryFile, line);
             this.History.Add(line);

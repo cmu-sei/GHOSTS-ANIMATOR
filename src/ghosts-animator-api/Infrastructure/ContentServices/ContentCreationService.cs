@@ -11,7 +11,7 @@ namespace Ghosts.Animator.Api.Infrastructure.ContentServices;
 
 public class ContentCreationService
 {
-    private OpenAIFormatterService _openAiFormatterService = new();
+    private OpenAiFormatterService _openAiFormatterService = new();
     private OllamaFormatterService _ollamaFormatterService = new();
     private static readonly Logger _log = LogManager.GetCurrentClassLogger();
 

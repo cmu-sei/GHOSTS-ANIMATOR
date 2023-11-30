@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading;
 using Ghosts.Animator.Api.Hubs;
 using Ghosts.Animator.Api.Infrastructure.ContentServices;
@@ -15,7 +13,6 @@ using Ghosts.Animator.Extensions;
 using Microsoft.AspNetCore.SignalR;
 using MongoDB.Driver;
 using NLog;
-using RestSharp;
 
 namespace Ghosts.Animator.Api.Infrastructure.Animations.AnimationDefinitions;
 

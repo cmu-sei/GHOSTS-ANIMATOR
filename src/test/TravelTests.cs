@@ -2,21 +2,20 @@
 
 using NUnit.Framework;
 
-namespace Ghosts.Animator.Tests
+namespace Ghosts.Animator.Tests;
+
+[TestFixture]
+public class TravelTests
 {
-    [TestFixture]
-    public class TravelTests
+    [Test]
+    public void GetTrip_Is_Not_Null()
     {
-        [Test]
-        public void GetTrip_Is_Not_Null()
-        {
-            Assert.IsNotNull(Travel.GetTrip());
-        }
+        Assert.IsNotNull(Travel.GetTrip());
+    }
         
-        [Test]
-        public void GetTrips_Is_Not_Null()
-        {
-            Assert.IsNotNull(Travel.GetTrips());
-        }
+    [Test]
+    public void GetTrips_Is_Not_Null()
+    {
+        Assert.IsNotNull(Travel.GetTrips());
     }
 }

@@ -1,5 +1,7 @@
 // Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
 
+using Microsoft.Extensions.Configuration;
+
 namespace Ghosts.Animator.Api.Infrastructure.Models;
 
 public class ApplicationConfiguration
@@ -8,6 +10,7 @@ public class ApplicationConfiguration
     public string Proxy { get; set; }
     public AnimationsSettings Animations { get; set; }
     public DatabaseSettings.ApplicationDatabaseSettings DatabaseSettings { get; set; }
+    public IConfiguration RawConfiguration { get; set; }
 
     public class AnimationsSettings
     {

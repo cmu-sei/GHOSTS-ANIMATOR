@@ -2,21 +2,20 @@
 
 using NUnit.Framework;
 
-namespace Ghosts.Animator.Tests
+namespace Ghosts.Animator.Tests;
+
+[TestFixture]
+public class MentalHealthTests
 {
-    [TestFixture]
-    public class MentalHealthTests
+    [Test]
+    public void IQ_Is_Not_Null()
     {
-        [Test]
-        public void IQ_Is_Not_Null()
-        {
-            Assert.IsNotNull(MentalHealth.GetIQ());
-        }
+        Assert.IsNotNull(MentalHealth.GetIQ());
+    }
         
-        [Test]
-        public void MentalHealth_Is_Not_Null()
-        {
-            Assert.IsNotNull(MentalHealth.GetMentalHealth());
-        }
+    [Test]
+    public void MentalHealth_Is_Not_Null()
+    {
+        Assert.IsNotNull(MentalHealth.GetMentalHealth());
     }
 }

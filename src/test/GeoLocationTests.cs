@@ -4,21 +4,20 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 
-namespace Ghosts.Animator.Tests
-{
-	[TestFixture]
-	public class GeoLocationTests
-	{
-		[Test]
-		public void Lat_Is_Valid()
-		{
-			Assert.IsTrue(Regex.IsMatch(GeoLocation.GetLat().ToString(CultureInfo.InvariantCulture), "[0-9]+"));
-		}
+namespace Ghosts.Animator.Tests;
 
-		[Test]
-		public void Lng_Is_Valid()
-		{
-			Assert.IsTrue(Regex.IsMatch(GeoLocation.GetLng().ToString(CultureInfo.InvariantCulture), "[0-9]+"));
-		}
+[TestFixture]
+public class GeoLocationTests
+{
+	[Test]
+	public void Lat_Is_Valid()
+	{
+		Assert.IsTrue(Regex.IsMatch(GeoLocation.GetLat().ToString(CultureInfo.InvariantCulture), "[0-9]+"));
+	}
+
+	[Test]
+	public void Lng_Is_Valid()
+	{
+		Assert.IsTrue(Regex.IsMatch(GeoLocation.GetLng().ToString(CultureInfo.InvariantCulture), "[0-9]+"));
 	}
 }

@@ -1,7 +1,6 @@
 // Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
 
 using System;
-using System.IO;
 using Ghosts.Animator.Models;
 using Ghosts.Animator.Services;
 using Newtonsoft.Json;

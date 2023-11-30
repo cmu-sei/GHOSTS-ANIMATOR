@@ -1,8 +1,4 @@
 using System;
-using System.IO;
-using System.Linq;
-using Ghosts.Animator.Api.Infrastructure.Models;
-using Newtonsoft.Json;
 
 namespace Ghosts.Animator.Api.Infrastructure.ContentServices.OpenAi;
 

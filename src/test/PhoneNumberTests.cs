@@ -3,16 +3,14 @@
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 
-namespace Ghosts.Animator.Tests
+namespace Ghosts.Animator.Tests;
+
+[TestFixture]
+public class PhoneNumberTests
 {
-	[TestFixture]
-	public class PhoneNumberTests
+	[Test]
+	public void PhoneNumber_Is_Valid()
 	{
-		[Test]
-		public void PhoneNumber_Is_Valid()
-		{
-			Assert.IsTrue(Regex.IsMatch(PhoneNumber.GetPhoneNumber(), @"\d{3}[. -]\d{3}"));
-		}
+		Assert.IsTrue(Regex.IsMatch(PhoneNumber.GetPhoneNumber(), @"\d{3}[. -]\d{3}"));
 	}
 }
-

@@ -2,8 +2,6 @@
 
 using System;
 using System.IO;
-using System.Net;
-using System.Net.Http;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Ghosts.Animator.Api.Hubs;
@@ -39,7 +37,7 @@ public class Startup
         services.AddSingleton<DatabaseSettings.IApplicationDatabaseSettings>(sp =>
             sp.GetRequiredService<IOptions<DatabaseSettings.ApplicationDatabaseSettings>>().Value);
 
-        services.AddCors(options => options.UseConfiguredCors(Configuration.GetSection("CorsPolicy")));
+        services.AddCors(options => options.UseConfiguredCors(Program.Configuration.RawConfiguration.GetSection("CorsPolicy")));
 
         services.AddSwaggerGen(c =>
         {

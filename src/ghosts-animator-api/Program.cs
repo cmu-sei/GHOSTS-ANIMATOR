@@ -21,7 +21,7 @@ public class Program
         log.Warn($"GHOSTS ANIMATOR API {ApplicationDetails.Version} ({ApplicationDetails.VersionFile}) coming online...");
             
         var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
+            .SetBasePath($"{Directory.GetCurrentDirectory()}/config")
             .AddJsonFile("appsettings.json");
 
         var config = builder.Build();
@@ -33,6 +33,8 @@ public class Program
 
         Configuration = appConfig;
         Configuration.DatabaseSettings = dbConfig;
+        
+        Configuration.RawConfiguration = config;
     
         BuildWebHost(args).Run();
     }

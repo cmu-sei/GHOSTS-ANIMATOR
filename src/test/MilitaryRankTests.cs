@@ -2,6 +2,7 @@
 
 using Ghosts.Animator.Enums;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Ghosts.Animator.Tests;
 
@@ -12,14 +13,14 @@ public class MilitaryRankTests
     public void Get_All_Returns_An_Object()
     {
         var o = MilitaryRanks.GetAll();
-        Assert.IsTrue(o.Branches.Count == 5);
+        ClassicAssert.IsTrue(o.Branches.Count == 5);
     }
 
     [Test]
     public void Get_Returns_A_Rank()
     {
         var o = MilitaryRanks.GetRank();
-        Assert.IsTrue(!string.IsNullOrEmpty(o.Name));
+        ClassicAssert.IsTrue(!string.IsNullOrEmpty(o.Name));
     }
 
     [Test]
@@ -27,7 +28,7 @@ public class MilitaryRankTests
     {
         const MilitaryBranch b = MilitaryBranch.USMC;
         var o = MilitaryRanks.GetRankByBranch(b);
-        Assert.IsTrue(o.Branch.ToString() == b.ToString());
+        ClassicAssert.IsTrue(o.Branch.ToString() == b.ToString());
             
         /* // if we want to test probability spread
         for (int i = 0; i < 100000; i++)

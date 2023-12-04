@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Ghosts.Animator.Api.Infrastructure.Models;
-using OpenAI.GPT3.ObjectModels.RequestModels;
+using OpenAI.ObjectModels.RequestModels;
 
 namespace Ghosts.Animator.Api.Infrastructure.ContentServices.OpenAi;
 

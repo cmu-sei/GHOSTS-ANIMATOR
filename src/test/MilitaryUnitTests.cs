@@ -2,6 +2,7 @@
 
 using Ghosts.Animator.Enums;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Ghosts.Animator.Tests;
 
@@ -13,7 +14,7 @@ public class MilitaryUnitTests
     {
         var o = MilitaryUnits.GetAll();
             
-        Assert.IsNotNull(o.Sub);
+        ClassicAssert.IsNotNull(o.Sub);
     }
         
     [Test]
@@ -22,7 +23,7 @@ public class MilitaryUnitTests
         var o = MilitaryUnits.GetAllByServiceBranch(MilitaryBranch.USMC);
         foreach (var unit in o)
         {
-            Assert.IsNotEmpty(unit.Name);
+            ClassicAssert.IsNotEmpty(unit.Name);
         }
     }
         
@@ -30,15 +31,15 @@ public class MilitaryUnitTests
     public void Base_Address_Is_A_Valid_Address()
     {
         var o = MilitaryUnits.GetBaseAddress(MilitaryBranch.USMC , "Camp Pendleton");
-        Assert.IsNotEmpty(o.Address1);
-        Assert.IsNotEmpty(o.City);
-        Assert.IsNotEmpty(o.State);
-        Assert.IsNotEmpty(o.PostalCode);
+        ClassicAssert.IsNotEmpty(o.Address1);
+        ClassicAssert.IsNotEmpty(o.City);
+        ClassicAssert.IsNotEmpty(o.State);
+        ClassicAssert.IsNotEmpty(o.PostalCode);
     }
         
     [Test]
     public void Service_Branch_Is_Not_Null()
     {
-        Assert.IsNotNull(MilitaryUnits.GetServiceBranch());
+        ClassicAssert.IsNotNull(MilitaryUnits.GetServiceBranch());
     }
 }

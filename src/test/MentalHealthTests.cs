@@ -1,6 +1,7 @@
 // Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Ghosts.Animator.Tests;
 
@@ -10,12 +11,12 @@ public class MentalHealthTests
     [Test]
     public void IQ_Is_Not_Null()
     {
-        Assert.IsNotNull(MentalHealth.GetIQ());
+        ClassicAssert.IsNotNull(MentalHealth.GetIQ());
     }
         
     [Test]
     public void MentalHealth_Is_Not_Null()
     {
-        Assert.IsNotNull(MentalHealth.GetMentalHealth());
+        ClassicAssert.IsNotNull(MentalHealth.GetMentalHealth());
     }
 }

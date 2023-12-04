@@ -1,6 +1,7 @@
 // Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Ghosts.Animator.Tests;
 
@@ -10,27 +11,27 @@ public class CreditCardTests
     [Test]
     public void VisaCreditCardNumber_Is_Valid()
     {
-        Assert.True(IsValidNumber(CreditCard.CreditCardNumber(CreditCard.CardType.Visa)));
+        ClassicAssert.True(IsValidNumber(CreditCard.CreditCardNumber(CreditCard.CardType.Visa)));
     }
 
     [Test]
     public void MasterCardCreditCardNumber_Is_Valid()
     {
-        Assert.True(IsValidNumber(CreditCard.CreditCardNumber(CreditCard.CardType.MasterCard)));
+        ClassicAssert.True(IsValidNumber(CreditCard.CreditCardNumber(CreditCard.CardType.MasterCard)));
     }
 
     [Test]
     public void DinnersClubCreditCardNumber_Is_Valid()
     {
-        Assert.True(IsValidNumber(CreditCard.CreditCardNumber(CreditCard.CardType.DinersClub)));
+        ClassicAssert.True(IsValidNumber(CreditCard.CreditCardNumber(CreditCard.CardType.DinersClub)));
     }
         
     [Test]
     public void GetCard_Is_A_Valid_Card()
     {
         var c = CreditCard.GetCreditCard();
-        Assert.IsNotEmpty(c.Type);
-        Assert.True(IsValidNumber(c.Number));
+        ClassicAssert.IsNotEmpty(c.Type);
+        ClassicAssert.True(IsValidNumber(c.Number));
     }
         
     [Test]
@@ -39,27 +40,27 @@ public class CreditCardTests
         var cards = CreditCard.GetCreditCards();
         foreach (var c in cards)
         {
-            Assert.IsNotEmpty(c.Type);
-            Assert.True(IsValidNumber(c.Number));
+            ClassicAssert.IsNotEmpty(c.Type);
+            ClassicAssert.True(IsValidNumber(c.Number));
         }
     }
         
     [Test]
     public void GetCardType_Is_A_Valid_Card_Type()
     {
-        Assert.IsInstanceOf<CreditCard.CardType>(CreditCard.GetCardType());
+        ClassicAssert.IsInstanceOf<CreditCard.CardType>(CreditCard.GetCardType());
     }
         
     [Test]
     public void GetNetWorth_Is_Not_Null()
     {
-        Assert.IsNotNull(CreditCard.GetNetWorth());
+        ClassicAssert.IsNotNull(CreditCard.GetNetWorth());
     }
         
     [Test]
     public void GetTotalDebt_Is_Not_Null()
     {
-        Assert.IsNotNull(CreditCard.GetTotalDebt());
+        ClassicAssert.IsNotNull(CreditCard.GetTotalDebt());
     }
         
     /// <summary>

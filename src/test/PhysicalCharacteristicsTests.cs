@@ -3,6 +3,7 @@
 using System;
 using Ghosts.Animator.Enums;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Ghosts.Animator.Tests;
 
@@ -12,37 +13,37 @@ public class PhysicalCharacteristicsTests
     [Test]
     public void Sex_Is_Not_Null()
     {
-        Assert.IsNotNull(PhysicalCharacteristics.GetBiologicalSex());
+        ClassicAssert.IsNotNull(PhysicalCharacteristics.GetBiologicalSex());
     }
     [Test]
     public void Mil_Sex_Is_Not_Null()
     {
-        Assert.IsNotNull(PhysicalCharacteristics.GetMilBiologicalSex());
+        ClassicAssert.IsNotNull(PhysicalCharacteristics.GetMilBiologicalSex());
     }
 
     [Test]
     public void Birthdate_Is_A_Valid_Date()
     {
         var birthday = PhysicalCharacteristics.GetBirthdate();
-        Assert.IsInstanceOf<DateTime>(birthday);
-        Assert.True(DateTime.Now.Year - birthday.Year > 17);
+        ClassicAssert.IsInstanceOf<DateTime>(birthday);
+        ClassicAssert.True(DateTime.Now.Year - birthday.Year > 17);
     }
         
     [Test]
     public void Height_Is_Not_Null()
     {
-        Assert.IsNotNull(PhysicalCharacteristics.GetHeight());
-        Assert.IsNotNull(PhysicalCharacteristics.GetHeight(BiologicalSex.Male));
-        Assert.IsNotNull(PhysicalCharacteristics.GetHeight(BiologicalSex.Female));
+        ClassicAssert.IsNotNull(PhysicalCharacteristics.GetHeight());
+        ClassicAssert.IsNotNull(PhysicalCharacteristics.GetHeight(BiologicalSex.Male));
+        ClassicAssert.IsNotNull(PhysicalCharacteristics.GetHeight(BiologicalSex.Female));
     }
 
     [Test]
     public void Mil_Height_Is_Not_Null()
     {
-        Assert.IsNotNull(PhysicalCharacteristics.GetMilHeight());
-        Assert.IsNotNull(PhysicalCharacteristics.GetMilHeight(MilitaryBranch.USMC));
-        Assert.IsNotNull(PhysicalCharacteristics.GetMilHeight(BiologicalSex.Male));
-        Assert.IsNotNull(PhysicalCharacteristics.GetMilHeight(BiologicalSex.Female));
+        ClassicAssert.IsNotNull(PhysicalCharacteristics.GetMilHeight());
+        ClassicAssert.IsNotNull(PhysicalCharacteristics.GetMilHeight(MilitaryBranch.USMC));
+        ClassicAssert.IsNotNull(PhysicalCharacteristics.GetMilHeight(BiologicalSex.Male));
+        ClassicAssert.IsNotNull(PhysicalCharacteristics.GetMilHeight(BiologicalSex.Female));
     }
 
     [Test]
@@ -50,9 +51,9 @@ public class PhysicalCharacteristicsTests
     {
         for (var i = 0; i < 500; i++)
         {
-            Assert.GreaterOrEqual(80, PhysicalCharacteristics.GetMilHeight());
-            Assert.GreaterOrEqual(78, PhysicalCharacteristics.GetMilHeight(BiologicalSex.Male, MilitaryBranch.USMC));
-            Assert.GreaterOrEqual(72, PhysicalCharacteristics.GetMilHeight(BiologicalSex.Female, MilitaryBranch.USMC));
+            ClassicAssert.GreaterOrEqual(80, PhysicalCharacteristics.GetMilHeight());
+            ClassicAssert.GreaterOrEqual(78, PhysicalCharacteristics.GetMilHeight(BiologicalSex.Male, MilitaryBranch.USMC));
+            ClassicAssert.GreaterOrEqual(72, PhysicalCharacteristics.GetMilHeight(BiologicalSex.Female, MilitaryBranch.USMC));
         }
     }
     [Test]
@@ -60,41 +61,41 @@ public class PhysicalCharacteristicsTests
     {
         for (var i = 0; i < 500; i++)
         {
-            Assert.LessOrEqual(60, PhysicalCharacteristics.GetMilHeight(BiologicalSex.Male));
-            Assert.LessOrEqual(58, PhysicalCharacteristics.GetMilHeight(BiologicalSex.Female));
-            Assert.LessOrEqual(58, PhysicalCharacteristics.GetMilHeight(MilitaryBranch.USMC));
+            ClassicAssert.LessOrEqual(60, PhysicalCharacteristics.GetMilHeight(BiologicalSex.Male));
+            ClassicAssert.LessOrEqual(58, PhysicalCharacteristics.GetMilHeight(BiologicalSex.Female));
+            ClassicAssert.LessOrEqual(58, PhysicalCharacteristics.GetMilHeight(MilitaryBranch.USMC));
         }
     }
 
     [Test]
     public void Weight_Is_Not_Null()
     {
-        Assert.IsNotNull(PhysicalCharacteristics.GetWeight(66));
-        Assert.IsNotNull(PhysicalCharacteristics.GetWeight(66, BiologicalSex.Male));
-        Assert.IsNotNull(PhysicalCharacteristics.GetWeight(66, BiologicalSex.Female));
+        ClassicAssert.IsNotNull(PhysicalCharacteristics.GetWeight(66));
+        ClassicAssert.IsNotNull(PhysicalCharacteristics.GetWeight(66, BiologicalSex.Male));
+        ClassicAssert.IsNotNull(PhysicalCharacteristics.GetWeight(66, BiologicalSex.Female));
     }
 
     [Test]
     public void Mil_Weight_Is_Not_Null()
     {
-        Assert.IsNotNull(PhysicalCharacteristics.GetMilWeight(70, new DateTime(2000, 4, 1)));
+        ClassicAssert.IsNotNull(PhysicalCharacteristics.GetMilWeight(70, new DateTime(2000, 4, 1)));
     }
         
     [Test]
     public void Blood_Type_Is_A_Non_Empty_String()
     {
-        Assert.IsNotEmpty(PhysicalCharacteristics.GetBloodType());
+        ClassicAssert.IsNotEmpty(PhysicalCharacteristics.GetBloodType());
     }
 
     [Test]
     public void Height_To_String_Works()
     {
-        Assert.AreEqual("5' 10\"", PhysicalCharacteristics.HeightToString(70));
+        ClassicAssert.AreEqual("5' 10\"", PhysicalCharacteristics.HeightToString(70));
     }
 
     [Test]
     public void Weight_To_String_Works()
     {
-        Assert.AreEqual("100 lbs", PhysicalCharacteristics.WeightToString(100));
+        ClassicAssert.AreEqual("100 lbs", PhysicalCharacteristics.WeightToString(100));
     }
 }

@@ -4,9 +4,9 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NLog;
-using OpenAI.GPT3;
-using OpenAI.GPT3.Managers;
-using OpenAI.GPT3.ObjectModels.RequestModels;
+using OpenAI;
+using OpenAI.Managers;
+using OpenAI.ObjectModels.RequestModels;
 
 namespace Ghosts.Animator.Api.Infrastructure.ContentServices.OpenAi;
 
@@ -59,7 +59,7 @@ public class OpenAiConnectorService
         var completionResult = await this._service.ChatCompletion.CreateCompletion(new ChatCompletionCreateRequest
         {
             Messages = messages,
-            Model = OpenAI.GPT3.ObjectModels.Models.Gpt_4,
+            Model = OpenAI.ObjectModels.Models.Gpt_4,
             //Model = OpenAI.GPT3.ObjectModels.Models.ChatGpt3_5Turbo,
             MaxTokens = 500 //optional
             //Temperature = 0.7 //optional

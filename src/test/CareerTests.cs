@@ -1,6 +1,7 @@
 // Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Ghosts.Animator.Tests;
 
@@ -10,36 +11,36 @@ public class CareerTests
     [Test]
     public void Strength_Is_A_Non_Null_String()
     {
-        Assert.IsTrue(!string.IsNullOrEmpty(Career.GetStrength().Name));
+        ClassicAssert.IsTrue(!string.IsNullOrEmpty(Career.GetStrength().Name));
     }
         
     [Test]
     public void Weakness_Is_A_Non_Null_String()
     {
-        Assert.IsTrue(!string.IsNullOrEmpty(Career.GetWeakness().Name));
+        ClassicAssert.IsTrue(!string.IsNullOrEmpty(Career.GetWeakness().Name));
     }
         
     [Test]
     public void Strengths_Are_Not_Null()
     {
-        Assert.IsNotNull(Career.GetStrengths());
+        ClassicAssert.IsNotNull(Career.GetStrengths());
     }
         
     [Test]
     public void Weaknesses_Are_Not_Null()
     {
-        Assert.IsNotNull(Career.GetWeaknesses());
+        ClassicAssert.IsNotNull(Career.GetWeaknesses());
     }
         
     [Test]
     public void TeamValue_Is_Not_Null()
     {
-        Assert.IsNotNull(Career.GetTeamValue());
+        ClassicAssert.IsNotNull(Career.GetTeamValue());
     }
         
     [Test]
     public void WorkEthic_Is_Not_Null()
     {
-        Assert.IsNotNull(Career.GetWorkEthic());
+        ClassicAssert.IsNotNull(Career.GetWorkEthic());
     }
 }

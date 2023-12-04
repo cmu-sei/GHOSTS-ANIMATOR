@@ -2,6 +2,7 @@
 
 using Ghosts.Animator.Models;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Ghosts.Animator.Tests;
 
@@ -13,28 +14,28 @@ public class NpcTests
     [Test]
     public void Npc_Is_Not_Null()
     {
-        Assert.NotNull(this._npc);
+        ClassicAssert.NotNull(this._npc);
     }
         
     [Test]
     public void Npc_Has_Unit()
     {
-        Assert.NotNull(this._npc.Unit);
+        ClassicAssert.NotNull(this._npc.Unit);
     }
         
     [Test]
     public void Npc_Has_Rank()
     {
-        Assert.NotNull(this._npc.Rank);
-        Assert.IsNotEmpty(this._npc.Rank.MOS);
-        Assert.IsNotEmpty(this._npc.Rank.Billet);
+        ClassicAssert.NotNull(this._npc.Rank);
+        ClassicAssert.IsNotEmpty(this._npc.Rank.MOS);
+        ClassicAssert.IsNotEmpty(this._npc.Rank.Billet);
     }
         
     [Test]
     public void Npc_Has_Address()
     {
-        Assert.IsNotEmpty(this._npc.Address[0].PostalCode);
-        Assert.IsNotEmpty(this._npc.Address[0].City);
-        Assert.IsNotEmpty(this._npc.Address[0].State);
+        ClassicAssert.IsNotEmpty(this._npc.Address[0].PostalCode);
+        ClassicAssert.IsNotEmpty(this._npc.Address[0].City);
+        ClassicAssert.IsNotEmpty(this._npc.Address[0].State);
     }
 }

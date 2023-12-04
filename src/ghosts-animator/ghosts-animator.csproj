@@ -17,11 +17,12 @@
         <Copyright>Carnegie Mellon University 2020</Copyright>
         <NoWarn>NU1701</NoWarn>
         <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-      <PackageReference Include="NLog" Version="4.7.15" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="NLog" Version="5.2.7" />
       <PackageReference Include="WeightedRandomizer" Version="2.0.1" />
     </ItemGroup>
 

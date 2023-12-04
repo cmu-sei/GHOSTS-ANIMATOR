@@ -2,6 +2,7 @@
 
 using System.Text.RegularExpressions;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Ghosts.Animator.Tests;
 
@@ -11,36 +12,36 @@ public class NameTests
 	[Test]
 	public void Name_Is_Valid()
 	{
-		Assert.IsTrue(!string.IsNullOrEmpty(Name.GetName().ToString()));
+		ClassicAssert.IsTrue(!string.IsNullOrEmpty(Name.GetName().ToString()));
 	}
 		
 	[Test]
 	public void FirstName_Is_Valid()
 	{
-		Assert.IsTrue(!string.IsNullOrEmpty(Name.GetFirstName()));
+		ClassicAssert.IsTrue(!string.IsNullOrEmpty(Name.GetFirstName()));
 	}
 		
 	[Test]
 	public void MiddleName_Is_Valid()
 	{
-		Assert.IsTrue(!string.IsNullOrEmpty(Name.GetMiddleName()));
+		ClassicAssert.IsTrue(!string.IsNullOrEmpty(Name.GetMiddleName()));
 	}
 		
 	[Test]
 	public void LastName_Is_Valid()
 	{
-		Assert.IsTrue(!string.IsNullOrEmpty(Name.GetLastName()));
+		ClassicAssert.IsTrue(!string.IsNullOrEmpty(Name.GetLastName()));
 	}
 		
 	[Test]
 	public void Prefix_Is_Valid()
 	{
-		Assert.IsTrue(Regex.IsMatch(Name.GetPrefix(), @"[A-Z][a-z]+\.?"));
+		ClassicAssert.IsTrue(Regex.IsMatch(Name.GetPrefix(), @"[A-Z][a-z]+\.?"));
 	}
 		
 	[Test]
 	public void Suffix_Is_Valid()
 	{
-		Assert.IsTrue(Regex.IsMatch(Name.GetSuffix(), @"[A-Z][a-z]*\.?"));
+		ClassicAssert.IsTrue(Regex.IsMatch(Name.GetSuffix(), @"[A-Z][a-z]*\.?"));
 	}
 }

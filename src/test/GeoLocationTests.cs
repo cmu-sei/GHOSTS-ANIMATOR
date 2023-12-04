@@ -3,6 +3,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Ghosts.Animator.Tests;
 
@@ -12,12 +13,12 @@ public class GeoLocationTests
 	[Test]
 	public void Lat_Is_Valid()
 	{
-		Assert.IsTrue(Regex.IsMatch(GeoLocation.GetLat().ToString(CultureInfo.InvariantCulture), "[0-9]+"));
+		ClassicAssert.IsTrue(Regex.IsMatch(GeoLocation.GetLat().ToString(CultureInfo.InvariantCulture), "[0-9]+"));
 	}
 
 	[Test]
 	public void Lng_Is_Valid()
 	{
-		Assert.IsTrue(Regex.IsMatch(GeoLocation.GetLng().ToString(CultureInfo.InvariantCulture), "[0-9]+"));
+		ClassicAssert.IsTrue(Regex.IsMatch(GeoLocation.GetLng().ToString(CultureInfo.InvariantCulture), "[0-9]+"));
 	}
 }

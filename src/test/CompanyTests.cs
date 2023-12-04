@@ -2,6 +2,7 @@
 
 using System.Text.RegularExpressions;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Ghosts.Animator.Tests;
 
@@ -11,32 +12,32 @@ public class CompanyTests
 	[Test]
 	public void BS_Is_A_Non_Null_String()
 	{
-		Assert.IsTrue(Regex.IsMatch(Company.GetBS(), "[ a-z]+"));
-		Assert.IsTrue(Regex.IsMatch(Company.GetBS(), @"\s"));
+		ClassicAssert.IsTrue(Regex.IsMatch(Company.GetBS(), "[ a-z]+"));
+		ClassicAssert.IsTrue(Regex.IsMatch(Company.GetBS(), @"\s"));
 	}
 		
 	[Test]
 	public void CatchPhrase_Is_A_Non_Null_String()
 	{
-		Assert.IsTrue(Regex.IsMatch(Company.GetCatchPhrase(), "[ a-z]+"));
-		Assert.IsTrue(Regex.IsMatch(Company.GetCatchPhrase(), @"\s"));
+		ClassicAssert.IsTrue(Regex.IsMatch(Company.GetCatchPhrase(), "[ a-z]+"));
+		ClassicAssert.IsTrue(Regex.IsMatch(Company.GetCatchPhrase(), @"\s"));
 	}
 		
 	[Test]
 	public void CompanyName_Is_A_Non_Null_String()
 	{
-		Assert.IsTrue(Regex.IsMatch(Company.GetName(), "[ a-z]+"));
+		ClassicAssert.IsTrue(Regex.IsMatch(Company.GetName(), "[ a-z]+"));
 	}
 		
 	[Test]
 	public void Suffix_Is_Not_Null()
 	{
-		Assert.IsNotNull(Company.GetSuffix());
+		ClassicAssert.IsNotNull(Company.GetSuffix());
 	}
 		
 	[Test]
 	public void Position_Is_A_Non_Null_String()
 	{
-		Assert.IsTrue(Regex.IsMatch(Company.GetPosition(), "[ a-z]+"));
+		ClassicAssert.IsTrue(Regex.IsMatch(Company.GetPosition(), "[ a-z]+"));
 	}
 }

@@ -2,6 +2,7 @@
 
 using System.Text.RegularExpressions;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Ghosts.Animator.Tests;
 
@@ -11,6 +12,6 @@ public class PhoneNumberTests
 	[Test]
 	public void PhoneNumber_Is_Valid()
 	{
-		Assert.IsTrue(Regex.IsMatch(PhoneNumber.GetPhoneNumber(), @"\d{3}[. -]\d{3}"));
+		ClassicAssert.IsTrue(Regex.IsMatch(PhoneNumber.GetPhoneNumber(), @"\d{3}[. -]\d{3}"));
 	}
 }

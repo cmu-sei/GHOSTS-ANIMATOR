@@ -1,3 +1,5 @@
+// Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
+
 using System;
 using System.IO;
 using System.Net.Http;
@@ -7,32 +9,31 @@ using Microsoft.Extensions.Configuration;
 
 namespace Ghosts.Animator.Api.Infrastructure.Extensions;
 
-public static class Configuration
+public static class AppConfigurationBuilder
 {
-    /// <summary>
-    /// The typical appsettings.json only contains an entry for the actual app config
-    /// which can easily be overridden with an env var. Easy to default,
-    /// and easy to override for docker. That also allows docker users
-    /// to put the actual app config wherever they want.
-    /// ...and if appsettings.json Configuration is a url, we fetch it with an http client.
-    /// Then it be easy to update/collaborate/share various app
-    /// configs (and docker folks wouldn't even have to mount it into the container).
-    /// So, this loads the location of the actual config file — could be a local path or a URL
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <returns>the location of the file</returns>
-    public static async Task BuildApp(this IConfigurationBuilder builder)
+    public static async Task Build()
     {
-        // get the location of app configuration
+        await new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json").BuildApp();
+    }
+    
+    /// <summary>
+    /// Retrieves configuration location from appsettings.json (local paths or URLs).
+    /// Enables overriding via environment variables for Docker compatibility.
+    /// For URL-based configurations, fetches content and saves locally.
+    /// </summary>
+    private static async Task BuildApp(this IConfigurationBuilder builder)
+    {
         var config = builder.Build();
         await BuildConfig(builder, config.GetSection("Configuration").Value);
     }
 
     /// <summary>
-    /// 
+    /// Constructs the app configuration from a file location or URL.
+    /// Creates and binds configuration sections to specific settings,
+    /// and updates the Program's static Configuration property.
     /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="fileLocation"></param>
     private static async Task BuildConfig(this IConfigurationBuilder builder, string fileLocation)
     {
         fileLocation = await HandleUrlConfig(fileLocation);        
@@ -54,6 +55,10 @@ public static class Configuration
         Program.Configuration.RawConfiguration = config;
     }
 
+    /// <summary>
+    /// Checks the file location for a URL and downloads the file if so, saving it w/ a unique filename. 
+    /// Returns the local file path or the new path of the downloaded file.
+    /// </summary>
     private static async Task<string> HandleUrlConfig(string fileLocation)
     {
         if (!fileLocation.StartsWith("http"))
@@ -62,9 +67,13 @@ public static class Configuration
         var client = new HttpClient();
         var response = await client.GetAsync(fileLocation);
         response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsByteArrayAsync();
+        var content = await response.Content.ReadAsStringAsync();
+
+        if (string.IsNullOrEmpty(content))
+            throw new Exception("Http configuration file could not be found");
+        
         var f = $"config/config_{Guid.NewGuid()}.json";
-        await File.WriteAllBytesAsync(f, content);
+        await File.WriteAllTextAsync(f, content);
         return f;
     }
 }

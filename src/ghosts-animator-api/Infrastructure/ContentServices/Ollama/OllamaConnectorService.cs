@@ -13,16 +13,21 @@ namespace Ghosts.Animator.Api.Infrastructure.ContentServices.Ollama;
 
 public class OllamaConnectorService
 {
-    private static readonly string OLLAMA_HOST = Environment.GetEnvironmentVariable("OLLAMA_HOST") ?? Program.Configuration.Animations.FullAutonomy.ContentEngine.Host;
-    private static readonly string OLLAMA_MODEL = Environment.GetEnvironmentVariable("OLLAMA_MODEL") ?? Program.Configuration.Animations.FullAutonomy.ContentEngine.Model;
+    private static readonly string OLLAMA_HOST = Environment.GetEnvironmentVariable("OLLAMA_HOST") ??
+                                                 Program.Configuration.Animations.ContentEngine.Host;
+
+    private static readonly string OLLAMA_MODEL = Environment.GetEnvironmentVariable("OLLAMA_MODEL") ??
+                                                  Program.Configuration.Animations.ContentEngine.Model;
+
     private static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
     public async Task<string> ExecuteQuery(string prompt)
     {
         return await ExecuteQuery(OLLAMA_MODEL, prompt);
     }
-    
-    public async Task<string> ExecuteQuery(string modelName, string prompt, string system = null, string template = null, string context = null, string options = null, Action<string> callback = null)
+
+    public async Task<string> ExecuteQuery(string modelName, string prompt, string system = null,
+        string template = null, string context = null, string options = null, Action<string> callback = null)
     {
         try
         {
@@ -39,8 +44,9 @@ public class OllamaConnectorService
 
             payload = payload.Where(kv => kv.Value != null).ToDictionary(kv => kv.Key, kv => kv.Value);
             using var client = new HttpClient();
-            client.Timeout = client.Timeout * 10;
-            using var response = await client.PostAsync(url, new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
+            client.Timeout = client.Timeout * 20;
+            using var response = await client.PostAsync(url,
+                new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
             response.EnsureSuccessStatusCode();
 
             var fullResponse = new StringBuilder();
@@ -50,10 +56,18 @@ public class OllamaConnectorService
             {
                 if (!string.IsNullOrEmpty(line))
                 {
-                    dynamic json = JsonConvert.DeserializeObject(line);
-                    if (json != null && json["done"] != true)
+                    try
                     {
-                        fullResponse.Append(json["response"]);
+                        dynamic json = JsonConvert.DeserializeObject(line);
+                        if (json != null && json["done"] != true)
+                        {
+                            fullResponse.Append(json["response"]);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        _log.Info($"ollama response was malformed: {e}");
+                        fullResponse.Append(line);
                     }
                 }
             }

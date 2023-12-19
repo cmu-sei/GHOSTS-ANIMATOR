@@ -79,14 +79,41 @@ public class SocialSharingJob
         foreach (var agent in agents)
         {
             var tweetText = await contentService.GenerateTweet(agent);
+            if (string.IsNullOrEmpty(tweetText))
+                return;
             
             lines.AppendFormat($"{DateTime.Now},{agent.Id},\"{tweetText}\"{Environment.NewLine}");
 
+            var userFormValue = new[] { "user", "usr", "u", "uid", "user_id", "u_id" }.RandomFromStringArray();
+            var messageFormValue = new[] { "message", "msg", "m", "message_id", "msg_id", "msg_text", "text", "payload" }.RandomFromStringArray();
+            
+            if (_configuration.Animations.SocialSharing.IsSendingTimelinesDirectToSocializer &&
+                !string.IsNullOrEmpty(_configuration.GhostsApiUrl))
+            {
+                var client = new RestClient(_configuration.Animations.SocialSharing.SocializerUrl);
+                var request = new RestRequest("/", Method.Post)
+                {
+                    RequestFormat = DataFormat.Json
+                };
+                request.AddParameter(userFormValue, agent.Name.ToString());
+                request.AddParameter(messageFormValue, tweetText);
+                
+                try
+                {
+                    var response = client.Execute(request);
+                    if (response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.NoContent)
+                    {
+                        throw (new Exception($"Socializer responded with {response.StatusCode} to the request agent: {agent.Name} text: {tweetText}"));
+                    }
+                }
+                catch (Exception e)
+                {
+                    _log.Error($"Could not post timeline command to Socializer {_configuration.Animations.SocialSharing.SocializerUrl}: {e}");
+                }
+            }
+            
             if (_configuration.Animations.SocialSharing.IsSendingTimelinesToGhostsApi && !string.IsNullOrEmpty(_configuration.GhostsApiUrl))
             {
-                var userFormValue = new[] { "user", "usr", "u", "uid", "user_id", "u_id" }.RandomFromStringArray();
-                var messageFormValue = new[] { "message", "msg", "m", "message_id", "msg_id", "msg_text", "text", "payload" }.RandomFromStringArray();
-
                 //{\"user\":\"{user}\",\"message\":\"{message}}
                 var formValues = new StringBuilder();
                 formValues.Append('{')

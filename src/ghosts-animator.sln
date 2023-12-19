@@ -8,6 +8,7 @@ ProjectSection(SolutionItems) = preProject
 	.dockerignore = .dockerignore
 	Dockerfile = Dockerfile
 	LICENSE.MD = ../LICENSE.MD
+	..\models\Llama\Modelfile = ..\models\Llama\Modelfile
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ghosts-animator", "ghosts-animator\ghosts-animator.csproj", "{5C4E2334-E16C-42B6-92C1-F9290127911F}"

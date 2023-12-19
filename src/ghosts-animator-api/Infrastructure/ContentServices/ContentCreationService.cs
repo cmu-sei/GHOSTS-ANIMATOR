@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Ghosts.Animator.Api.Infrastructure.ContentServices.Native;
 using Ghosts.Animator.Api.Infrastructure.ContentServices.Ollama;
@@ -20,11 +21,11 @@ public class ContentCreationService
         var nextAction = string.Empty;
         try
         {
-            if (Program.Configuration.Animations.FullAutonomy.ContentEngine.Source.ToLower() == "openai" && this._openAiFormatterService.IsReady)
+            if (Program.Configuration.Animations.ContentEngine.Source.ToLower() == "openai" && this._openAiFormatterService.IsReady)
             {
                 nextAction = await this._openAiFormatterService.GenerateNextAction(agent, history).ConfigureAwait(false);
             }
-            else if (Program.Configuration.Animations.FullAutonomy.ContentEngine.Source.ToLower() == "ollama")
+            else if (Program.Configuration.Animations.ContentEngine.Source.ToLower() == "ollama")
             {
                 nextAction = await this._ollamaFormatterService.GenerateNextAction(agent, history);
             }
@@ -44,6 +45,28 @@ public class ContentCreationService
 
         try
         {
+            if (Program.Configuration.Animations.ContentEngine.Source.ToLower() == "openai" && this._openAiFormatterService.IsReady)
+            {
+                tweetText = await this._openAiFormatterService.GenerateTweet(agent).ConfigureAwait(false);
+            }
+            else if (Program.Configuration.Animations.ContentEngine.Source.ToLower() == "ollama")
+            {
+                tweetText = await this._ollamaFormatterService.GenerateTweet(agent);
+                
+                var regArray = new [] {"\"activities\": \\[\"([^\"]+)\"", "\"activity\": \"([^\"]+)\"", "'activities': \\['([^\\']+)'\\]", "\"activities\": \\[\"([^\\']+)'\\]"} ;
+
+                foreach (var reg in regArray)
+                {
+                    var match = Regex.Match(tweetText,reg);
+                    if (match.Success)
+                    {
+                        // Extract the activity
+                        tweetText = match.Groups[1].Value;
+                        break;
+                    }
+                }
+            }
+            
             while (string.IsNullOrEmpty(tweetText))
             {
                 tweetText = NativeContentFormatterService.GenerateTweet(agent);

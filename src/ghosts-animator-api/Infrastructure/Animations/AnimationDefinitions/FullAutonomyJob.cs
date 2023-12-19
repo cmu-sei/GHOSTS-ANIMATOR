@@ -23,9 +23,9 @@ public class FullAutonomyJob
     private readonly IMongoCollection<NPC> _mongo;
     private readonly Random _random;
     private const string SavePath = "output/fullautonomy/";
-    private string HistoryFile = $"{SavePath}/history.txt";
-    private List<string> History;
-    private readonly int CurrentStep;
+    private readonly string _historyFile = $"{SavePath}/history.txt";
+    private readonly List<string> _history;
+    private readonly int _currentStep;
     private readonly IHubContext<ActivityHub> _activityHubContext;
 
     public FullAutonomyJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random,
@@ -38,8 +38,8 @@ public class FullAutonomyJob
             this._random = random;
             this._mongo = mongo;
 
-            this.History = File.Exists(this.HistoryFile)
-                ? File.ReadAllLinesAsync(this.HistoryFile).Result.ToList()
+            this._history = File.Exists(this._historyFile)
+                ? File.ReadAllLinesAsync(this._historyFile).Result.ToList()
                 : new List<string>();
 
             if (_configuration.Animations.SocialSharing.IsInteracting)
@@ -51,16 +51,16 @@ public class FullAutonomyJob
 
                 while (true)
                 {
-                    if (this.CurrentStep > _configuration.Animations.SocialSharing.MaximumSteps)
+                    if (this._currentStep > _configuration.Animations.SocialSharing.MaximumSteps)
                     {
-                        _log.Trace($"Maximum steps met: {this.CurrentStep - 1}. Full Autonomy is exiting...");
+                        _log.Trace($"Maximum steps met: {this._currentStep - 1}. Full Autonomy is exiting...");
                         return;
                     }
 
                     this.Step();
                     Thread.Sleep(this._configuration.Animations.SocialSharing.TurnLength);
 
-                    this.CurrentStep++;
+                    this._currentStep++;
                 }
             }
         }
@@ -81,14 +81,14 @@ public class FullAutonomyJob
         var agents = this._mongo.Find(x => true).ToList().Shuffle(_random).Take(_random.Next(5, 20));
         foreach (var agent in agents)
         {
-            var history = this.History.Where(x => x.StartsWith(agent.Id.ToString()));
+            var history = this._history.Where(x => x.StartsWith(agent.Id.ToString()));
             var nextAction = await contentService.GenerateNextAction(agent, string.Join('\n', history));
 
             var line = $"{agent.Id}|{nextAction}|{DateTime.UtcNow}";
-            line = $"{line.Replace(System.Environment.NewLine, "")}\n";
+            line = $"{line.Replace(Environment.NewLine, "")}\n";
 
-            await File.AppendAllTextAsync(HistoryFile, line);
-            this.History.Add(line);
+            await File.AppendAllTextAsync(_historyFile, line);
+            this._history.Add(line);
 
             Thread.Sleep(500);
 
@@ -102,6 +102,6 @@ public class FullAutonomyJob
             );
         }
 
-        await File.AppendAllTextAsync($"{SavePath}tweets.csv", this.History.ToString());
+        await File.AppendAllTextAsync($"{SavePath}tweets.csv", this._history.ToString());
     }
 }

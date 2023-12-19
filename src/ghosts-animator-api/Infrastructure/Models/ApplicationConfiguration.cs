@@ -19,6 +19,7 @@ public class ApplicationConfiguration
         public SocialBeliefSettings SocialBelief { get; set; }
         public SocialSharingSettings SocialSharing { get; set; }
         public FullAutonomySettings FullAutonomy { get; set; }
+        public ContentEngineSettings ContentEngine { get; set; }
 
         public class SocialGraphSettings
         {
@@ -55,6 +56,7 @@ public class ApplicationConfiguration
             public bool IsMultiThreaded { get; set; }
             public bool IsInteracting { get; set; }
             public bool IsSendingTimelinesToGhostsApi { get; set; }
+            public bool IsSendingTimelinesDirectToSocializer { get; set; }
             public string SocializerUrl { get; set; }
             public int TurnLength { get; set; }
             public int MaximumSteps { get; set; }
@@ -66,16 +68,15 @@ public class ApplicationConfiguration
             public bool IsMultiThreaded { get; set; }
             public bool IsInteracting { get; set; }
             public bool IsSendingTimelinesToGhostsApi { get; set; }
-            public ContentEngineSettings ContentEngine { get; set; }
             public int TurnLength { get; set; }
             public int MaximumSteps { get; set; }
-
-            public class ContentEngineSettings
-            {
-                public string Source { get; set; }
-                public string Model { get; set; }
-                public string Host { get; set; }
-            }
+        }
+        
+        public class ContentEngineSettings
+        {
+            public string Source { get; set; }
+            public string Model { get; set; }
+            public string Host { get; set; }
         }
     }
 }

@@ -3,12 +3,15 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Ghosts.Animator.Api.Infrastructure.Models;
+using NLog;
+using NLog.Fluent;
 
 namespace Ghosts.Animator.Api.Infrastructure.ContentServices.Ollama;
 
 public class OllamaFormatterService
 {
     private OllamaConnectorService _ollamaConnectorService = new();
+    private static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
     public async Task<string> GenerateTweet(NPC npc)
     {
@@ -27,23 +30,26 @@ public class OllamaFormatterService
 
     public async Task<string> GenerateNextAction(NPC npc, string history)
     {
+        const string promptPath = "config/ContentServices/Ollama/GenerateNextAction.txt";
         var flattenedAgent = GenericContentHelpers.GetFlattenedNPC(npc);
         if (flattenedAgent.Length > 3050)
         {
             flattenedAgent = flattenedAgent[..3050];
         }
 
-        Console.WriteLine($"{npc.Name} with {history.Length} history records");
+        _log.Trace($"{npc.Name} with {history.Length} history records. Loading prompt from: {promptPath}");
 
-        var prompt = await File.ReadAllTextAsync("config/ContentServices/Ollama/GenerateNextAction.txt");
+        var prompt = await File.ReadAllTextAsync(promptPath);
         var messages = new StringBuilder();
         foreach (var p in prompt.Split(System.Environment.NewLine))
         {
             var s = p.Replace("[[flattenedAgent]]", flattenedAgent[..3050]);
             s = s.Replace("[[history]]", history);
-            messages.Append(s);    
+            messages.Append(s).Append(' ');
         }
 
+        // _log.Trace(messages.ToString());
+        
         return await _ollamaConnectorService.ExecuteQuery(messages.ToString());
     }
 }

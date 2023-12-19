@@ -8,6 +8,11 @@
     "Proxy": "",
     "Animations": {
       "IsEnabled": true,
+      "ContentEngine": {
+        "Source": "ollama",
+        "Host": "http://localhost:11434",
+        "Model": "ghosts"
+      },
       "SocialGraph": {
         "IsEnabled": false,
         "IsMultiThreaded": true,
@@ -28,24 +33,20 @@
         "TurnLength": 9000
       },
       "SocialSharing": {
-        "IsEnabled": false,
-        "IsMultiThreaded": true,
-        "IsInteracting": true,
-        "IsSendingTimelinesToGhostsApi": false,
-        "SocializerUrl": "http://socializer.com",
-        "MaximumSteps": 100,
-        "TurnLength": 9000
-      },
-      "FullAutonomy": {
         "IsEnabled": true,
         "IsMultiThreaded": true,
         "IsInteracting": true,
         "IsSendingTimelinesToGhostsApi": false,
-        "ContentEngine": {
-          "Source": "ollama",
-          "Host": "http://localhost:11434",
-          "Model": "mistral"
-        },
+        "IsSendingTimelinesDirectToSocializer": true,
+        "SocializerUrl": "http://localhost:8000",
+        "MaximumSteps": 100,
+        "TurnLength": 9000
+      },
+      "FullAutonomy": {
+        "IsEnabled": false,
+        "IsMultiThreaded": true,
+        "IsInteracting": true,
+        "IsSendingTimelinesToGhostsApi": false,
         "MaximumSteps": 10000,
         "TurnLength": 9000
       }

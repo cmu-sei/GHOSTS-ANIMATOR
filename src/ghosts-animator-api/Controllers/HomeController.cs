@@ -21,7 +21,7 @@ public class HomeController : Controller
     [HttpGet("test")]
     public async Task<IActionResult> Test()
     {
-        var x = new OllamaFormatterService();
+        var x = new OllamaFormatterService(Program.Configuration.Animations.SocialSharing.ContentEngine);
         var o = await x.GenerateNextAction(new NPC(),"why is the sky blue?");
         return Ok(o);
 

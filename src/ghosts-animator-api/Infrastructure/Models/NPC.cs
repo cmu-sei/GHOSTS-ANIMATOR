@@ -1,5 +1,6 @@
 // Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
 
+using System.Linq;
 using AutoMapper;
 using Ghosts.Animator.Models;
 
@@ -25,10 +26,33 @@ public class NPC : NpcProfile
     /// </summary>
     public string Team { get; set; }
 
-    public static NPC TransformTo(NpcProfile o)
+    public static NPC TransformToNpc(NpcProfile o)
     {
         var config = new MapperConfiguration(cfg => cfg.CreateMap<NpcProfile, NPC>());
         var mapper = new Mapper(config);
         return mapper.Map<NPC>(o);
+    }
+    
+    /// <summary>
+    /// Summary only copies the first record for many of the lists a profile might have
+    /// Often used to submit to a system such as an LLM where a full profile would be too much data
+    /// </summary>
+    public static NpcProfileSummary TransformToNpcProfileSummary(NpcProfile o)
+    {
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.CreateMap<NpcProfile, NpcProfileSummary>()
+                .ForMember(dest => dest.Address,
+                    opt => opt.MapFrom(src => src.Address.FirstOrDefault()))
+                .ForMember(dest => dest.Education.Degrees,
+                    opt => opt.MapFrom(src => src.Education.Degrees.FirstOrDefault()))
+                .ForMember(dest => dest.Employment.EmploymentRecords,
+                    opt => opt.MapFrom(src => src.Employment.EmploymentRecords.FirstOrDefault()))
+                .ForMember(dest => dest.ForeignTravel.Trips,
+                opt => opt.MapFrom(src => src.ForeignTravel.Trips.FirstOrDefault()));
+        });
+
+        var mapper = new Mapper(config);
+        return mapper.Map<NpcProfileSummary>(o);
     }
 }

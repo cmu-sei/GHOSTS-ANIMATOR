@@ -81,7 +81,7 @@ public class SocialBeliefJob
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _log.Error(e);
         }
     }
 
@@ -192,7 +192,7 @@ public class SocialBeliefJob
             }
         }
 
-        Console.WriteLine(line.ToString().TrimEnd(','));
+        _log.Trace(line.ToString().TrimEnd(','));
 
         File.WriteAllText($"{SavePath}social_beliefs.csv", line.ToString().TrimEnd(',') + Environment.NewLine);
     }

@@ -11,6 +11,7 @@ using Ghosts.Animator.Api.Infrastructure.Models;
 using Ghosts.Animator.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using NLog;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Ghosts.Animator.Api.Controllers;
@@ -23,6 +24,7 @@ namespace Ghosts.Animator.Api.Controllers;
 [Route("api/[controller]")]
 public class TeamController : ControllerBase
 {
+    private static readonly Logger _log = LogManager.GetCurrentClassLogger();
     private readonly IMongoCollection<NPC> _mongo;
     private readonly IMongoCollection<NPCIpAddress> _mongoIps;
 
@@ -100,7 +102,7 @@ public class TeamController : ControllerBase
     {
         var s = new StringBuilder("users = {").Append(Environment.NewLine);
         var list = this.GetTeam(configuration.Campaign, configuration.Enclave, configuration.Team).ToList();
-        Console.WriteLine(list.Count);
+        _log.Trace(list.Count);
 
         var pool = configuration.GetIpPool();
         foreach (var item in pool)

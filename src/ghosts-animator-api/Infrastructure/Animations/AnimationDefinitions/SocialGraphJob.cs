@@ -75,7 +75,7 @@ public class SocialGraphJob
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _log.Error(e);
         }
     }
 
@@ -191,7 +191,6 @@ public class SocialGraphJob
                         var npcFrom = this._mongo.Find(x => x.Id == learning.From).FirstOrDefault();
                         
                         var o = $"{graph.CurrentStep}: {npcFrom.Name.ToString()}'s relationship improved with {npcTo.Name.ToString()}...";
-                        Console.WriteLine(o);
                         _log.Trace(o);
                         
                         //post to hub
@@ -208,7 +207,6 @@ public class SocialGraphJob
             else
             {
                 var o = $"{graph.CurrentStep}: {graph.Id} didn't learn...";
-                Console.WriteLine(o);
                 _log.Trace(o);
                 
                 //post to hub

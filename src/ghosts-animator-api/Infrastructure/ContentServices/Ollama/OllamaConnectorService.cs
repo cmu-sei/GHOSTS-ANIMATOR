@@ -1,3 +1,5 @@
+// Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -5,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Ghosts.Animator.Api.Infrastructure.Models;
 using Newtonsoft.Json;
 using NLog;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -13,17 +16,21 @@ namespace Ghosts.Animator.Api.Infrastructure.ContentServices.Ollama;
 
 public class OllamaConnectorService
 {
-    private static readonly string OLLAMA_HOST = Environment.GetEnvironmentVariable("OLLAMA_HOST") ??
-                                                 Program.Configuration.Animations.ContentEngine.Host;
-
-    private static readonly string OLLAMA_MODEL = Environment.GetEnvironmentVariable("OLLAMA_MODEL") ??
-                                                  Program.Configuration.Animations.ContentEngine.Model;
-
     private static readonly Logger _log = LogManager.GetCurrentClassLogger();
-
+    private readonly ApplicationConfiguration.ContentEngineSettings _configuration;
+    
+    public OllamaConnectorService(ApplicationConfiguration.ContentEngineSettings configuration)
+    {
+        _configuration = configuration;
+        _configuration.Host = Environment.GetEnvironmentVariable("OLLAMA_HOST") ??
+                              configuration.Host;
+        _configuration.Model = Environment.GetEnvironmentVariable("OLLAMA_MODEL") ??
+                               configuration.Model;
+    }
+    
     public async Task<string> ExecuteQuery(string prompt)
     {
-        return await ExecuteQuery(OLLAMA_MODEL, prompt);
+        return await ExecuteQuery(_configuration.Model, prompt);
     }
 
     public async Task<string> ExecuteQuery(string modelName, string prompt, string system = null,
@@ -31,7 +38,7 @@ public class OllamaConnectorService
     {
         try
         {
-            var url = $"{OLLAMA_HOST}/api/generate";
+            var url = $"{_configuration.Host}/api/generate";
             var payload = new Dictionary<string, string>
             {
                 { "model", modelName },
@@ -76,7 +83,6 @@ public class OllamaConnectorService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
             _log.Error($"Ollama threw an exception: {ex.Message}: {ex.StackTrace}");
             return null;
         }

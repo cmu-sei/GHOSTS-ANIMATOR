@@ -1,14 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Ghosts.Animator.Api.Infrastructure.Models;
+using NLog;
 using OpenAI.ObjectModels.RequestModels;
 
 namespace Ghosts.Animator.Api.Infrastructure.ContentServices.OpenAi;
 
 public class OpenAiFormatterService
 {
+    private static readonly Logger _log = LogManager.GetCurrentClassLogger();
     private readonly OpenAiConnectorService _openAiConnectorService;
     
     public bool IsReady { get; set; }
@@ -21,7 +22,7 @@ public class OpenAiFormatterService
 
     public async Task<string> GenerateTweet(NPC npc)
     {
-        var flattenedAgent = GenericContentHelpers.GetFlattenedNPC(npc);
+        var flattenedAgent = GenericContentHelpers.GetFlattenedNpc(npc);
 
         var messages = new List<ChatMessage>();
 
@@ -38,9 +39,9 @@ public class OpenAiFormatterService
 
     public async Task<string> GenerateNextAction(NPC npc, string history)
     {
-        var flattenedAgent = GenericContentHelpers.GetFlattenedNPC(npc);
+        var flattenedAgent = GenericContentHelpers.GetFlattenedNpc(npc);
 
-        Console.WriteLine($"{npc.Name} with {history.Length} history records");
+        _log.Trace($"{npc.Name} with {history.Length} history records");
 
         var messages = new List<ChatMessage>();
         
@@ -57,7 +58,7 @@ public class OpenAiFormatterService
     
     public async Task<string> GeneratePowershellScript(NPC npc)
     {
-        var flattenedAgent = GenericContentHelpers.GetFlattenedNPC(npc);
+        var flattenedAgent = GenericContentHelpers.GetFlattenedNpc(npc);
 
         var messages = new List<ChatMessage>
         {
@@ -70,7 +71,7 @@ public class OpenAiFormatterService
 
     public async Task<string> GenerateCommand(NPC npc)
     {
-        var flattenedAgent = GenericContentHelpers.GetFlattenedNPC(npc);
+        var flattenedAgent = GenericContentHelpers.GetFlattenedNpc(npc);
 
         var messages = new List<ChatMessage>
         {

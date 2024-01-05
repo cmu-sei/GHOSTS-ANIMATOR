@@ -10,6 +10,7 @@ using System.Threading;
 using Ghosts.Animator.Api.Hubs;
 using Ghosts.Animator.Api.Infrastructure.ContentServices;
 using Ghosts.Animator.Api.Infrastructure.Models;
+using Ghosts.Animator.Api.Infrastructure.Services;
 using Ghosts.Animator.Extensions;
 using Microsoft.AspNetCore.SignalR;
 using MongoDB.Driver;
@@ -66,13 +67,13 @@ public class SocialSharingJob
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _log.Error(e);
         }
     }
 
     private async void Step()
     {
-        var contentService = new ContentCreationService();
+        var contentService = new ContentCreationService(_configuration.Animations.SocialSharing.ContentEngine);
         //take some random NPCs
         var lines = new StringBuilder();
         var agents = this._mongo.Find(x => true).ToList().Shuffle(_random).Take(_random.Next(5, 20));
@@ -90,7 +91,7 @@ public class SocialSharingJob
             if (_configuration.Animations.SocialSharing.IsSendingTimelinesDirectToSocializer &&
                 !string.IsNullOrEmpty(_configuration.GhostsApiUrl))
             {
-                var client = new RestClient(_configuration.Animations.SocialSharing.SocializerUrl);
+                var client = new RestClient(_configuration.Animations.SocialSharing.PostUrl);
                 var request = new RestRequest("/", Method.Post)
                 {
                     RequestFormat = DataFormat.Json
@@ -108,7 +109,7 @@ public class SocialSharingJob
                 }
                 catch (Exception e)
                 {
-                    _log.Error($"Could not post timeline command to Socializer {_configuration.Animations.SocialSharing.SocializerUrl}: {e}");
+                    _log.Error($"Could not post timeline command to Socializer {_configuration.Animations.SocialSharing.PostUrl}: {e}");
                 }
             }
             
@@ -131,28 +132,10 @@ public class SocialSharingJob
                 postPayload = postPayload.Replace("{id}", Guid.NewGuid().ToString());
                 postPayload = postPayload.Replace("{user}", agent.Email);
                 postPayload = postPayload.Replace("{payload}", formValues.ToString());
-                postPayload = postPayload.Replace("{url}", _configuration.Animations.SocialSharing.SocializerUrl);
+                postPayload = postPayload.Replace("{url}", _configuration.Animations.SocialSharing.PostUrl);
                 postPayload = postPayload.Replace("{now}", DateTime.Now.ToString(CultureInfo.InvariantCulture));
 
-                _log.Trace(postPayload);
-
-                var client = new RestClient(_configuration.GhostsApiUrl);
-                var request = new RestRequest("api/machineupdates", Method.Post)
-                {
-                    RequestFormat = DataFormat.Json
-                };
-                request.AddBody(postPayload);
-
-                try
-                {
-                    var response = client.Execute(request);
-                    if (response.StatusCode != HttpStatusCode.OK)
-                        throw (new Exception($"ghosts api responded with {response.StatusCode}"));
-                }
-                catch (Exception e)
-                {
-                    _log.Error($"Could not post timeline command to ghosts api {_configuration.GhostsApiUrl}: {e}");
-                }
+                await GhostsApiService.PostTimeline(_configuration, postPayload);
             }
             
             //post to hub

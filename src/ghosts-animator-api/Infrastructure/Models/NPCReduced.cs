@@ -1,5 +1,6 @@
 // Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Reflection;
 
 namespace Ghosts.Animator.Api.Infrastructure.Models;
 
+[Obsolete("This will move to an Automapper map from NPC to NpcProfileSummary class")]
 public class NPCReduced
 {
     public Dictionary<string, string> PropertySelection { get; set; }

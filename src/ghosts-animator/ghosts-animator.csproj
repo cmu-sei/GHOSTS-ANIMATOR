@@ -4,10 +4,10 @@
         <RootNamespace>Ghosts.Animator</RootNamespace>
         <AssemblyName>ghosts.animator</AssemblyName>
 
-        <Version>1.1.0.0</Version>
-        <AssemblyVersion>1.1.0.0</AssemblyVersion>
-        <FileVersion>1.1.0.0</FileVersion>
-        <ReleaseVersion>1.1.0.0</ReleaseVersion>
+        <Version>1.1.1.0</Version>
+        <AssemblyVersion>1.1.1.0</AssemblyVersion>
+        <FileVersion>1.1.1.0</FileVersion>
+        <ReleaseVersion>1.1.1.0</ReleaseVersion>
         <SynchReleaseVersion>false</SynchReleaseVersion>
 
         <Authors>GHOSTS Development Team @ Carnegie Mellon University</Authors>
@@ -22,7 +22,7 @@
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-      <PackageReference Include="NLog" Version="5.2.7" />
+      <PackageReference Include="NLog" Version="5.2.8" />
       <PackageReference Include="WeightedRandomizer" Version="2.0.1" />
     </ItemGroup>
 

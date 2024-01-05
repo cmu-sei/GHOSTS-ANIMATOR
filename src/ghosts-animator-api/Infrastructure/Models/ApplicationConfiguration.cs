@@ -19,8 +19,8 @@ public class ApplicationConfiguration
         public SocialBeliefSettings SocialBelief { get; set; }
         public SocialSharingSettings SocialSharing { get; set; }
         public FullAutonomySettings FullAutonomy { get; set; }
-        public ContentEngineSettings ContentEngine { get; set; }
-
+        public ChatSettings Chat { get; set; }
+        
         public class SocialGraphSettings
         {
             public bool IsEnabled { get; set; }
@@ -40,7 +40,7 @@ public class ApplicationConfiguration
                 public double ChanceOf { get; set; }
             }
         }
-
+        
         public class SocialBeliefSettings
         {
             public bool IsEnabled { get; set; }
@@ -48,6 +48,18 @@ public class ApplicationConfiguration
             public bool IsInteracting { get; set; }
             public int TurnLength { get; set; }
             public int MaximumSteps { get; set; }
+        }
+        
+        public class ChatSettings
+        {
+            public bool IsEnabled { get; set; }
+            public bool IsMultiThreaded { get; set; }
+            public bool IsInteracting { get; set; }
+            public int TurnLength { get; set; }
+            public int MaximumSteps { get; set; }
+            public bool IsSendingTimelinesToGhostsApi { get; set; }
+            public string PostUrl { get; set; }
+            public ContentEngineSettings ContentEngine { get; set; }
         }
 
         public class SocialSharingSettings
@@ -57,9 +69,10 @@ public class ApplicationConfiguration
             public bool IsInteracting { get; set; }
             public bool IsSendingTimelinesToGhostsApi { get; set; }
             public bool IsSendingTimelinesDirectToSocializer { get; set; }
-            public string SocializerUrl { get; set; }
+            public string PostUrl { get; set; }
             public int TurnLength { get; set; }
             public int MaximumSteps { get; set; }
+            public ContentEngineSettings ContentEngine { get; set; }
         }
 
         public class FullAutonomySettings
@@ -70,13 +83,14 @@ public class ApplicationConfiguration
             public bool IsSendingTimelinesToGhostsApi { get; set; }
             public int TurnLength { get; set; }
             public int MaximumSteps { get; set; }
+            public ContentEngineSettings ContentEngine { get; set; }
         }
-        
-        public class ContentEngineSettings
-        {
-            public string Source { get; set; }
-            public string Model { get; set; }
-            public string Host { get; set; }
-        }
+    }
+    
+    public class ContentEngineSettings
+    {
+        public string Source { get; set; }
+        public string Model { get; set; }
+        public string Host { get; set; }
     }
 }

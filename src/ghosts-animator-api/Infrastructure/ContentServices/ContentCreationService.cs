@@ -1,3 +1,5 @@
+// Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
+
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -12,29 +14,44 @@ namespace Ghosts.Animator.Api.Infrastructure.ContentServices;
 
 public class ContentCreationService
 {
-    private OpenAiFormatterService _openAiFormatterService = new();
-    private OllamaFormatterService _ollamaFormatterService = new();
     private static readonly Logger _log = LogManager.GetCurrentClassLogger();
+    private readonly ApplicationConfiguration.ContentEngineSettings _configuration;
+    private OpenAiFormatterService _openAiFormatterService;
+    private OllamaFormatterService _ollamaFormatterService;
+
+    public ContentCreationService(ApplicationConfiguration.ContentEngineSettings configuration)
+    {
+        _configuration = configuration;
+        _configuration.Host = Environment.GetEnvironmentVariable("OLLAMA_HOST") ??
+                              configuration.Host;
+        _configuration.Model = Environment.GetEnvironmentVariable("OLLAMA_MODEL") ??
+                               configuration.Model;
+
+        if (_configuration.Source.ToLower() == "openai" && this._openAiFormatterService.IsReady)
+            _openAiFormatterService = new OpenAiFormatterService();
+        else if (_configuration.Source.ToLower() == "ollama")
+            _ollamaFormatterService = new OllamaFormatterService(_configuration);
+    }
 
     public async Task<string> GenerateNextAction(NPC agent, string history)
     {
         var nextAction = string.Empty;
         try
         {
-            if (Program.Configuration.Animations.ContentEngine.Source.ToLower() == "openai" && this._openAiFormatterService.IsReady)
+            if (_configuration.Source.ToLower() == "openai" && this._openAiFormatterService.IsReady)
             {
                 nextAction = await this._openAiFormatterService.GenerateNextAction(agent, history).ConfigureAwait(false);
             }
-            else if (Program.Configuration.Animations.ContentEngine.Source.ToLower() == "ollama")
+            else if (_configuration.Source.ToLower() == "ollama")
             {
                 nextAction = await this._ollamaFormatterService.GenerateNextAction(agent, history);
             }
 
-            Console.WriteLine($"{agent.Name}'s next action is: {nextAction}");
+            _log.Info($"{agent.Name}'s next action is: {nextAction}");
         }
         catch (Exception e)
         {
-            _log.Info(e);
+            _log.Error(e);
         }
         return nextAction;
     }
@@ -45,11 +62,11 @@ public class ContentCreationService
 
         try
         {
-            if (Program.Configuration.Animations.ContentEngine.Source.ToLower() == "openai" && this._openAiFormatterService.IsReady)
+            if (_configuration.Source.ToLower() == "openai" && this._openAiFormatterService.IsReady)
             {
                 tweetText = await this._openAiFormatterService.GenerateTweet(agent).ConfigureAwait(false);
             }
-            else if (Program.Configuration.Animations.ContentEngine.Source.ToLower() == "ollama")
+            else if (_configuration.Source.ToLower() == "ollama")
             {
                 tweetText = await this._ollamaFormatterService.GenerateTweet(agent);
                 
@@ -74,7 +91,7 @@ public class ContentCreationService
 
             tweetText = tweetText.ReplaceDoubleQuotesWithSingleQuotes(); // else breaks csv file, //TODO should replace this with a proper csv library
 
-            Console.WriteLine($"{agent.Name} said: {tweetText}");
+            _log.Info($"{agent.Name} said: {tweetText}");
         }
         catch (Exception e)
         {

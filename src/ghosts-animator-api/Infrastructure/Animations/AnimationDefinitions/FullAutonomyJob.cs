@@ -70,13 +70,13 @@ public class FullAutonomyJob
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _log.Error(e);
         }
     }
 
     private async void Step()
     {
-        var contentService = new ContentCreationService();
+        var contentService = new ContentCreationService(_configuration.Animations.FullAutonomy.ContentEngine);
 
         var agents = this._mongo.Find(x => true).ToList().Shuffle(_random).Take(_random.Next(5, 20));
         foreach (var agent in agents)

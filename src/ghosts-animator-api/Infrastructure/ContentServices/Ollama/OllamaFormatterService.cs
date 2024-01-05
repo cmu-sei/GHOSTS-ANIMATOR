@@ -10,12 +10,24 @@ namespace Ghosts.Animator.Api.Infrastructure.ContentServices.Ollama;
 
 public class OllamaFormatterService
 {
-    private OllamaConnectorService _ollamaConnectorService = new();
     private static readonly Logger _log = LogManager.GetCurrentClassLogger();
+    private readonly ApplicationConfiguration.ContentEngineSettings _configuration;
+    private OllamaConnectorService _ollamaConnectorService;
+
+    public OllamaFormatterService(ApplicationConfiguration.ContentEngineSettings configuration)
+    {
+        _configuration = configuration;
+        _configuration.Host = Environment.GetEnvironmentVariable("OLLAMA_HOST") ??
+                              configuration.Host;
+        _configuration.Model = Environment.GetEnvironmentVariable("OLLAMA_MODEL") ??
+                               configuration.Model;
+
+        _ollamaConnectorService = new OllamaConnectorService(_configuration);
+    }
 
     public async Task<string> GenerateTweet(NPC npc)
     {
-        var flattenedAgent = GenericContentHelpers.GetFlattenedNPC(npc);
+        var flattenedAgent = GenericContentHelpers.GetFlattenedNpc(npc);
 
         var prompt = await File.ReadAllTextAsync("config/ContentServices/Ollama/GenerateTweet.txt");
         var messages = new StringBuilder();
@@ -31,7 +43,7 @@ public class OllamaFormatterService
     public async Task<string> GenerateNextAction(NPC npc, string history)
     {
         const string promptPath = "config/ContentServices/Ollama/GenerateNextAction.txt";
-        var flattenedAgent = GenericContentHelpers.GetFlattenedNPC(npc);
+        var flattenedAgent = GenericContentHelpers.GetFlattenedNpc(npc);
         if (flattenedAgent.Length > 3050)
         {
             flattenedAgent = flattenedAgent[..3050];

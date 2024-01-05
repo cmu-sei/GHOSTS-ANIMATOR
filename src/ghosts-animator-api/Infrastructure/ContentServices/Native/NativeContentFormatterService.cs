@@ -3,11 +3,14 @@ using System.Linq;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Ghosts.Animator.Extensions;
 using Ghosts.Animator.Models;
+using NLog;
 
 namespace Ghosts.Animator.Api.Infrastructure.ContentServices.Native;
 
 public static class NativeContentFormatterService
 {
+    private static readonly Logger _log = LogManager.GetCurrentClassLogger();
+    
     public static string GenerateTweet(NPC agent)
     {
         string tweetText;
@@ -52,7 +55,7 @@ public static class NativeContentFormatterService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _log.Error(e);
         }
 
         return Faker.Lorem.Sentence();
@@ -73,7 +76,7 @@ public static class NativeContentFormatterService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _log.Error(e);
         }
 
         return Faker.Lorem.Sentence();
@@ -96,7 +99,7 @@ public static class NativeContentFormatterService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _log.Error(e);
         }
         return Faker.Lorem.Sentence();
     }
@@ -118,7 +121,7 @@ public static class NativeContentFormatterService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _log.Error(e);
         }
         return Faker.Lorem.Sentence();
     }
@@ -140,7 +143,7 @@ public static class NativeContentFormatterService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _log.Error(e);
         }
         return Faker.Lorem.Sentence();
     }
@@ -162,7 +165,7 @@ public static class NativeContentFormatterService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _log.Error(e);
         }
         return Faker.Lorem.Sentence();
     }

@@ -52,7 +52,7 @@ public class InsiderThreatController : ControllerBase
                 for (var i = 0; i < team.Npcs.Number; i++)
                 {
                     var branch = team.Npcs.Configuration.Branch ?? MilitaryUnits.GetServiceBranch();
-                    var npc = NPC.TransformTo(Npc.Generate(branch));
+                    var npc = NPC.TransformToNpc(Npc.Generate(branch));
                     npc.Team = team.Name;
                     npc.Campaign = config.Campaign;
                     npc.Enclave = enclave.Name;

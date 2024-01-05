@@ -9,6 +9,7 @@ using Ghosts.Animator.Api.Infrastructure.Models;
 using Ghosts.Animator.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using NLog;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Ghosts.Animator.Api.Controllers;
@@ -21,6 +22,7 @@ namespace Ghosts.Animator.Api.Controllers;
 [Route("api/[controller]")]
 public class GenerateController : ControllerBase
 {
+    private static readonly Logger _log = LogManager.GetCurrentClassLogger();
     private readonly IMongoCollection<NPC> _mongo;
 
     public GenerateController(DatabaseSettings.IApplicationDatabaseSettings settings)
@@ -74,19 +76,19 @@ public class GenerateController : ControllerBase
                 {
                     var last = t.ElapsedMilliseconds;
                     var branch = team.Npcs.Configuration?.Branch ?? MilitaryUnits.GetServiceBranch();
-                    var npc = NPC.TransformTo(Npc.Generate(branch));
+                    var npc = NPC.TransformToNpc(Npc.Generate(branch));
                     npc.Team = team.Name;
                     npc.Campaign = config.Campaign;
                     npc.Enclave = enclave.Name;
                     _mongo.InsertOne(npc, cancellationToken: ct);
                     createdNPCs.Add(npc);
-                    Console.WriteLine($"{i} generated in {t.ElapsedMilliseconds - last} ms");
+                    _log.Trace($"{i} generated in {t.ElapsedMilliseconds - last} ms");
                 }
             }
         }
             
         t.Stop();
-        Console.WriteLine($"{createdNPCs.Count} NPCs generated in {t.ElapsedMilliseconds} ms");
+        _log.Trace($"{createdNPCs.Count} NPCs generated in {t.ElapsedMilliseconds} ms");
 
         return createdNPCs;
     }
@@ -101,7 +103,7 @@ public class GenerateController : ControllerBase
     [HttpPost("one")]
     public NpcProfile GenerateOne()
     {
-        var npc = NPC.TransformTo(Npc.Generate(MilitaryUnits.GetServiceBranch()));
+        var npc = NPC.TransformToNpc(Npc.Generate(MilitaryUnits.GetServiceBranch()));
         _mongo.InsertOne(npc, new InsertOneOptions { BypassDocumentValidation = false});
         return npc;
     }

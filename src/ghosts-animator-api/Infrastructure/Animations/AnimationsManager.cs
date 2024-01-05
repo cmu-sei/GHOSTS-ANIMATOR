@@ -23,6 +23,7 @@ public class AnimationsManager : IHostedService
     private Thread _socialSharingJobThread;
     private Thread _socialGraphJobThread;
     private Thread _socialBeliefsJobThread;
+    private Thread _chatJobThread;
     
     private readonly IServiceScopeFactory _scopeFactory;
     protected IHubContext<ActivityHub> _activityHubContext;
@@ -43,7 +44,7 @@ public class AnimationsManager : IHostedService
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        Console.WriteLine("Stopping Animations...");
+        _log.Info("Stopping Animations...");
         try
         {
             _socialGraphJobThread?.Interrupt();
@@ -70,8 +71,17 @@ public class AnimationsManager : IHostedService
         {
             // ignore
         }
+        
+        try
+        {
+            _chatJobThread?.Interrupt();
+        }
+        catch
+        {
+            // ignore
+        }
 
-        Console.WriteLine("Animations stopped");
+        _log.Info("Animations stopped.");
         
         return Task.CompletedTask;
     }
@@ -80,7 +90,7 @@ public class AnimationsManager : IHostedService
     {
         if (!this._configuration.Animations.IsEnabled)
         {
-            _log.Info($"Animations are not enabled, skipping.");
+            _log.Info($"Animations are not enabled, skipping...");
             return;
         }
 
@@ -89,7 +99,7 @@ public class AnimationsManager : IHostedService
         var client = new MongoClient(this._configuration.DatabaseSettings.ConnectionString);
         var database = client.GetDatabase(this._configuration.DatabaseSettings.DatabaseName);
         this._mongo = database.GetCollection<NPC>(this._configuration.DatabaseSettings.CollectionNameNPCs);
-
+        
         try
         {
             if (this._configuration.Animations.SocialGraph.IsEnabled && this._configuration.Animations.SocialGraph.IsInteracting)
@@ -141,6 +151,35 @@ public class AnimationsManager : IHostedService
             else
             {
                 _log.Info($"SocialBelief is not enabled, skipping.");
+            }
+        }
+        catch (Exception e)
+        {
+            _log.Trace(e);
+        }
+        
+        try
+        {
+            if (this._configuration.Animations.Chat.IsEnabled && this._configuration.Animations.Chat.IsInteracting)
+            {
+                _log.Info($"Starting chat job...");
+                if (this._configuration.Animations.Chat.IsMultiThreaded)
+                {
+                    _chatJobThread = new Thread(() =>
+                    {
+                        Thread.CurrentThread.IsBackground = true;
+                        var _ = new ChatJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                    });
+                    _chatJobThread.Start();
+                }
+                else
+                {
+                    var _ = new ChatJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                }
+            }
+            else
+            {
+                _log.Info($"Chat job is not enabled, skipping.");
             }
         }
         catch (Exception e)

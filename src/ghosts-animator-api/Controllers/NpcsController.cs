@@ -114,7 +114,7 @@ public class NPCsController : ControllerBase
         NpcProfile npc;
         if (generate)
         {
-            npc = NPC.TransformTo(Npc.Generate(MilitaryUnits.GetServiceBranch()));
+            npc = NPC.TransformToNpc(Npc.Generate(MilitaryUnits.GetServiceBranch()));
             npc.Name = npcProfile.Name;
             npc.Email = npcProfile.Email;
         }
@@ -126,7 +126,7 @@ public class NPCsController : ControllerBase
         npc.Id = Guid.NewGuid();
         npc.Created = DateTime.UtcNow;
         
-        _mongo.InsertOne(NPC.TransformTo(npc), new InsertOneOptions { BypassDocumentValidation = false});
+        _mongo.InsertOne(NPC.TransformToNpc(npc), new InsertOneOptions { BypassDocumentValidation = false});
         return npc;
     }
         

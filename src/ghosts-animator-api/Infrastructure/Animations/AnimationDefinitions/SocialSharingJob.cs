@@ -26,7 +26,7 @@ public class SocialSharingJob
     private readonly IMongoCollection<NPC> _mongo;
     private readonly Random _random;
     private const string SavePath = "output/socialsharing/";
-    private readonly int CurrentStep;
+    private readonly int _currentStep;
     private readonly IHubContext<ActivityHub> _activityHubContext;
 
     public SocialSharingJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random, IHubContext<ActivityHub> activityHubContext)
@@ -48,16 +48,16 @@ public class SocialSharingJob
 
                 while (true)
                 {
-                    if (this.CurrentStep > _configuration.Animations.SocialSharing.MaximumSteps)
+                    if (this._currentStep > _configuration.Animations.SocialSharing.MaximumSteps)
                     {
-                        _log.Trace($"Maximum steps met: {this.CurrentStep - 1}. Social sharing is exiting...");
+                        _log.Trace($"Maximum steps met: {this._currentStep - 1}. Social sharing is exiting...");
                         return;
                     }
 
                     this.Step();
                     Thread.Sleep(this._configuration.Animations.SocialSharing.TurnLength);
 
-                    this.CurrentStep++;
+                    this._currentStep++;
                 }
             }
         }
@@ -128,7 +128,7 @@ public class SocialSharingJob
 
                 formValues.Append('}');
                 
-                var postPayload = File.ReadAllText("config/socializer_post.json");
+                var postPayload = await File.ReadAllTextAsync("config/socializer_post.json");
                 postPayload = postPayload.Replace("{id}", Guid.NewGuid().ToString());
                 postPayload = postPayload.Replace("{user}", agent.Email);
                 postPayload = postPayload.Replace("{payload}", formValues.ToString());

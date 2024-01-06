@@ -10,19 +10,20 @@ using NLog;
 
 namespace Ghosts.Animator.Api;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public class Program
 {
-    private static readonly Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger _log = LogManager.GetCurrentClassLogger();
     public static ApplicationConfiguration Configuration { get; set; }
     
     public static async Task Main(string[] args)
     {
-        log.Warn(ApplicationDetails.Header);
-        log.Warn($"GHOSTS ANIMATOR API {ApplicationDetails.Version} ({ApplicationDetails.VersionFile}) coming online...");
-
         await AppConfigurationBuilder.Build();
         
-        BuildWebHost(args).Run();
+        _log.Warn(ApplicationDetails.Header);
+        _log.Warn($"GHOSTS ANIMATOR API {ApplicationDetails.Version} ({ApplicationDetails.VersionFile}) coming online...");
+
+        await BuildWebHost(args).RunAsync();
     }
 
     private static IWebHost BuildWebHost(string[] args) =>

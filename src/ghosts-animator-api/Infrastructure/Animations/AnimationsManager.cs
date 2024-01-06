@@ -7,7 +7,6 @@ using Ghosts.Animator.Api.Hubs;
 using Ghosts.Animator.Api.Infrastructure.Animations.AnimationDefinitions;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Driver;
 using NLog;
@@ -25,12 +24,11 @@ public class AnimationsManager : IHostedService
     private Thread _socialBeliefsJobThread;
     private Thread _chatJobThread;
     
-    private readonly IServiceScopeFactory _scopeFactory;
-    protected IHubContext<ActivityHub> _activityHubContext;
+    private readonly IHubContext<ActivityHub> _activityHubContext;
 
-    public AnimationsManager(IServiceScopeFactory scopeFactory, IHubContext<ActivityHub> activityHubContext)
+    public AnimationsManager(IHubContext<ActivityHub> activityHubContext)
     {
-        _scopeFactory = scopeFactory;
+        // ReSharper disable once ConvertToPrimaryConstructor
         this._configuration = Program.Configuration;
         this._random = Random.Shared;
         this._activityHubContext = activityHubContext;
@@ -38,6 +36,7 @@ public class AnimationsManager : IHostedService
     
     public Task StartAsync(CancellationToken cancellationToken)
     {
+        _log.Info("Animations Manager initializing...");
         Run();
         return Task.CompletedTask;
     }
@@ -90,7 +89,7 @@ public class AnimationsManager : IHostedService
     {
         if (!this._configuration.Animations.IsEnabled)
         {
-            _log.Info($"Animations are not enabled, skipping...");
+            _log.Info($"Animations are not enabled, exiting...");
             return;
         }
 
@@ -110,18 +109,18 @@ public class AnimationsManager : IHostedService
                     _socialGraphJobThread = new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
-                        var _ = new SocialGraphJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                        _ = new SocialGraphJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                     });
                     _socialGraphJobThread.Start();
                 }
                 else
                 {
-                    var _ = new SocialGraphJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                    _ = new SocialGraphJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                 }
             }
             else
             {
-                _log.Info($"SocialGraph is not enabled, skipping.");
+                _log.Info($"SocialGraph is not enabled.");
             }
         }
         catch (Exception e)
@@ -139,18 +138,18 @@ public class AnimationsManager : IHostedService
                     _socialBeliefsJobThread = new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
-                        var _ = new SocialBeliefJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                        _ = new SocialBeliefJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                     });
                     _socialBeliefsJobThread.Start();
                 }
                 else
                 {
-                    var _ = new SocialBeliefJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                    _ = new SocialBeliefJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                 }
             }
             else
             {
-                _log.Info($"SocialBelief is not enabled, skipping.");
+                _log.Info($"SocialBelief is not enabled.");
             }
         }
         catch (Exception e)
@@ -168,18 +167,18 @@ public class AnimationsManager : IHostedService
                     _chatJobThread = new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
-                        var _ = new ChatJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                        _ = new ChatJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                     });
                     _chatJobThread.Start();
                 }
                 else
                 {
-                    var _ = new ChatJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                    _ = new ChatJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                 }
             }
             else
             {
-                _log.Info($"Chat job is not enabled, skipping.");
+                _log.Info($"Chat job is not enabled.");
             }
         }
         catch (Exception e)
@@ -197,18 +196,18 @@ public class AnimationsManager : IHostedService
                     _socialSharingJobThread = new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
-                        var _ = new SocialSharingJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                        _ = new SocialSharingJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                     });
                     _socialSharingJobThread.Start();
                 }
                 else
                 {
-                    var _ = new SocialSharingJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                    _ = new SocialSharingJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                 }
             }
             else
             {
-                _log.Info($"SocialSharing is not enabled, skipping.");
+                _log.Info($"SocialSharing is not enabled.");
             }
         }
         catch (Exception e)
@@ -226,18 +225,18 @@ public class AnimationsManager : IHostedService
                     _socialSharingJobThread = new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
-                        var _ = new FullAutonomyJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                        _ = new FullAutonomyJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                     });
                     _socialSharingJobThread.Start();
                 }
                 else
                 {
-                    var _ = new FullAutonomyJob(this._configuration, this._mongo, this._random, this._activityHubContext);
+                    _ = new FullAutonomyJob(this._configuration, this._mongo, this._random, this._activityHubContext);
                 }
             }
             else
             {
-                _log.Info($"FullAutonomy is not enabled, skipping.");
+                _log.Info($"FullAutonomy is not enabled.");
             }
         }
         catch (Exception e)

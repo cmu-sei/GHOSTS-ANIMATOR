@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,7 +26,7 @@ public class SocialGraphJob
     private List<SocialGraph> _socialGraphs;
     private readonly Random _random;
     private readonly string[] _knowledgeArray;
-    private bool isEnabled = true;
+    private bool _isEnabled = true;
 
     private const string SavePath = "output/socialgraph/";
     private const string SocialGraphFile = "social_graph.json";
@@ -55,7 +56,7 @@ public class SocialGraphJob
             }
 
             _log.Info("SocialGraph loaded, running steps...");
-            while (this.isEnabled)
+            while (this._isEnabled)
             {
                 foreach (var graph in this._socialGraphs)
                 {
@@ -131,7 +132,7 @@ public class SocialGraphJob
         if (graph.CurrentStep > _configuration.Animations.SocialGraph.MaximumSteps)
         {
             _log.Trace($"Maximum steps met: {graph.CurrentStep - 1}. Social graph is exiting...");
-            this.isEnabled = false;
+            this._isEnabled = false;
             return;
         }
 
@@ -172,7 +173,7 @@ public class SocialGraphJob
                     agent.Id,
                     "knowledge",
                     $"learned more about {learning.Topic} ({learning.Value})",
-                    DateTime.Now.ToString()
+                    DateTime.Now.ToString(CultureInfo.InvariantCulture)
                 );
 
                 Thread.Sleep(_configuration.Animations.SocialGraph.TurnLength);
@@ -190,7 +191,7 @@ public class SocialGraphJob
                         var npcTo = this._mongo.Find(x => x.Id == learning.To).FirstOrDefault();
                         var npcFrom = this._mongo.Find(x => x.Id == learning.From).FirstOrDefault();
                         
-                        var o = $"{graph.CurrentStep}: {npcFrom.Name.ToString()}'s relationship improved with {npcTo.Name.ToString()}...";
+                        var o = $"{graph.CurrentStep}: {npcFrom.Name}'s relationship improved with {npcTo.Name}...";
                         _log.Trace(o);
                         
                         //post to hub
@@ -199,7 +200,7 @@ public class SocialGraphJob
                             agent.Id,
                             "relationship",
                             o,
-                            DateTime.Now.ToString()
+                            DateTime.Now.ToString(CultureInfo.InvariantCulture)
                         );
                     }
                 }
@@ -215,7 +216,7 @@ public class SocialGraphJob
                     agent.Id,
                     "relationship",
                     o,
-                    DateTime.Now.ToString()
+                    DateTime.Now.ToString(CultureInfo.InvariantCulture)
                 );
             }
         }
@@ -244,7 +245,7 @@ public class SocialGraphJob
                                 graph.Id,
                                 "knowledge",
                                 $"had knowledge decay in {k.Topic} occur",
-                                DateTime.Now.ToString()
+                                DateTime.Now.ToString(CultureInfo.InvariantCulture)
                             );
                             
                             break;
@@ -270,7 +271,7 @@ public class SocialGraphJob
                         graph.Id,
                         "relationship",
                         $"Experienced general relationship decay",
-                        DateTime.Now.ToString()
+                        DateTime.Now.ToString(CultureInfo.InvariantCulture)
                     );
                 }
             }
@@ -311,7 +312,7 @@ public class SocialGraphJob
         return graph.Knowledge.Count(x => x.From == learning.From) > 1;
     }
 
-    public static string[] GetKnowledge()
+    private static string[] GetKnowledge()
     {
         var k = File.ReadAllText("config/knowledge_topics.txt").Split(Environment.NewLine);
         Array.Sort(k);

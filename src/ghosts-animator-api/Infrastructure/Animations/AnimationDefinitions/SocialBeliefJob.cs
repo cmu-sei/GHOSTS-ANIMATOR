@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ public class SocialBeliefJob
     private readonly IMongoCollection<NPC> _mongo;
     private List<SocialGraph> _socialGraphs;
     private readonly Random _random;
-    private bool isEnabled = true;
+    private bool _isEnabled = true;
 
     private const string SavePath = "output/socialbelief/";
     private const string SocialGraphFile = "social_belief.json";
@@ -34,8 +35,7 @@ public class SocialBeliefJob
         return SavePath + SocialGraphFile;
     }
 
-    public static string[] Beliefs = new[]
-    {
+    public static string[] Beliefs = {
         "Strong passwords are essential.", "Regular software updates matter.", "Public Wi-Fi is risky.", "Antivirus software is a must.",
         "Encryption protects data.", "Phishing attacks are common.", "Two-factor authentication helps.", "Social engineering is a threat.",
         "IoT devices can be vulnerable.", "Cyberwarfare affects nations.", "Ransomware can cripple businesses.", "Insider threats are real.",
@@ -61,7 +61,7 @@ public class SocialBeliefJob
             }
 
             _log.Info("SocialBelief loaded, running steps...");
-            while (this.isEnabled)
+            while (this._isEnabled)
             {
                 foreach (var graph in this._socialGraphs)
                 {
@@ -133,7 +133,7 @@ public class SocialBeliefJob
         if (graph.CurrentStep > this._configuration.Animations.SocialBelief.MaximumSteps)
         {
             _log.Trace($"Maximum steps met: {graph.CurrentStep - 1}. SocialBelief is exiting...");
-            this.isEnabled = false;
+            this._isEnabled = false;
             return;
         }
 
@@ -166,10 +166,9 @@ public class SocialBeliefJob
             newBelief.To.ToString(),
             "belief",
             $"{graph.Name} has deeper belief in {newBelief.Name}",
-            DateTime.Now.ToString()
+            DateTime.Now.ToString(CultureInfo.InvariantCulture)
         );
     }
-
 
     private void Report()
     {

@@ -44,7 +44,7 @@ public class InsiderThreatController : ControllerBase
     [HttpPost]
     public IEnumerable<NPC> Create(InsiderThreatGenerationConfiguration config, CancellationToken ct)
     {
-        var createdNPCs = new List<NPC>();
+        var createdNpcs = new List<NPC>();
         foreach (var enclave in config.Enclaves)
         {
             foreach (var team in enclave.Teams)
@@ -56,18 +56,18 @@ public class InsiderThreatController : ControllerBase
                     npc.Team = team.Name;
                     npc.Campaign = config.Campaign;
                     npc.Enclave = enclave.Name;
-                    createdNPCs.Add(npc);
+                    createdNpcs.Add(npc);
                 }
             }
         }
             
-        foreach (var npc in createdNPCs)
+        foreach (var npc in createdNpcs)
         {
             foreach (var job in npc.Employment.EmploymentRecords)
             {
                 //get same company departments and highest ranked in that department
 
-                var managerList = createdNPCs.Where(x => x.Id != npc.Id 
+                var managerList = createdNpcs.Where(x => x.Id != npc.Id 
                                                          && x.Employment.EmploymentRecords.Any(
                                                              o => o.Company == job.Company 
                                                                   && o.Department == job.Department 
@@ -81,8 +81,8 @@ public class InsiderThreatController : ControllerBase
             }
         }
 
-        _mongo.InsertMany(createdNPCs, new InsertManyOptions {IsOrdered = false}, ct);
-        return createdNPCs;
+        _mongo.InsertMany(createdNpcs, new InsertManyOptions {IsOrdered = false}, ct);
+        return createdNpcs;
     }
 
     /// <summary>

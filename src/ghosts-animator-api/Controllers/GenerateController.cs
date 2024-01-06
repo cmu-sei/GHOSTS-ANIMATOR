@@ -67,7 +67,7 @@ public class GenerateController : ControllerBase
         var t = new Stopwatch();
         t.Start();
             
-        var createdNpCs = new List<NPC>();
+        var createdNpcs = new List<NPC>();
         foreach (var enclave in config.Enclaves)
         {
             foreach (var team in enclave.Teams)
@@ -81,16 +81,16 @@ public class GenerateController : ControllerBase
                     npc.Campaign = config.Campaign;
                     npc.Enclave = enclave.Name;
                     _mongo.InsertOne(npc, cancellationToken: ct);
-                    createdNpCs.Add(npc);
+                    createdNpcs.Add(npc);
                     _log.Trace($"{i} generated in {t.ElapsedMilliseconds - last} ms");
                 }
             }
         }
             
         t.Stop();
-        _log.Trace($"{createdNpCs.Count} NPCs generated in {t.ElapsedMilliseconds} ms");
+        _log.Trace($"{createdNpcs.Count} NPCs generated in {t.ElapsedMilliseconds} ms");
 
-        return createdNpCs;
+        return createdNpcs;
     }
     
     /// <summary>

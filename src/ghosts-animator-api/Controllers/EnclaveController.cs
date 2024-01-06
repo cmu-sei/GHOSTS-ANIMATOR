@@ -119,7 +119,7 @@ public class EnclaveController : ControllerBase
             var npcProperties = new NPCReduced(fieldsToReturn, npc).PropertySelection;
             var name = npc.Name;
             var npcName = name.ToString();
-            npcDetails[npcName] = npcProperties;
+            if (npcName != null) npcDetails[npcName] = npcProperties;
         }
             
         var enclaveCsv = new EnclaveReducedCsv(fieldsToReturn, npcDetails);

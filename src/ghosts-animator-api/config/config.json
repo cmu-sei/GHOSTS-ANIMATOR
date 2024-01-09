@@ -1,13 +1,9 @@
 {
-  "ApplicationDatabaseSettings": {
-    "ConnectionString": "mongodb://ghosts-mongo:32770",
-    "DatabaseName": "AnimatorDb"
-  },
   "ApplicationSettings": {
     "GhostsApiUrl": "http://localhost:52388/",
     "Proxy": "",
     "Animations": {
-      "IsEnabled": false,
+      "IsEnabled": true,
       "SocialGraph": {
         "IsEnabled": false,
         "IsMultiThreaded": true,
@@ -43,7 +39,7 @@
         }
       },
       "Chat": {
-        "IsEnabled": false,
+        "IsEnabled": true,
         "IsMultiThreaded": true,
         "IsInteracting": true,
         "MaximumSteps": 300,
@@ -70,19 +66,5 @@
         }
       }
     }
-  },
-  "AllowedHosts": "*",
-  "ClientSettings": {
-  },
-  "CorsPolicy": {
-    "Origins": [
-      "http://localhost:4200"
-    ],
-    "Methods": [],
-    "Headers": [],
-    "AllowAnyOrigin": false,
-    "AllowAnyMethod": true,
-    "AllowAnyHeader": true,
-    "SupportsCredentials": true
   }
 }

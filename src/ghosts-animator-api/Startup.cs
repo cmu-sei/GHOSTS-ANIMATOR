@@ -32,7 +32,7 @@ public class Startup(IConfiguration configuration)
         services.AddSingleton<DatabaseSettings.IApplicationDatabaseSettings>(sp =>
             sp.GetRequiredService<IOptions<DatabaseSettings.ApplicationDatabaseSettings>>().Value);
 
-        services.AddCors(options => options.UseConfiguredCors(Program.Configuration.RawConfiguration.GetSection("CorsPolicy")));
+        services.AddCors(options => options.UseConfiguredCors(Configuration.GetSection("CorsPolicy")));
 
         services.AddSwaggerGen(c =>
         {

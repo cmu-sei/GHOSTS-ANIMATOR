@@ -16,6 +16,7 @@ namespace Ghosts.Animator.Api.Infrastructure.Animations;
 public class AnimationsManager : IHostedService
 {
     private static readonly Logger _log = LogManager.GetCurrentClassLogger();
+    private readonly DatabaseSettings.IApplicationDatabaseSettings _databaseSettings;
     private readonly ApplicationConfiguration _configuration;
     private IMongoCollection<NPC> _mongo;
     private readonly Random _random;
@@ -26,9 +27,10 @@ public class AnimationsManager : IHostedService
     
     private readonly IHubContext<ActivityHub> _activityHubContext;
 
-    public AnimationsManager(IHubContext<ActivityHub> activityHubContext)
+    public AnimationsManager(IHubContext<ActivityHub> activityHubContext, DatabaseSettings.IApplicationDatabaseSettings settings)
     {
         // ReSharper disable once ConvertToPrimaryConstructor
+        this._databaseSettings = settings;
         this._configuration = Program.Configuration;
         this._random = Random.Shared;
         this._activityHubContext = activityHubContext;
@@ -95,9 +97,9 @@ public class AnimationsManager : IHostedService
 
         _log.Info($"Animations are enabled, starting up...");
 
-        var client = new MongoClient(this._configuration.DatabaseSettings.ConnectionString);
-        var database = client.GetDatabase(this._configuration.DatabaseSettings.DatabaseName);
-        this._mongo = database.GetCollection<NPC>(this._configuration.DatabaseSettings.CollectionNameNPCs);
+        var client = new MongoClient(this._databaseSettings.ConnectionString);
+        var database = client.GetDatabase(this._databaseSettings.DatabaseName);
+        this._mongo = database.GetCollection<NPC>(this._databaseSettings.CollectionNameNPCs);
         
         try
         {

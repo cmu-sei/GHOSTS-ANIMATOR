@@ -51,8 +51,6 @@ public static class AppConfigurationBuilder
         config.GetSection("ApplicationDatabaseSettings").Bind(dbConfig);
         
         Program.Configuration = appConfig;
-        Program.Configuration.DatabaseSettings = dbConfig;
-        Program.Configuration.RawConfiguration = config;
     }
 
     /// <summary>

@@ -37,28 +37,25 @@ public class SocialSharingJob
             this._configuration = configuration;
             this._random = random;
             this._mongo = mongo;
+
+            if (!_configuration.Animations.SocialSharing.IsInteracting) return;
             
-
-            if (_configuration.Animations.SocialSharing.IsInteracting)
+            if (!Directory.Exists(SavePath))
             {
-                if (!Directory.Exists(SavePath))
+                Directory.CreateDirectory(SavePath);
+            }
+
+            while (true)
+            {
+                if (this._currentStep > _configuration.Animations.SocialSharing.MaximumSteps)
                 {
-                    Directory.CreateDirectory(SavePath);
+                    _log.Trace($"Maximum steps met: {this._currentStep - 1}. Social sharing is exiting...");
+                    return;
                 }
 
-                while (true)
-                {
-                    if (this._currentStep > _configuration.Animations.SocialSharing.MaximumSteps)
-                    {
-                        _log.Trace($"Maximum steps met: {this._currentStep - 1}. Social sharing is exiting...");
-                        return;
-                    }
-
-                    this.Step();
-                    Thread.Sleep(this._configuration.Animations.SocialSharing.TurnLength);
-
-                    this._currentStep++;
-                }
+                this.Step();
+                Thread.Sleep(this._configuration.Animations.SocialSharing.TurnLength);
+                this._currentStep++;
             }
         }
         catch (ThreadInterruptedException)
@@ -74,6 +71,7 @@ public class SocialSharingJob
     private async void Step()
     {
         var contentService = new ContentCreationService(_configuration.Animations.SocialSharing.ContentEngine);
+        
         //take some random NPCs
         var lines = new StringBuilder();
         var agents = this._mongo.Find(x => true).ToList().Shuffle(_random).Take(_random.Next(5, 20));
@@ -85,6 +83,7 @@ public class SocialSharingJob
             
             lines.AppendFormat($"{DateTime.Now},{agent.Id},\"{tweetText}\"{Environment.NewLine}");
 
+            // the payloads to socializer are a bit randomized
             var userFormValue = new[] { "user", "usr", "u", "uid", "user_id", "u_id" }.RandomFromStringArray();
             var messageFormValue = new[] { "message", "msg", "m", "message_id", "msg_id", "msg_text", "text", "payload" }.RandomFromStringArray();
             

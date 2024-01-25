@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using Ghosts.Animator.Enums;
 using Ghosts.Animator.Extensions;
 using Ghosts.Animator.Models;
 using Newtonsoft.Json;
@@ -11,7 +12,14 @@ namespace Ghosts.Animator.Services
         public static HealthProfile GetHealthProfile()
         {
             var o = new HealthProfile();
-            
+
+            if (Npc.NpcProfile.Rank == null)
+            {
+                Npc.NpcProfile.Rank = new MilitaryRank.Branch.Rank();
+                Npc.NpcProfile.Rank.Branch = MilitaryBranch.USARMY;
+                Npc.NpcProfile.Rank.Pay = "0";
+            }
+
             o.Height = PhysicalCharacteristics.GetMilHeight(Npc.NpcProfile.BiologicalSex, Npc.NpcProfile.Rank.Branch);
             o.Weight = PhysicalCharacteristics.GetMilWeight(o.Height, Npc.NpcProfile.Birthdate, Npc.NpcProfile.BiologicalSex, Npc.NpcProfile.Rank.Branch);
             o.BloodType = PhysicalCharacteristics.GetBloodType();

@@ -621,6 +621,9 @@ namespace Ghosts.Animator
         //Restricted to US Schools
         public static List<EducationProfile.Degree> GetMilEducation(string rank)
         {
+            if (string.IsNullOrEmpty(rank))
+                return new List<EducationProfile.Degree>();
+            
             List<EducationProfile.Degree> l = new List<EducationProfile.Degree>();
             //read military rank probabilities
             string input = File.ReadAllText("config/military_education.json");

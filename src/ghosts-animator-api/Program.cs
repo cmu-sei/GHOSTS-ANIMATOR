@@ -1,11 +1,12 @@
 // Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
 
+using System.IO;
 using System.Threading.Tasks;
 using Ghosts.Animator.Api.Infrastructure;
-using Ghosts.Animator.Api.Infrastructure.Extensions;
 using Ghosts.Animator.Api.Infrastructure.Models;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using NLog;
 
 namespace Ghosts.Animator.Api;
@@ -18,7 +19,19 @@ public class Program
     
     public static async Task Main(string[] args)
     {
-        await AppConfigurationBuilder.Build();
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json");
+
+        var config = builder.Build();
+        var appConfig = new ApplicationConfiguration();
+        config.GetSection("ApplicationSettings").Bind(appConfig);
+
+        var dbConfig = new DatabaseSettings.ApplicationDatabaseSettings();
+        config.GetSection("ApplicationDatabaseSettings").Bind(dbConfig);
+
+        Configuration = appConfig;
+        Configuration.DatabaseSettings = dbConfig;
         
         _log.Warn(ApplicationDetails.Header);
         _log.Warn($"GHOSTS ANIMATOR API {ApplicationDetails.Version} ({ApplicationDetails.VersionFile}) coming online...");

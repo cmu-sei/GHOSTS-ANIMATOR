@@ -1,9 +1,11 @@
 # Copyright 2020 Carnegie Mellon University. All Rights Reserved. See LICENSE.md file for terms.
 
-version: '3.2'
+version: '3.8'
+
 networks:
   ghosts-network:
     driver: bridge
+
 services:
   mongo:
     image: mongo
@@ -24,5 +26,4 @@ services:
       - ghosts-network
     restart: always
     volumes:
-      # - ./_config:/app/config
       - ./_output:/output

@@ -31,7 +31,7 @@ def easy_password():
 # exit(0)
 
 # build a new client instance of MongoClient
-mongo_client = MongoClient('localhost', 32770)
+mongo_client = MongoClient('localhost', 27017)
 
 # create new database and collection instance
 db = mongo_client.AnimatorDb

@@ -3,7 +3,7 @@
 version: '3.8'
 
 networks:
-  ghosts-network:
+  ghostsnetwork:
     driver: bridge
 
 services:
@@ -11,9 +11,9 @@ services:
     image: mongo
     container_name: ghosts-mongo
     ports:
-      - '32770:27017'
+      - '27017:27017'
     networks:
-      - ghosts-network
+      - ghostsnetwork
     restart: always
     volumes:
       - ./_data:/data/db
@@ -23,7 +23,7 @@ services:
     ports:
       - '5000:5000'
     networks:
-      - ghosts-network
+      - ghostsnetwork
     restart: always
     volumes:
       - ./_output:/output

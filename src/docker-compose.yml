@@ -3,7 +3,7 @@
 version: '3.8'
 
 networks:
-  ghostsnetwork:
+  ghosts-network:
     driver: bridge
 
 services:
@@ -13,7 +13,7 @@ services:
     ports:
       - '27017:27017'
     networks:
-      - ghostsnetwork
+      - ghosts-network
     restart: always
     volumes:
       - ./_data:/data/db
@@ -23,7 +23,7 @@ services:
     ports:
       - '5000:5000'
     networks:
-      - ghostsnetwork
+      - ghosts-network
     restart: always
     volumes:
       - ./_output:/output

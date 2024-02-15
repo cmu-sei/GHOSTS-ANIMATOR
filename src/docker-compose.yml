@@ -17,6 +17,21 @@ services:
     restart: always
     volumes:
       - ./_data:/data/db
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express
+    depends_on:
+      - mongo
+    networks:
+      - ghosts-network
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=ghosts-mongo
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=scotty@1
+    ports:
+      - '8081:8081'
+    volumes:
+      - ./_data_express:/data/db
   ghosts-animator:
     image: dustinupdyke/ghosts-animator:0.8.5
     container_name: ghosts-animator

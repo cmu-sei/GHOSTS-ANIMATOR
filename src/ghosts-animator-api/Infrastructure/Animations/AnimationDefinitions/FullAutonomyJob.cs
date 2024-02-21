@@ -27,9 +27,10 @@ public class FullAutonomyJob
     private readonly List<string> _history;
     private readonly int _currentStep;
     private readonly IHubContext<ActivityHub> _activityHubContext;
+    private CancellationToken _cancellationToken;
 
     public FullAutonomyJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random,
-        IHubContext<ActivityHub> activityHubContext)
+        IHubContext<ActivityHub> activityHubContext, CancellationToken cancellationToken)
     {
         try
         {
@@ -37,6 +38,7 @@ public class FullAutonomyJob
             this._configuration = configuration;
             this._random = random;
             this._mongo = mongo;
+            this._cancellationToken = cancellationToken;
 
             this._history = File.Exists(this._historyFile)
                 ? File.ReadAllLinesAsync(this._historyFile).Result.ToList()
@@ -49,7 +51,7 @@ public class FullAutonomyJob
                     Directory.CreateDirectory(SavePath);
                 }
 
-                while (true)
+                while (!this._cancellationToken.IsCancellationRequested)
                 {
                     if (this._currentStep > _configuration.Animations.SocialSharing.MaximumSteps)
                     {

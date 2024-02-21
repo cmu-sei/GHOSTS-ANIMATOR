@@ -25,6 +25,7 @@ public class SocialBeliefJob
     private List<SocialGraph> _socialGraphs;
     private readonly Random _random;
     private bool _isEnabled = true;
+    private CancellationToken _cancellationToken;
 
     private const string SavePath = "output/socialbelief/";
     private const string SocialGraphFile = "social_belief.json";
@@ -35,15 +36,19 @@ public class SocialBeliefJob
         return SavePath + SocialGraphFile;
     }
 
-    public static string[] Beliefs = {
-        "Strong passwords are essential.", "Regular software updates matter.", "Public Wi-Fi is risky.", "Antivirus software is a must.",
-        "Encryption protects data.", "Phishing attacks are common.", "Two-factor authentication helps.", "Social engineering is a threat.",
-        "IoT devices can be vulnerable.", "Cyberwarfare affects nations.", "Ransomware can cripple businesses.", "Insider threats are real.",
+    public static string[] Beliefs =
+    {
+        "Strong passwords are essential.", "Regular software updates matter.", "Public Wi-Fi is risky.",
+        "Antivirus software is a must.",
+        "Encryption protects data.", "Phishing attacks are common.", "Two-factor authentication helps.",
+        "Social engineering is a threat.",
+        "IoT devices can be vulnerable.", "Cyberwarfare affects nations.", "Ransomware can cripple businesses.",
+        "Insider threats are real.",
         "Dark web is a breeding ground.", "DDoS attacks disrupt services.", "Hacktivists promote causes."
     };
 
     public SocialBeliefJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random,
-        IHubContext<ActivityHub> activityHubContext)
+        IHubContext<ActivityHub> activityHubContext, CancellationToken cancellationToken)
     {
         try
         {
@@ -51,17 +56,19 @@ public class SocialBeliefJob
             this._configuration = configuration;
             this._random = random;
             this._mongo = mongo;
+            this._cancellationToken = cancellationToken;
 
             this.LoadSocialBeliefs();
 
-            if (this._socialGraphs.Count > 0 && this._socialGraphs[0].CurrentStep > _configuration.Animations.SocialGraph.MaximumSteps)
+            if (this._socialGraphs.Count > 0 &&
+                this._socialGraphs[0].CurrentStep > _configuration.Animations.SocialGraph.MaximumSteps)
             {
                 _log.Trace("SocialBelief has exceed maximum steps. Sleeping...");
                 return;
             }
 
             _log.Info("SocialBelief loaded, running steps...");
-            while (this._isEnabled)
+            while (this._isEnabled && !this._cancellationToken.IsCancellationRequested)
             {
                 foreach (var graph in this._socialGraphs)
                 {
@@ -69,7 +76,8 @@ public class SocialBeliefJob
                 }
 
                 // post-step activities: saving results and reporting on them
-                File.WriteAllText(GetSocialGraphFile(), JsonConvert.SerializeObject(this._socialGraphs, Formatting.None));
+                File.WriteAllText(GetSocialGraphFile(),
+                    JsonConvert.SerializeObject(this._socialGraphs, Formatting.None));
                 this.Report();
                 _log.Info($"Step complete, sleeping for {this._configuration.Animations.SocialGraph.TurnLength}ms");
                 Thread.Sleep(this._configuration.Animations.SocialBelief.TurnLength);
@@ -153,11 +161,14 @@ public class SocialBeliefJob
         if (belief == null)
         {
             var l = Convert.ToDecimal(this._random.NextDouble() * (0.75 - 0.25) + 0.25);
-            belief = new SocialGraph.Belief(graph.Id, graph.Id, Beliefs.RandomFromStringArray(), graph.CurrentStep, l, (decimal)0.5);
+            belief = new SocialGraph.Belief(graph.Id, graph.Id, Beliefs.RandomFromStringArray(), graph.CurrentStep, l,
+                (decimal)0.5);
         }
 
-        var bayes = new Bayes(graph.CurrentStep, belief.Likelihood, belief.Posterior, 1 - belief.Likelihood, 1 - belief.Posterior);
-        var newBelief = new SocialGraph.Belief(graph.Id, graph.Id, Beliefs.RandomFromStringArray(), graph.CurrentStep, belief.Likelihood, bayes.PosteriorH1);
+        var bayes = new Bayes(graph.CurrentStep, belief.Likelihood, belief.Posterior, 1 - belief.Likelihood,
+            1 - belief.Posterior);
+        var newBelief = new SocialGraph.Belief(graph.Id, graph.Id, Beliefs.RandomFromStringArray(), graph.CurrentStep,
+            belief.Likelihood, bayes.PosteriorH1);
         graph.Beliefs.Add(newBelief);
 
         //post to hub
@@ -186,7 +197,8 @@ public class SocialBeliefJob
 
             foreach (var belief in npc.Beliefs)
             {
-                line.Append(",,,").Append(belief.Step).Append(',').Append(belief.Likelihood).Append(',').Append(belief.Posterior)
+                line.Append(",,,").Append(belief.Step).Append(',').Append(belief.Likelihood).Append(',')
+                    .Append(belief.Posterior)
                     .Append(Environment.NewLine);
             }
         }

@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading;
 using Ghosts.Animator.Api.Hubs;
 using Ghosts.Animator.Api.Infrastructure.Animations.AnimationDefinitions.Chat;
@@ -24,15 +25,17 @@ public class ChatJob
     private readonly Random _random;
     private readonly ChatClient _chatClient;
     private readonly int _currentStep;
+    private CancellationToken _cancellationToken;
     
     public ChatJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random,
-        IHubContext<ActivityHub> activityHubContext)
+        IHubContext<ActivityHub> activityHubContext, CancellationToken cancellationToken)
     {
         //todo: post results to activityHubContext for "top" reporting
         
         this._configuration = configuration;
         this._random = random;
         this._mongo = mongo;
+        this._cancellationToken = cancellationToken;
 
         var chatConfiguration = JsonSerializer.Deserialize<ChatJobConfiguration>(File.ReadAllText("config/chat.json"),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? throw new InvalidOperationException();
@@ -40,7 +43,7 @@ public class ChatJob
         var llm = new OllamaConnectorService(_configuration.Animations.Chat.ContentEngine);
         this._chatClient = new ChatClient(chatConfiguration);
         
-        while (true)
+        while (!_cancellationToken.IsCancellationRequested)
         {
             if (this._currentStep > _configuration.Animations.Chat.MaximumSteps)
             {

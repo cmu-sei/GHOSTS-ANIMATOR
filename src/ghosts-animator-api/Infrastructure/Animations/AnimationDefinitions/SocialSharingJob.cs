@@ -28,8 +28,9 @@ public class SocialSharingJob
     private const string SavePath = "output/socialsharing/";
     private readonly int _currentStep;
     private readonly IHubContext<ActivityHub> _activityHubContext;
+    private CancellationToken _cancellationToken;
 
-    public SocialSharingJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random, IHubContext<ActivityHub> activityHubContext)
+    public SocialSharingJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random, IHubContext<ActivityHub> activityHubContext, CancellationToken cancellationToken)
     {
         try
         {
@@ -37,6 +38,7 @@ public class SocialSharingJob
             this._configuration = configuration;
             this._random = random;
             this._mongo = mongo;
+            this._cancellationToken = cancellationToken;
 
             if (!_configuration.Animations.SocialSharing.IsInteracting) return;
             
@@ -45,7 +47,7 @@ public class SocialSharingJob
                 Directory.CreateDirectory(SavePath);
             }
 
-            while (true)
+            while (!this._cancellationToken.IsCancellationRequested)
             {
                 if (this._currentStep > _configuration.Animations.SocialSharing.MaximumSteps)
                 {
@@ -74,7 +76,13 @@ public class SocialSharingJob
         
         //take some random NPCs
         var lines = new StringBuilder();
-        var agents = this._mongo.Find(x => true).ToList().Shuffle(_random).Take(_random.Next(5, 20));
+        var rawAgents = this._mongo.Find(x => true).ToList();
+        if (rawAgents == null || !rawAgents.Any())
+        {
+            _log.Warn("No NPCs found in Mongo. Is this correct?");
+            return;
+        }
+        var agents = rawAgents.Shuffle(_random).Take(_random.Next(5, 20));
         foreach (var agent in agents)
         {
             var tweetText = await contentService.GenerateTweet(agent);

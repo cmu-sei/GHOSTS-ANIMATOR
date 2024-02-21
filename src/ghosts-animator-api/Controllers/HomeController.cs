@@ -11,7 +11,7 @@ namespace Ghosts.Animator.Api.Controllers;
 public class HomeController : Controller
 {
     [ApiExplorerSettings(IgnoreApi = true)]
-    [HttpGet]
+    [HttpGet("/")]
     public IActionResult Index()
     {
         return View();

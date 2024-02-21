@@ -33,7 +33,7 @@ services:
     volumes:
       - ./_data_express:/data/db
   ghosts-animator:
-    image: dustinupdyke/ghosts-animator:0.8.5
+    image: dustinupdyke/ghosts-animator:0.8.6
     container_name: ghosts-animator
     ports:
       - '5000:5000'

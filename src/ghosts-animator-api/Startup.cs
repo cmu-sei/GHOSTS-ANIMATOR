@@ -70,7 +70,7 @@ public class Startup(IConfiguration configuration)
         services.AddRouting(options => options.LowercaseUrls = true);
         
         // start any configured animation jobs
-        services.AddSingleton<IHostedService, AnimationsManager>();
+        services.AddSingleton<IManageableHostedService, AnimationsManager>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -27,17 +27,19 @@ public class SocialGraphJob
     private readonly Random _random;
     private readonly string[] _knowledgeArray;
     private bool _isEnabled = true;
+    private CancellationToken _cancellationToken;
 
     private const string SavePath = "output/socialgraph/";
     private const string SocialGraphFile = "social_graph.json";
     private readonly IHubContext<ActivityHub> _activityHubContext;
-        
+
     public static string GetSocialGraphFile()
     {
         return SavePath + SocialGraphFile;
     }
 
-    public SocialGraphJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random, IHubContext<ActivityHub> activityHubContext)
+    public SocialGraphJob(ApplicationConfiguration configuration, IMongoCollection<NPC> mongo, Random random,
+        IHubContext<ActivityHub> activityHubContext, CancellationToken cancellationToken)
     {
         try
         {
@@ -45,18 +47,20 @@ public class SocialGraphJob
             this._configuration = configuration;
             this._random = random;
             this._mongo = mongo;
+            this._cancellationToken = cancellationToken;
 
             this._knowledgeArray = GetKnowledge();
             this.LoadSocialGraphs();
 
-            if (this._socialGraphs.Count > 0 && this._socialGraphs[0].CurrentStep > _configuration.Animations.SocialGraph.MaximumSteps)
+            if (this._socialGraphs.Count > 0 &&
+                this._socialGraphs[0].CurrentStep > _configuration.Animations.SocialGraph.MaximumSteps)
             {
                 _log.Trace("Graph has exceed maximum steps. Sleeping...");
                 return;
             }
 
             _log.Info("SocialGraph loaded, running steps...");
-            while (this._isEnabled)
+            while (this._isEnabled && !this._cancellationToken.IsCancellationRequested)
             {
                 foreach (var graph in this._socialGraphs)
                 {
@@ -64,7 +68,8 @@ public class SocialGraphJob
                 }
 
                 // post-step activities: saving results and reporting on them
-                File.WriteAllText(GetSocialGraphFile(), JsonConvert.SerializeObject(this._socialGraphs, Formatting.None));
+                File.WriteAllText(GetSocialGraphFile(),
+                    JsonConvert.SerializeObject(this._socialGraphs, Formatting.None));
                 this.Report();
                 _log.Info($"Step complete, sleeping for {this._configuration.Animations.SocialGraph.TurnLength}ms");
                 Thread.Sleep(this._configuration.Animations.SocialGraph.TurnLength);
@@ -103,7 +108,9 @@ public class SocialGraphJob
                     Id = item.Id,
                     Name = item.Name.ToString()
                 };
-                foreach (var connection in from sub in list where sub.Id != item.Id select new SocialGraph.SocialConnection
+                foreach (var connection in from sub in list
+                         where sub.Id != item.Id
+                         select new SocialGraph.SocialConnection
                          {
                              Id = sub.Id,
                              Name = sub.Name.ToString()
@@ -140,7 +147,8 @@ public class SocialGraphJob
         _log.Trace($"{graph.CurrentStep}: {graph.Id} is interacting...");
 
         //get number of agents to interact with, weighted by decreasing weights calculation and who is in our graph
-        var numberOfAgentsToInteract = this._random.NextDouble().GetNumberByDecreasingWeights(0, graph.Connections.Count, 0.4);
+        var numberOfAgentsToInteract =
+            this._random.NextDouble().GetNumberByDecreasingWeights(0, graph.Connections.Count, 0.4);
 
         //pick other agent(s), allowing multiple interactions with the same person because that seems likely
         //TODO: make this weighted by distance and/or influenced by like knowledge
@@ -166,7 +174,7 @@ public class SocialGraphJob
             {
                 var learning = new SocialGraph.Learning(graph.Id, agent.Id, topic, graph.CurrentStep, 1);
                 graph.Knowledge.Add(learning);
-                
+
                 //post to hub
                 this._activityHubContext.Clients.All.SendAsync("show",
                     graph.CurrentStep,
@@ -177,7 +185,7 @@ public class SocialGraphJob
                 );
 
                 Thread.Sleep(_configuration.Animations.SocialGraph.TurnLength);
-                
+
                 _log.Trace(learning.ToString);
 
                 //does relationship value change?
@@ -187,13 +195,13 @@ public class SocialGraphJob
                     if (connection is not null)
                     {
                         connection.RelationshipStatus++;
-                        
+
                         var npcTo = this._mongo.Find(x => x.Id == learning.To).FirstOrDefault();
                         var npcFrom = this._mongo.Find(x => x.Id == learning.From).FirstOrDefault();
-                        
+
                         var o = $"{graph.CurrentStep}: {npcFrom.Name}'s relationship improved with {npcTo.Name}...";
                         _log.Trace(o);
-                        
+
                         //post to hub
                         this._activityHubContext.Clients.All.SendAsync("show",
                             graph.CurrentStep,
@@ -209,7 +217,7 @@ public class SocialGraphJob
             {
                 var o = $"{graph.CurrentStep}: {graph.Id} didn't learn...";
                 _log.Trace(o);
-                
+
                 //post to hub
                 this._activityHubContext.Clients.All.SendAsync("show",
                     graph.CurrentStep,
@@ -220,7 +228,7 @@ public class SocialGraphJob
                 );
             }
         }
-        
+
         //decay
         //https://pubsonline.informs.org/doi/10.1287/orsc.1090.0468
         //in knowledge - the world changes, and so there is some amount of knowledge that is now obsolete
@@ -234,11 +242,12 @@ public class SocialGraphJob
                 {
                     if (this._configuration.Animations.SocialGraph.Decay.ChanceOf.ChanceOfThisValue())
                     {
-                        if (graph.Knowledge.Where(x => x.Topic == k.Topic).MaxBy(x => x.Step)?.Step < graph.CurrentStep - stepsToDecay)
+                        if (graph.Knowledge.Where(x => x.Topic == k.Topic).MaxBy(x => x.Step)?.Step <
+                            graph.CurrentStep - stepsToDecay)
                         {
                             var learning = new SocialGraph.Learning(graph.Id, graph.Id, k.Topic, graph.CurrentStep, -1);
                             graph.Knowledge.Add(learning);
-                            
+
                             //post to hub
                             this._activityHubContext.Clients.All.SendAsync("show",
                                 graph.CurrentStep,
@@ -247,7 +256,7 @@ public class SocialGraphJob
                                 $"had knowledge decay in {k.Topic} occur",
                                 DateTime.Now.ToString(CultureInfo.InvariantCulture)
                             );
-                            
+
                             break;
                         }
                     }
@@ -256,7 +265,8 @@ public class SocialGraphJob
 
             foreach (var c in graph.Connections)
             {
-                if (c.Interactions.Count > 1 && c.Interactions.MaxBy(x => x.Step)?.Step < graph.CurrentStep - stepsToDecay)
+                if (c.Interactions.Count > 1 &&
+                    c.Interactions.MaxBy(x => x.Step)?.Step < graph.CurrentStep - stepsToDecay)
                 {
                     var interaction = new SocialGraph.Interaction
                     {
@@ -264,7 +274,7 @@ public class SocialGraphJob
                         Value = -1
                     };
                     c.Interactions.Add(interaction);
-                    
+
                     //post to hub
                     this._activityHubContext.Clients.All.SendAsync("show",
                         graph.CurrentStep,
@@ -286,7 +296,7 @@ public class SocialGraphJob
         var npc = this._mongo.Find(x => x.Id == graph.Id).FirstOrDefault();
         if (npc == null)
             return string.Empty;
-        
+
         chance += npc.Education.Degrees.Count * .1;
         chance += npc.MentalHealth.OverallPerformance * .1;
         chance += graph.Knowledge.Count * .1;
@@ -364,7 +374,8 @@ public class SocialGraphJob
             foreach (var knowledge in this._knowledgeArray)
             {
                 // ReSharper disable once AccessToModifiedClosure
-                foreach (var learningCount in this._socialGraphs.Select(npc => npc.Knowledge.Count(x => x.Topic == knowledge && x.Step < i)))
+                foreach (var learningCount in this._socialGraphs.Select(npc =>
+                             npc.Knowledge.Count(x => x.Topic == knowledge && x.Step < i)))
                 {
                     knowledgeCount[knowledge] += learningCount;
                 }
@@ -418,7 +429,8 @@ public class SocialGraphJob
                     continue;
                 }
 
-                var myRelationshipStatus = npc.Connections.FirstOrDefault(x => x.Id == connection.Id)!.RelationshipStatus;
+                var myRelationshipStatus =
+                    npc.Connections.FirstOrDefault(x => x.Id == connection.Id)!.RelationshipStatus;
                 // var otherNpcRelationshipStatus = this._socialGraphs.FirstOrDefault(x => x.Id == connection.Id).Connections
                 //     .FirstOrDefault(y => y.Id == npc.Id).RelationshipStatus; 
 
